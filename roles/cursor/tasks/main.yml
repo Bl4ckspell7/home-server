@@ -1,0 +1,24 @@
+- name: Copy Vimix cursors archive to remote host
+  ansible.builtin.copy:
+    src: vimix-cursors.tar.xz
+    dest: /tmp/vimix-cursors.tar.xz
+    mode: "0644"
+
+- name: Extract Vimix cursors to /usr/share/icons/Vimix-cursors
+  ansible.builtin.unarchive:
+    src: /tmp/vimix-cursors.tar.xz
+    dest: /usr/share/icons/Vimix-cursors
+    remote_src: true
+    extra_opts: [--strip-components=1]
+
+- name: Remove the Vimix archive after extraction
+  ansible.builtin.file:
+    path: /tmp/vimix-cursors.tar.xz
+    state: absent
+
+- name: Ensure /usr/share/icons/default is a symlink to Vimix-cursors
+  ansible.builtin.file:
+    path: /usr/share/icons/default
+    state: link
+    src: /usr/share/icons/Vimix-cursors
+    force: true
