@@ -1,0 +1,30 @@
+- name: Adjust display format for history command
+  ansible.builtin.lineinfile:
+    path: /etc/bash.bashrc
+    line: HISTTIMEFORMAT="%F %T "
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+    state: present
+
+- name: Copy global bash_aliases to /etc
+  ansible.builtin.copy:
+    src: bash_aliases
+    dest: /etc/bash_aliases
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure global aliases are sourced in bash.bashrc
+  ansible.builtin.blockinfile:
+    path: /etc/bash.bashrc
+    block: |
+      # Source global aliases
+      if [ -f /etc/bash_aliases ]; then
+          . /etc/bash_aliases
+      fi
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
