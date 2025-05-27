@@ -1,0 +1,32 @@
+- name: Setup svr1
+  hosts: svr
+  roles:
+    - role: apt
+      tags: apt
+
+    - role: bash
+      tags: bash
+
+    - role: base
+      tags: base
+
+    - role: cursor
+      tags: cursor
+
+    - role: fail2ban
+      tags: fail2ban
+
+    - role: flatpak
+      tags: flatpak
+
+    - role: grub
+      tags: grub
+
+    - role: ssh
+      tags: ssh
+
+    - role: ufw
+      tags: ufw
+
+    - role: xrdp
+      tags: xrdp
