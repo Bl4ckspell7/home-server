@@ -6,6 +6,7 @@
       - ansible
       - ansible-core
       - ansible-lint
+      - btop
       - build-essential
       - ca-certificates
       - clang
@@ -28,8 +29,8 @@
       - git
       - git
       - gnome-software-plugin-flatpak
-      - btop
       - initramfs-tools
+      - locales
       - net-tools
       - ninja-build
       - ovmf
