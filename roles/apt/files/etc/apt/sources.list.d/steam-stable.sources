@@ -1,0 +1,6 @@
+Types: deb deb-src
+URIs: https://repo.steampowered.com/steam/
+Suites: stable
+Components: steam
+Architectures: amd64
+Signed-By: /etc/apt/keyrings/steam.gpg
