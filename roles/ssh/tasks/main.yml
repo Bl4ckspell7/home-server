@@ -1,0 +1,6 @@
+- name: Manage ssh systemd service
+  ansible.builtin.systemd:
+    state: started
+    name: ssh
+    enabled: true
+    daemon-reload: true
