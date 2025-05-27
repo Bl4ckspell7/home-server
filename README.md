@@ -2,7 +2,13 @@
 
 Setup code for my homeserver.
 
-### SSH Config:
+## Run
+
+```bash
+ansible-playbook -i inventory.yml playbook.yml [--limit hostname] [--tags tags]
+```
+
+## SSH Config:
 
 ```bash
 Host my.srv1
