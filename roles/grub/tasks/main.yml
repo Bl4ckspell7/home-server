@@ -1,0 +1,15 @@
+- name: Set GRUB configuration options
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+    state: present
+    create: true
+    backrefs: true
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - { key: "GRUB_TIMEOUT", value: "0" }
+    - { key: "GRUB_DISABLE_OS_PROBER", value: "true" }
+  notify: Update grub
