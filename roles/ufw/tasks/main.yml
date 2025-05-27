@@ -1,0 +1,6 @@
+- name: Manage ufw systemd service
+  ansible.builtin.systemd:
+    state: started
+    name: ufw
+    enabled: true
+    daemon-reload: true
