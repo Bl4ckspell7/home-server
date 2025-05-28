@@ -1,9 +1,11 @@
 - name: Remove unwanted default packages
+  register: output_apt_remove
   ansible.builtin.apt:
     name: "{{ item }}"
     state: absent
     purge: true
     autoremove: true
+    update_cache: false
   loop:
     - evolution
     - firefox-esr
@@ -23,3 +25,8 @@
     - totem
     - xterm
     - yelp
+
+- name: Show apt remove output
+  ansible.builtin.include_tasks: view_logs.yml
+  vars:
+    output: "{{ output_apt_remove }}"

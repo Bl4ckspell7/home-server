@@ -1,6 +1,8 @@
 - name: Install packages
+  register: output_apt_install
+  ignore_errors: true
   ansible.builtin.apt:
-    update_cache: true
+    update_cache: false
     autoremove: true
     name:
       - ansible
@@ -27,7 +29,6 @@
       - ffmpegthumbnailer
       - firefox
       - flatpak
-      - git
       - git
       - gnome-software-plugin-flatpak
       - initramfs-tools
@@ -61,5 +62,10 @@
       - vnstat
       - wget
       - wireguard
-      - xrdp
+      # - xrdp
       - zram-tools
+
+- name: Show apt install output
+  ansible.builtin.include_tasks: view_logs.yml
+  vars:
+    output: "{{ output_apt_install }}"

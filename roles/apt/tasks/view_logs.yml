@@ -1,0 +1,7 @@
+- name: Show stdout & stderr
+  ansible.builtin.debug:
+    msg:
+      - "stdout:"
+      - "{{ output.stdout_lines | default([]) }}"
+      - "stderr:"
+      - "{{ output.stderr_lines | default([]) }}"
