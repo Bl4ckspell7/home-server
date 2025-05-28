@@ -1,0 +1,39 @@
+- name: Get list of regular users (UID ≥ 1000)
+  ansible.builtin.shell: 'awk -F: ''$3 >= 1000 && $1 != "nobody" {print $1}'' /etc/passwd'
+  register: regular_users
+  changed_when: false
+
+- name: Read root's authorized_keys file
+  ansible.builtin.slurp:
+    src: /root/.ssh/authorized_keys
+  register: root_auth_keys
+
+- name: Ensure sshd_config supports authorized_keys.d
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^AuthorizedKeysFile"
+    line: "AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys.d/*"
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+    backup: true
+  notify: Restart SSH
+
+- name: Ensure authorized_keys.d directory exists
+  ansible.builtin.file:
+    path: "/home/{{ item }}/.ssh/authorized_keys.d"
+    state: directory
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: "0700"
+  loop: "{{ regular_users.stdout_lines }}"
+
+- name: Copy root's key into authorized_keys.d/root
+  ansible.builtin.copy:
+    content: "{{ root_auth_keys.content | b64decode }}"
+    dest: "/home/{{ item }}/.ssh/authorized_keys.d/root"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: "0600"
+  loop: "{{ regular_users.stdout_lines }}"

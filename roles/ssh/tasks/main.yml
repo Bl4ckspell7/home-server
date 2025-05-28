@@ -4,3 +4,12 @@
     name: ssh
     enabled: true
     daemon-reload: true
+
+- name: Add specified SSH keys to root
+  vars:
+    root_ssh_keys:
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKu1vcd8RLWKmfSJlb/i4HXmhs34T+exkmIEWx2yX+C7 bl4ckspell@proton.me"
+  ansible.builtin.include_tasks: add_keys_to_root.yml
+
+- name: Copy root's authorized_keys to all regular users
+  ansible.builtin.include_tasks: copy_root_keys_to_users.yml
