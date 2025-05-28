@@ -25,6 +25,7 @@
       - fastfetch
       - ffmpeg
       - ffmpegthumbnailer
+      - firefox
       - flatpak
       - git
       - git
