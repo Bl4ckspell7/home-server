@@ -7,9 +7,6 @@
     - role: bash
       tags: bash
 
-    - role: base
-      tags: base
-
     - role: cursor
       tags: cursor
 
@@ -22,6 +19,10 @@
     - role: grub
       tags: grub
 
+    - role: locale
+      tags: locale
+
+    # working
     - role: ssh
       tags: ssh
 
