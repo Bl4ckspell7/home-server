@@ -1,4 +1,5 @@
 - name: Install packages
+  become: true
   register: output_apt_install
   ignore_errors: true
   ansible.builtin.apt:

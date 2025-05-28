@@ -1,4 +1,5 @@
 - name: Remove unwanted default packages
+  become: true
   register: output_apt_remove
   ansible.builtin.apt:
     name: "{{ item }}"
