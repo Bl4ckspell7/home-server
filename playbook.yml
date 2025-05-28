@@ -10,9 +10,6 @@
     - role: cursor
       tags: cursor
 
-    - role: fail2ban
-      tags: fail2ban
-
     - role: flatpak
       tags: flatpak
 

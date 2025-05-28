@@ -1,6 +1,0 @@
-- name: Manage fail2ban systemd service
-  ansible.builtin.systemd:
-    name: fail2ban
-    state: started
-    enabled: true
-    daemon-reload: true
