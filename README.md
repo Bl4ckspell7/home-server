@@ -2,7 +2,7 @@
 
 Setup code for my homeserver.
 
-## SSH Config:
+## SSH Config
 
 ```bash
 Host srv1
@@ -14,21 +14,21 @@ Host srv1
 
 ## Installation Steps
 
-### Debian Install
+### Debian Install *(on server)*
 
-Leave root password empty.
+- Leave root password empty.
 
-Partitions:
+- Partitions:
 
-- ESP: 500MB
-- boot: ext4 1.5GB
-- root: luks + lvm ext4
+  - ESP: 500MB
+  - boot: ext4 1.5GB
+  - root: luks + lvm ext4
 
-GRUB Bootloader
-GNOME Desktop Environment
-SSH Server
+- GRUB Bootloader
+- GNOME Desktop Environment
+- SSH Server
 
-### Grub
+### Grub *(on server)*
 
 Mount ESP to `/efi` instead of `/boot/efi`:
 
@@ -36,7 +36,7 @@ Mount ESP to `/efi` instead of `/boot/efi`:
 2. `sudo grub-install --efi-directory=/efi`
 3. `sudo update-grub`
 
-### Roll out initial ssh key
+### Roll out initial ssh key *(from remote)*
 
 Login to user via `ssh user@IP` and password.
 
@@ -55,7 +55,7 @@ chown -R root:root /root/.ssh
 
 ### Automatic LUKS Decryption
 
-### Run Ansible Playbook
+### Run Ansible Playbook *(from remote)*
 
 Finally, run the playbook:
 
