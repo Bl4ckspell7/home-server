@@ -1,0 +1,25 @@
+- name: Remove unwanted default packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: absent
+    purge: true
+    autoremove: true
+  loop:
+    - evolution
+    - firefox-esr
+    - gnome-calendar
+    - gnome-characters
+    - gnome-clocks
+    - gnome-contacts
+    - gnome-font-viewer
+    - gnome-maps
+    - gnome-music
+    - gnome-snapshot
+    - gnome-sound-recorder
+    - gnome-tour
+    - gnome-weather
+    - libreoffice*
+    - shotwell
+    - totem
+    - xterm
+    - yelp

@@ -1,5 +1,8 @@
 - name: Copy APT repo files
   ansible.builtin.include_tasks: copy_apt_files.yml
 
+- name: Remove APT packages
+  ansible.builtin.include_tasks: apt_remove.yml
+
 - name: Install APT packages
   ansible.builtin.include_tasks: apt_install.yml
