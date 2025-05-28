@@ -1,44 +1,22 @@
-- name: Ensure /etc/apt/keyrings exists
+- name: Ensure APT directories exist
   ansible.builtin.file:
-    path: /etc/apt/keyrings
+    path: "/etc/apt/{{ item }}"
     state: directory
     mode: "0755"
+  loop:
+    - keyrings
+    - preferences.d
+    - sources.list.d
 
-- name: Ensure /etc/apt/preferences.d exists
-  ansible.builtin.file:
-    path: /etc/apt/preferences.d
-    state: directory
-    mode: "0755"
-
-- name: Ensure /etc/apt/sources.list.d exists
-  ansible.builtin.file:
-    path: /etc/apt/sources.list.d
-    state: directory
-    mode: "0755"
-
-- name: Copy APT keyrings
+- name: Copy APT configuration directories
   ansible.builtin.copy:
-    src: etc/apt/keyrings/
-    dest: /etc/apt/keyrings/
+    remote_src: false
+    src: "etc/apt/{{ item }}"
+    dest: "/etc/apt/"
     mode: "0644"
     owner: root
     group: root
-    recurse: true
-
-- name: Copy APT preferences
-  ansible.builtin.copy:
-    src: etc/apt/preferences.d/
-    dest: /etc/apt/preferences.d/
-    mode: "0644"
-    owner: root
-    group: root
-    recurse: true
-
-- name: Copy APT sources
-  ansible.builtin.copy:
-    src: etc/apt/sources.list.d/
-    dest: /etc/apt/sources.list.d/
-    mode: "0644"
-    owner: root
-    group: root
-    recurse: true
+  loop:
+    - keyrings
+    - preferences.d
+    - sources.list.d
