@@ -1,11 +1,10 @@
 - name: Set GRUB configuration options
   ansible.builtin.lineinfile:
     path: /etc/default/grub
-    regexp: "^{{ item.key }}="
+    regexp: "^(#\\s*)?{{ item.key }}="
     line: "{{ item.key }}={{ item.value }}"
     state: present
     create: true
-    backrefs: true
     owner: root
     group: root
     mode: "0644"
