@@ -61,3 +61,4 @@
       - wget
       - wireguard
       - xrdp
+      - zram-tools
