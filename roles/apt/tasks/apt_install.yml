@@ -36,6 +36,7 @@
       - locales
       - net-tools
       - ninja-build
+      - nmap
       - ovmf
       - ovmf
       - pkg-config
