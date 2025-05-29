@@ -28,3 +28,6 @@
 
     - role: xrdp
       tags: xrdp
+
+    - role: luks
+      tags: luks
