@@ -1,48 +1,38 @@
 - name: Setup svr1
   hosts: svr
   roles:
-    # working
     - role: apt
       tags: apt
 
-    # working
     - role: bash
       tags: bash
 
     - role: cursor
       tags: cursor
 
-    # working
     - role: flatpak
       tags: flatpak
 
-    # working
     - role: grub
       tags: grub
 
-    # working
     - role: locale
       tags: locale
 
     - role: ssh
       tags: ssh
 
-    # working
     - role: ufw
       tags: ufw
 
-    # working
     - role: vnc
       tags: vnc
 
-    # working
     - role: luks
       tags: luks
 
-    # working
     - role: suspend
       tags: suspend
 
-    # working
     - role: gtk
       tags: gtk
