@@ -63,13 +63,13 @@
       - spice-vdagent
       - ssh
       - strace
+      - tigervnc-standalone-server
       - ufw
       - util-linux
       - vnstat
       - wget
       - wireguard
       - zram-tools
-      # - xrdp
 
 - name: Show apt install output
   ansible.builtin.include_tasks: view_logs.yml

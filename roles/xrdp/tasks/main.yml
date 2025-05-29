@@ -1,5 +1,0 @@
-- name: Ensure xrdp service is enabled and started
-  ansible.builtin.systemd:
-    name: xrdp
-    state: started
-    enabled: true

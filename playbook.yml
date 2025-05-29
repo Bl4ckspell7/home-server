@@ -31,8 +31,9 @@
     - role: ufw
       tags: ufw
 
-    - role: xrdp
-      tags: xrdp
+    # working
+    - role: vnc
+      tags: vnc
 
     # working
     - role: luks

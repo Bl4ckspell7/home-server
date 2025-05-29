@@ -1,0 +1,22 @@
+- name: Configure TigerVNC
+  become: true
+  vars:
+    tigervnc_service_state: stopped
+
+  block:
+    - name: Add or update user mapping for display :1
+      ansible.builtin.lineinfile:
+        path: /etc/tigervnc/vncserver.users
+        regexp: "^:1="
+        line: ":1=bl4ckspell"
+        create: true
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Enable tigervnc service on display :1
+      ansible.builtin.systemd_service:
+        name: tigervncserver@:1.service
+        enabled: false
+        state: "{{ tigervnc_service_state }}"
+        daemon_reload: true
