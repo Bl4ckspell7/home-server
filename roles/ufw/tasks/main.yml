@@ -2,6 +2,10 @@
   community.general.ufw:
     state: enabled
 
+- name: Enable UFW logging with recommended level
+  community.general.ufw:
+    logging: medium
+
 - name: Set default incoming policy to deny
   community.general.ufw:
     direction: incoming
@@ -19,6 +23,12 @@
     proto: tcp
     comment: "Limit SSH access to reduce brute-force attempts"
 
-- name: Enable UFW logging with recommended level
+- name: Allow LocalSend incoming on port 53317
+  community.general.ufw:
+    rule: allow
+    port: 53317
+    proto: tcp
+    comment: "Allow LocalSend traffic"
+
   community.general.ufw:
     logging: medium
