@@ -59,6 +59,7 @@
       - python3-venv
       - rdesktop
       - rsync
+      - s-tui
       - spice-vdagent
       - ssh
       - strace
