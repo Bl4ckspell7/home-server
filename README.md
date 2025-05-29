@@ -14,7 +14,7 @@ Host srv1
 
 ## Installation Steps
 
-### Debian Install *(on server)*
+### Debian Install _(on server)_
 
 - Leave root password empty.
 
@@ -28,7 +28,7 @@ Host srv1
 - GNOME Desktop Environment
 - SSH Server
 
-### Grub *(on server)*
+### Grub _(on server)_
 
 Mount ESP to `/efi` instead of `/boot/efi`:
 
@@ -36,7 +36,7 @@ Mount ESP to `/efi` instead of `/boot/efi`:
 2. `sudo grub-install --efi-directory=/efi`
 3. `sudo update-grub`
 
-### Roll out initial ssh key *(from remote)*
+### Roll out initial ssh key _(from remote)_
 
 Login to user via `ssh user@IP` and password.
 
@@ -53,12 +53,28 @@ chmod 600 /root/.ssh/authorized_keys
 chown -R root:root /root/.ssh
 ```
 
-### Automatic LUKS Decryption
+### APT _(from remote)_
 
-### Run Ansible Playbook *(from remote)*
+```bash
+apt modernize-sources
+```
+
+### Automatic LUKS Decryption _(on server/from remote)_
+
+Save your key to disk:
+
+```bash
+sudo -i
+```
+
+```bash
+echo "my-very-long-passphrase" > /opt/luks.key
+```
+
+### Run Ansible Playbook _(from remote)_
 
 Finally, run the playbook:
 
 ```bash
-ansible-playbook -i inventory.yml playbook.yml [--limit hostname] [--tags tags]
+ansible-playbook -i inventory.yml playbook.yml [--tags tags]
 ```
