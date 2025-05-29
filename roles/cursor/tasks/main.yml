@@ -3,6 +3,7 @@
     src: vimix-cursors.tar.xz
     dest: /tmp/vimix-cursors.tar.xz
     mode: "0644"
+  changed_when: false
 
 - name: Ensure /usr/share/icons/Vimix-cursors exists
   ansible.builtin.file:
@@ -21,6 +22,7 @@
   ansible.builtin.file:
     path: /tmp/vimix-cursors.tar.xz
     state: absent
+  changed_when: false
 
 - name: Get list of regular users (UID ≥ 1000)
   ansible.builtin.shell: 'awk -F: ''$3 >= 1000 && $1 != "nobody" {print $1}'' /etc/passwd'
