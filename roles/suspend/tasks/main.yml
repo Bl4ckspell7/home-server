@@ -19,5 +19,5 @@
         mode: "0644"
 
     - name: Reload systemd manager configuration
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         daemon_reload: true
