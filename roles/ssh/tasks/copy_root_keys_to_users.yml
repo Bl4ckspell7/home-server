@@ -8,18 +8,6 @@
     src: /root/.ssh/authorized_keys
   register: root_auth_keys
 
-- name: Ensure sshd_config supports authorized_keys.d
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: "^AuthorizedKeysFile"
-    line: "AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys.d/*"
-    create: true
-    owner: root
-    group: root
-    mode: "0644"
-    backup: true
-  notify: Restart SSH
-
 - name: Ensure authorized_keys.d directory exists
   ansible.builtin.file:
     path: "/home/{{ item }}/.ssh/authorized_keys.d"
