@@ -1,0 +1,34 @@
+- name: Deploy GTK user settings
+  become: true
+  vars:
+    gtk_versions:
+      - gtk-3.0
+      - gtk-4.0
+
+  block:
+    - name: Get list of regular users (UID ≥ 1000)
+      ansible.builtin.shell: 'awk -F: ''$3 >= 1000 && $1 != "nobody" {print $1}'' /etc/passwd'
+      register: regular_users
+      changed_when: false
+
+    - name: Ensure GTK config directories exist for each user
+      ansible.builtin.file:
+        path: "/home/{{ item[0] }}/.config/{{ item[1] }}"
+        state: directory
+        owner: "{{ item[0] }}"
+        group: "{{ item[0] }}"
+        mode: "0755"
+      loop: "{{ regular_users.stdout_lines | product(gtk_versions) | list }}"
+      loop_control:
+        label: "{{ item[0] }}:{{ item[1] }}"
+
+    - name: Copy GTK settings.ini from files/ to user config directories
+      ansible.builtin.copy:
+        src: settings.ini
+        dest: "/home/{{ item[0] }}/.config/{{ item[1] }}/settings.ini"
+        owner: "{{ item[0] }}"
+        group: "{{ item[0] }}"
+        mode: "0644"
+      loop: "{{ regular_users.stdout_lines | product(gtk_versions) | list }}"
+      loop_control:
+        label: "{{ item[0] }}:{{ item[1] }}"

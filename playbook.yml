@@ -42,3 +42,7 @@
     # working
     - role: suspend
       tags: suspend
+
+    # working
+    - role: gtk
+      tags: gtk
