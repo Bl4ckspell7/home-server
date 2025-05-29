@@ -91,6 +91,14 @@ Finally, run the playbook:
 ansible-playbook -i inventory.yml playbook.yml [--tags tags]
 ```
 
+### Cursor Theme
+
+Manually set cursor theme using:
+
+```bash
+gsettings set org.gnome.desktop.interface cursor-theme Vimix-cursors
+```
+
 ## Router Settings
 
 - always assign same ipv4 address

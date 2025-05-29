@@ -4,6 +4,12 @@
     dest: /tmp/vimix-cursors.tar.xz
     mode: "0644"
 
+- name: Ensure /usr/share/icons/Vimix-cursors exists
+  ansible.builtin.file:
+    path: /usr/share/icons/Vimix-cursors
+    state: directory
+    mode: "0755"
+
 - name: Extract Vimix cursors to /usr/share/icons/Vimix-cursors
   ansible.builtin.unarchive:
     src: /tmp/vimix-cursors.tar.xz
@@ -16,9 +22,7 @@
     path: /tmp/vimix-cursors.tar.xz
     state: absent
 
-- name: Ensure /usr/share/icons/default is a symlink to Vimix-cursors
-  ansible.builtin.file:
-    path: /usr/share/icons/default
-    state: link
-    src: /usr/share/icons/Vimix-cursors
-    force: true
+- name: Get list of regular users (UID ≥ 1000)
+  ansible.builtin.shell: 'awk -F: ''$3 >= 1000 && $1 != "nobody" {print $1}'' /etc/passwd'
+  register: regular_users
+  changed_when: false
