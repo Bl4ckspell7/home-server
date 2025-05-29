@@ -78,3 +78,9 @@ Finally, run the playbook:
 ```bash
 ansible-playbook -i inventory.yml playbook.yml [--tags tags]
 ```
+
+## Router Settings
+
+- always assign same ipv4 address
+- enable wake on lan
+- enable port forwarding for port 22 (ssh)
