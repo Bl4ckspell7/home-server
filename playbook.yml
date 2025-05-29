@@ -20,6 +20,7 @@
     - role: grub
       tags: grub
 
+    # working
     - role: locale
       tags: locale
 

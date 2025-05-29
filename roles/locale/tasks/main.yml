@@ -12,7 +12,7 @@
 
 - name: Set system-wide locale # $ localectl
   ansible.builtin.copy:
-    dest: /etc/default/locale
+    dest: /etc/locale.conf
     content: |
       LANG=en_US.UTF-8
       LC_TIME=de_DE.UTF-8
