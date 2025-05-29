@@ -2,19 +2,18 @@
   become: true
   community.general.flatpak:
     method: system
-    name: "{{ item }}"
     remote: flathub
     state: present
-  loop:
-    - com.github.jeromerobert.pdfarranger
-    - com.github.PintaProject.Pinta
-    - com.github.tchx84.Flatseal
-    - com.interversehq.qView
-    - com.leinardi.gst
-    - com.mattjakeman.ExtensionManager
-    - dev.geopjr.Collision
-    - io.missioncenter.MissionCenter
-    - org.gabmus.whatip
-    - org.gnome.Firmware
-    - org.gnome.Papers
-    - org.localsend.localsend_app
+    name:
+      - com.github.jeromerobert.pdfarranger
+      - com.github.PintaProject.Pinta
+      - com.github.tchx84.Flatseal
+      - com.interversehq.qView
+      - com.leinardi.gst
+      - com.mattjakeman.ExtensionManager
+      - dev.geopjr.Collision
+      - io.missioncenter.MissionCenter
+      - org.gabmus.whatip
+      - org.gnome.Firmware
+      - org.gnome.Papers
+      - org.localsend.localsend_app
