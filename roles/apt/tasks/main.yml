@@ -1,10 +1,6 @@
 - name: Copy APT repo files
   ansible.builtin.include_tasks: copy_apt_files.yml
 
-- name: Update apt cache
-  ansible.builtin.apt:
-    update_cache: true
-
 - name: Remove APT packages
   ansible.builtin.include_tasks: apt_remove.yml
 

@@ -2,30 +2,30 @@
   become: true
   register: output_apt_remove
   ansible.builtin.apt:
-    name: "{{ item }}"
-    state: absent
-    purge: true
     autoremove: true
-    update_cache: false
-  loop:
-    - evolution
-    - firefox-esr
-    - gnome-calendar
-    - gnome-characters
-    - gnome-clocks
-    - gnome-contacts
-    - gnome-font-viewer
-    - gnome-maps
-    - gnome-music
-    - gnome-snapshot
-    - gnome-sound-recorder
-    - gnome-tour
-    - gnome-weather
-    - libreoffice*
-    - shotwell
-    - totem
-    - xterm
-    - yelp
+    purge: true
+    state: absent
+    update_cache: true
+    name:
+      - evolution
+      - firefox-esr
+      - gnome-calendar
+      - gnome-characters
+      - gnome-clocks
+      - gnome-contacts
+      - gnome-font-viewer
+      - gnome-maps
+      - gnome-music
+      - gnome-snapshot
+      - gnome-sound-recorder
+      - gnome-tour
+      - gnome-weather
+      - libreoffice*
+      - malcontent
+      - shotwell
+      - totem
+      - xterm
+      - yelp
 
 - name: Show apt remove output
   ansible.builtin.include_tasks: view_logs.yml

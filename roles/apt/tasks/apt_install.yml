@@ -3,8 +3,9 @@
   register: output_apt_install
   ignore_errors: true
   ansible.builtin.apt:
-    update_cache: false
     autoremove: true
+    state: present
+    update_cache: true
     name:
       - ansible
       - ansible-core
@@ -30,14 +31,16 @@
       - ffmpegthumbnailer
       - firefox
       - flatpak
+      - gir1.2-ayatanaappindicator3-0.1
       - git
+      - gnome-shell-extension-appindicator
       - gnome-software-plugin-flatpak
       - initramfs-tools
+      - libayatana-appindicator3-1
       - locales
       - net-tools
       - ninja-build
       - nmap
-      - ovmf
       - ovmf
       - pkg-config
       - python3
@@ -64,8 +67,8 @@
       - vnstat
       - wget
       - wireguard
-      # - xrdp
       - zram-tools
+      # - xrdp
 
 - name: Show apt install output
   ansible.builtin.include_tasks: view_logs.yml
