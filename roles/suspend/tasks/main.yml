@@ -1,0 +1,23 @@
+- name: Disable all suspend and hibernation modes globally
+  become: true
+  block:
+    - name: Ensure /etc/systemd/sleep.conf.d exists
+      ansible.builtin.file:
+        path: /etc/systemd/sleep.conf.d
+        state: directory
+        mode: "0755"
+
+    - name: Configure nosuspend.conf to disable suspend/hibernation
+      ansible.builtin.copy:
+        dest: /etc/systemd/sleep.conf.d/nosuspend.conf
+        content: |
+          [Sleep]
+          AllowSuspend=no
+          AllowHibernation=no
+          AllowSuspendThenHibernate=no
+          AllowHybridSleep=no
+        mode: "0644"
+
+    - name: Reload systemd manager configuration
+      ansible.builtin.systemd:
+        daemon_reload: true

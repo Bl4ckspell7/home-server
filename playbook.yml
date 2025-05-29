@@ -37,3 +37,7 @@
     # working
     - role: luks
       tags: luks
+
+    # working
+    - role: suspend
+      tags: suspend
