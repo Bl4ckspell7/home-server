@@ -26,6 +26,10 @@ Host svr1-public-ipv6
 
 ## Installation Steps
 
+## Bios
+
+Perform BIOS update.
+
 ### Debian Install _(on server)_
 
 - Leave root password empty.
