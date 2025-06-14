@@ -30,6 +30,7 @@
       - ffmpeg
       - ffmpegthumbnailer
       - firefox
+      - firmware-linux-free
       - flatpak
       - gir1.2-ayatanaappindicator3-0.1
       - git
