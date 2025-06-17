@@ -20,10 +20,15 @@
       - clevis-luks
       - clevis-tpm2
       - cmake
+      - containerd.io
       - cryptsetup
       - curl
       - dislocker
       - dkms
+      - docker-buildx-plugin
+      - docker-ce
+      - docker-ce-cli
+      - docker-compose-plugin
       - exfatprogs
       - fail2ban
       - fastfetch
