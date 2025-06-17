@@ -3,3 +3,6 @@
   roles:
     - role: dockge
       tags: dockge
+
+    - role: authentik
+      tags: authentik
