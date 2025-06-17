@@ -1,0 +1,28 @@
+- name: Ensure Dockge stack and stacks directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - /opt/stacks
+    - /opt/dockge
+
+- name: Copy Dockge docker-compose file
+  ansible.builtin.copy:
+    src: compose.yaml
+    dest: /opt/dockge/compose.yaml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Start Dockge using Docker Compose v2
+  community.docker.docker_compose_v2:
+    project_src: /opt/dockge
+    state: present
+  register: dockge_result
+
+- name: Debug Docker Compose result
+  ansible.builtin.debug:
+    var: dockge_result

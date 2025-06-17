@@ -1,2 +1,5 @@
 - name: Deploy server applications
   hosts: svr1
+  roles:
+    - role: dockge
+      tags: dockge
