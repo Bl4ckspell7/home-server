@@ -29,6 +29,7 @@
       - docker-ce
       - docker-ce-cli
       - docker-compose-plugin
+      - ethtool
       - exfatprogs
       - fail2ban
       - fastfetch
