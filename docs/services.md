@@ -6,6 +6,8 @@
 
 ## Authentik
 
+Port: `9443`
+
 - https://goauthentik.io/
 - https://github.com/goauthentik/authentik
 
@@ -43,6 +45,8 @@ Port: `5001`
 - https://github.com/louislam/dockge
 
 ## Wallabag
+
+Port: `8090`
 
 - https://wallabag.org/
 - https://github.com/wallabag/wallabag
