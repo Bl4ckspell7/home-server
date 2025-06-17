@@ -1,4 +1,4 @@
-[← Back to README](../README.md)  
+[← Back to README](../README.md)
 
 ---
 
@@ -41,3 +41,8 @@ Port: `5001`
 
 - https://dockge.kuma.pet/
 - https://github.com/louislam/dockge
+
+## Wallabag
+
+- https://wallabag.org/
+- https://github.com/wallabag/wallabag
