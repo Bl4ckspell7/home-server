@@ -1,3 +1,7 @@
+[← Back to README](../README.md)  
+
+---
+
 ## Router Settings
 
 - always assign same ipv4 address
