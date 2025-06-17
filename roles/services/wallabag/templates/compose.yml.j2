@@ -1,7 +1,7 @@
 services:
   wallabag:
     image: wallabag/wallabag
-    restart: unless-stopped
+    restart: always
     environment:
       - MYSQL_ROOT_PASSWORD={{ wallabag_db_root_pass }}
       - SYMFONY__ENV__DATABASE_DRIVER=pdo_mysql

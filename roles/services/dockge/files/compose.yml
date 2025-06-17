@@ -1,7 +1,7 @@
 services:
   dockge:
     image: louislam/dockge:1
-    restart: unless-stopped
+    restart: always
     ports:
       # Host Port : Container Port
       - 5001:5001
