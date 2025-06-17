@@ -27,7 +27,7 @@ services:
       - redis
   db:
     image: mariadb
-    restart: unless-stopped
+    restart: always
     environment:
       - MYSQL_ROOT_PASSWORD={{ wallabag_db_root_pass }}
     volumes:
@@ -38,7 +38,7 @@ services:
       timeout: 3s
   redis:
     image: redis:alpine
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 20s
