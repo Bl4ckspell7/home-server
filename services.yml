@@ -9,3 +9,6 @@
 
     - role: wallabag
       tags: wallabag
+
+    - role: uptime-kuma
+      tags: uptime-kuma

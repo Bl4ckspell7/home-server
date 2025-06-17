@@ -72,3 +72,10 @@ ansible-vault encrypt secrets.yml
 ```bash
 rm /opt/wallabag/data/tc.log
 ```
+
+## Uptime Kuma
+
+Port: `3001`
+
+- https://uptime.kuma.pet/
+- https://github.com/louislam/uptime-kuma
