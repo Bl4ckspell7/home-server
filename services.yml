@@ -6,3 +6,6 @@
 
     - role: authentik
       tags: authentik
+
+    - role: wallabag
+      tags: wallabag

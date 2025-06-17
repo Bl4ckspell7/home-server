@@ -11,7 +11,7 @@
 
 ### Setup
 
-- create `secrets.yml`:
+- create `secrets.yml`
 
 ```yaml
 pg_pass: 80 characters
@@ -46,3 +46,19 @@ Port: `5001`
 
 - https://wallabag.org/
 - https://github.com/wallabag/wallabag
+
+### Setup
+
+- create `secrets.yml`:
+
+```yaml
+wallabag_db_user: wallabag
+wallabag_db_pass: "super-secure-generated-password"
+wallabag_db_root_pass: "another-strong-password"
+```
+
+- encrypt
+
+```bash
+ansible-vault encrypt secrets.yml
+```

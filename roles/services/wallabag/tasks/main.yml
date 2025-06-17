@@ -1,0 +1,35 @@
+- name: Ensure Wallabag directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - /opt/wallabag/images
+    - /opt/wallabag/data
+    - /opt/stacks/wallabag
+
+- name: Load secrets for Wallabag
+  ansible.builtin.include_vars:
+    file: "secrets.yml"
+
+- name: Template wallabag docker-compose
+  ansible.builtin.template:
+    src: "compose.yml.j2"
+    dest: /opt/stacks/wallabag/compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Start Wallabag
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/wallabag
+    state: present
+    files:
+      - compose.yml
+  register: wallabag_result
+
+- name: Debug Docker Compose result
+  ansible.builtin.debug:
+    var: wallabag_result
