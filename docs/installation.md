@@ -1,4 +1,4 @@
-[← Back to README](../README.md)  
+[← Back to README](../README.md)
 
 ---
 
@@ -79,4 +79,32 @@ Manually set cursor theme using:
 
 ```bash
 gsettings set org.gnome.desktop.interface cursor-theme Vimix-cursors
+```
+
+### Wake-on-LAN
+
+1. Enable WOL in BIOS.
+
+2. Find interface & MAC address:
+
+```bash
+ip addr show
+```
+
+Example: `enp5s0`, `xx:xx:xx:xx:xx:xx`
+
+→ Set `wol_interface` in `server.yml` and run the Ansible role.
+
+3. Verify WOL support:
+
+```bash
+ethtool enp5s0 | grep "Wake-on"
+```
+
+Output should contain `"g"`.
+
+4. Wake the server:
+
+```bash
+wakeonlan xx:xx:xx:xx:xx:xx
 ```

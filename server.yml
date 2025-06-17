@@ -36,3 +36,8 @@
 
     - role: gtk
       tags: gtk
+
+    - role: wol
+      tags: wol
+      vars:
+        wol_interface: enp5s0

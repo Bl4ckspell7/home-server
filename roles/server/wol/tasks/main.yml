@@ -1,0 +1,13 @@
+- name: Create wol systemd service
+  ansible.builtin.template:
+    src: wol.service.j2
+    dest: /etc/systemd/system/wol.service
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Enable wol service
+  ansible.builtin.systemd_service:
+    name: wol.service
+    enabled: true
+    daemon_reload: true
