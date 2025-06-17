@@ -62,3 +62,9 @@ wallabag_db_root_pass: "another-strong-password"
 ```bash
 ansible-vault encrypt secrets.yml
 ```
+
+"Recover after crash" error:
+
+```bash
+rm /opt/wallabag/data/tc.log
+```
