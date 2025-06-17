@@ -76,6 +76,7 @@
       - tigervnc-standalone-server
       - ufw
       - util-linux
+      - virt-manager
       - vnstat
       - wget
       - wireguard
