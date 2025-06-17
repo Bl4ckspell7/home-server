@@ -1,9 +1,9 @@
 svr:
-  hosts:
-    svr1:
-      ansible_host: 192.168.178.117
   vars:
     ansible_port: 22
     ansible_python_interpreter: /usr/bin/python3
     ansible_ssh_private_key_file: "~/.ssh/ssh_bl4ckspell@proton.me"
     ansible_user: root
+  hosts:
+    svr1:
+      ansible_host: 192.168.178.117
