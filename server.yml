@@ -1,5 +1,5 @@
-- name: Setup svr1
-  hosts: svr
+- name: Configure base system
+  hosts: svr1
   roles:
     - role: apt
       tags: apt
