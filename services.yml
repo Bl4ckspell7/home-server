@@ -12,3 +12,6 @@
 
     - role: uptime-kuma
       tags: uptime-kuma
+
+    - role: paperless-ngx
+      tags: paperless-ngx

@@ -1,0 +1,47 @@
+---
+- name: Ensure paperless-ngx stack directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - /opt/stacks
+    - /opt/stacks/paperless-ngx
+
+- name: Copy paperless-ngx docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.postgres-tika.yml
+    dest: /opt/stacks/paperless-ngx/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy paperless-ngx env files
+  ansible.builtin.copy:
+    src: docker-compose.env
+    dest: /opt/stacks/paperless-ngx/docker-compose.env
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Copy paperless-ngx .env file
+  ansible.builtin.copy:
+    src: paperless-ngx.env
+    dest: /opt/stacks/paperless-ngx/.env
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Start paperless-ngx stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/paperless-ngx
+    state: present
+    files:
+      - docker-compose.yml
+  register: paperless_result
+
+- name: Debug Docker Compose result for paperless-ngx
+  ansible.builtin.debug:
+    var: paperless_result
