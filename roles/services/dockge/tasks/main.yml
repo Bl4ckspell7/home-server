@@ -7,19 +7,19 @@
     mode: "0755"
   loop:
     - /opt/stacks
-    - /opt/dockge
+    - /opt/stacks/dockge
 
 - name: Copy Dockge docker-compose file
   ansible.builtin.copy:
     src: compose.yml
-    dest: /opt/dockge/compose.yml
+    dest: /opt/stacks/dockge/compose.yml
     owner: root
     group: root
     mode: "0644"
 
 - name: Start Dockge
   community.docker.docker_compose_v2:
-    project_src: /opt/dockge
+    project_src: /opt/stacks/dockge
     state: present
     files:
       - compose.yml
