@@ -16,8 +16,8 @@
 
 - name: Template wallabag docker-compose
   ansible.builtin.template:
-    src: "compose.yml.j2"
-    dest: /opt/stacks/wallabag/compose.yml
+    src: "docker-compose.yml.j2"
+    dest: /opt/stacks/wallabag/docker-compose.yml
     owner: root
     group: root
     mode: "0644"
@@ -27,7 +27,7 @@
     project_src: /opt/stacks/wallabag
     state: present
     files:
-      - compose.yml
+      - docker-compose.yml
   register: wallabag_result
 
 - name: Debug Docker Compose result

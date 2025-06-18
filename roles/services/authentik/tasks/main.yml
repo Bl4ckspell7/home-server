@@ -29,8 +29,8 @@
 
 - name: Copy Authentik docker-compose file
   ansible.builtin.copy:
-    src: compose.yml
-    dest: /opt/stacks/authentik/compose.yml
+    src: docker-compose.yml
+    dest: /opt/stacks/authentik/docker-compose.yml
     owner: root
     group: root
     mode: "0644"
@@ -40,7 +40,7 @@
     project_src: /opt/stacks/authentik
     state: present
     files:
-      - compose.yml
+      - docker-compose.yml
   register: authentik_result
 
 - name: Debug Docker Compose result

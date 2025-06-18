@@ -11,8 +11,8 @@
 
 - name: Copy Dockge docker-compose file
   ansible.builtin.copy:
-    src: compose.yml
-    dest: /opt/stacks/dockge/compose.yml
+    src: docker-compose.yml
+    dest: /opt/stacks/dockge/docker-compose.yml
     owner: root
     group: root
     mode: "0644"
@@ -22,7 +22,7 @@
     project_src: /opt/stacks/dockge
     state: present
     files:
-      - compose.yml
+      - docker-compose.yml
   register: dockge_result
 
 - name: Debug Docker Compose result

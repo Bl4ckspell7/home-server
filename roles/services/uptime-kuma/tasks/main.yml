@@ -8,8 +8,8 @@
 
 - name: Copy Uptime Kuma docker-compose file
   ansible.builtin.copy:
-    src: compose.yml
-    dest: /opt/stacks/uptime-kuma/compose.yml
+    src: docker-compose.yml
+    dest: /opt/stacks/uptime-kuma/docker-compose.yml
     owner: root
     group: root
     mode: "0644"
@@ -19,7 +19,7 @@
     project_src: /opt/stacks/uptime-kuma
     state: present
     files:
-      - compose.yml
+      - docker-compose.yml
   register: uptime_kuma_result
 
 - name: Debug Uptime Kuma result
