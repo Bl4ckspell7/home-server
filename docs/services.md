@@ -70,7 +70,7 @@ ansible-vault encrypt secrets.yml
 "Recover after crash" error:
 
 ```bash
-rm /opt/wallabag/data/tc.log
+rm /opt/stacks/wallabag/data/tc.log
 ```
 
 ## Uptime Kuma
