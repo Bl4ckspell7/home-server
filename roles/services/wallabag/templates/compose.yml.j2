@@ -21,21 +21,23 @@ services:
     ports:
       - "8090:80"
     volumes:
-      - /opt/wallabag/images:/var/www/wallabag/web/assets/images
+      - /opt/stacks/wallabag/images:/var/www/wallabag/web/assets/images
     depends_on:
       - db
       - redis
+  
   db:
     image: mariadb
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD={{ wallabag_db_root_pass }}
     volumes:
-      - /opt/wallabag/data:/var/lib/mysql
+      - /opt/stacks/wallabag/data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "/usr/local/bin/healthcheck.sh", "--innodb_initialized"]
       interval: 20s
       timeout: 3s
+  
   redis:
     image: redis:alpine
     restart: always
