@@ -14,18 +14,13 @@
     file: "secrets.yml"
   no_log: true
 
-- name: Create .env file for Authentik
-  ansible.builtin.copy:
+- name: Template Authentik .env file
+  ansible.builtin.template:
+    src: authentik.env.j2
     dest: /opt/stacks/authentik/.env
     owner: root
     group: root
     mode: "0600"
-    content: |
-      PG_PASS={{ pg_pass }}
-      AUTHENTIK_SECRET_KEY={{ secret_key }}
-      COMPOSE_PORT_HTTP=9000
-      COMPOSE_PORT_HTTPS=9443
-      AUTHENTIK_ERROR_REPORTING__ENABLED=true
 
 - name: Copy Authentik docker-compose file
   ansible.builtin.copy:
