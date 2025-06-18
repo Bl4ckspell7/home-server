@@ -17,4 +17,5 @@ alias h="history"
 alias uefi="sudo systemctl reboot --firmware-setup"
 alias ff="fastfetch"
 alias gcl="git clone"
-alias sn="shutdown now"
+
+alias sd='containers=$(docker ps -q); [ -n "$containers" ] && docker stop $containers; shutdown now'
