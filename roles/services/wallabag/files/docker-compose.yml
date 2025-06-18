@@ -1,3 +1,4 @@
+name: wallabag
 services:
   wallabag:
     image: wallabag/wallabag

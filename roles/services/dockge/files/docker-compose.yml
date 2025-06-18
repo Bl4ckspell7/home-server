@@ -1,3 +1,4 @@
+name: dockge
 services:
   dockge:
     image: louislam/dockge:1
