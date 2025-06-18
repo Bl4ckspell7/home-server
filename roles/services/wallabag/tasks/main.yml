@@ -14,9 +14,17 @@
   ansible.builtin.include_vars:
     file: "secrets.yml"
 
-- name: Template wallabag docker-compose
+- name: Template wallabag .env file
   ansible.builtin.template:
-    src: "docker-compose.yml.j2"
+    src: wallabag.env.j2
+    dest: /opt/stacks/wallabag/.env
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Copy Wallabag docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
     dest: /opt/stacks/wallabag/docker-compose.yml
     owner: root
     group: root
