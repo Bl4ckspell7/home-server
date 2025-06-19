@@ -79,3 +79,10 @@ Port: `3001`
 
 - https://uptime.kuma.pet/
 - https://github.com/louislam/uptime-kuma
+
+## Paperless-ngx
+
+Port: `8000`
+
+- https://docs.paperless-ngx.com/
+- https://github.com/paperless-ngx/paperless-ngx
