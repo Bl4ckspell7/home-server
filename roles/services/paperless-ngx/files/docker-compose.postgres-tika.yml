@@ -44,9 +44,9 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${PAPERLESS_DBNAME}
+      POSTGRES_USER: ${PAPERLESS_DBUSER}
+      POSTGRES_PASSWORD: ${PAPERLESS_DBPASS}
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     restart: always
@@ -63,7 +63,7 @@ services:
       - ./export:/usr/src/paperless/export
       - ./consume:/usr/src/paperless/consume
     env_file:
-      - docker-compose.env
+      - .env
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
