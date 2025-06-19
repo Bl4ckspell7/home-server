@@ -86,3 +86,14 @@ Port: `8000`
 
 - https://docs.paperless-ngx.com/
 - https://github.com/paperless-ngx/paperless-ngx
+
+Setup:
+
+create and encrypt `secrets.yml`:
+
+```yml
+paperless_secret_key:
+paperless_db_name:
+paperless_db_user:
+paperless_db_password:
+```
