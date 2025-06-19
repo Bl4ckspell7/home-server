@@ -26,9 +26,13 @@
     group: root
     mode: "0600"
 
-- name: Copy paperless-ngx .env file
-  ansible.builtin.copy:
-    src: paperless-ngx.env
+- name: Load secrets for Paperless-ngx
+  ansible.builtin.include_vars:
+    file: "secrets.yml"
+
+- name: Template paperless-ngx .env file
+  ansible.builtin.template:
+    src: paperless-ngx.env.j2
     dest: /opt/stacks/paperless-ngx/.env
     owner: root
     group: root
