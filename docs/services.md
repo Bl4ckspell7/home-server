@@ -67,12 +67,6 @@ wallabag_db_root_pass: "another-strong-password"
 ansible-vault encrypt secrets.yml
 ```
 
-"Recover after crash" error:
-
-```bash
-rm /opt/stacks/wallabag/data/tc.log
-```
-
 ## Uptime Kuma
 
 Port: `3001`
@@ -91,7 +85,7 @@ Setup:
 
 create and encrypt `secrets.yml`:
 
-```yml
+```yaml
 paperless_secret_key:
 paperless_db_name:
 paperless_db_user:

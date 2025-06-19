@@ -7,8 +7,16 @@
     mode: "0755"
   loop:
     - /opt/stacks/wallabag
-    - /opt/stacks/wallabag/data
     - /opt/stacks/wallabag/images
+
+  # fix: [ERROR] Bad magic header in tc log
+- name: Ensure MariaDB data directory exists with correct ownership
+  ansible.builtin.file:
+    path: /opt/stacks/wallabag/data
+    state: directory
+    owner: "999" # mysql
+    group: "999" # mysql
+    mode: "0755"
 
 - name: Load secrets for Wallabag
   ansible.builtin.include_vars:
