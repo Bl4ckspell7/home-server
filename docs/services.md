@@ -20,6 +20,8 @@ pg_pass: 80 characters
 secret_key: 60 characters
 ```
 
+(don't use special characters)
+
 - encrypt
 
 ```bash
@@ -61,6 +63,8 @@ wallabag_db_pass: "super-secure-generated-password"
 wallabag_db_root_pass: "another-strong-password"
 ```
 
+(don't use special characters)
+
 - encrypt
 
 ```bash
@@ -90,4 +94,8 @@ paperless_secret_key:
 paperless_db_name:
 paperless_db_user:
 paperless_db_password:
+authentik_client_id:
+authentik_client_secret:
 ```
+
+(don't use special characters)
