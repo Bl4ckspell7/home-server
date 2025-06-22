@@ -1,0 +1,20 @@
+# https://dns.sb/
+- name: Configure custom DNS in /etc/systemd/resolved.conf
+  ansible.builtin.blockinfile:
+    path: /etc/systemd/resolved.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - CUSTOM DNS"
+    block: |
+      [Resolve]
+      DNS=185.222.222.222 45.11.45.11 2a09:: 2a11::
+      DNSOverTLS=true
+      DNSSEC=true
+    create: true
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Restart systemd-resolved to apply DNS changes
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    state: restarted
+    enabled: true

@@ -75,6 +75,7 @@
       - spice-vdagent
       - ssh
       - strace
+      - systemd-resolved
       - tigervnc-standalone-server
       - ufw
       - util-linux
