@@ -84,6 +84,7 @@ Port: `8000`
 
 - https://docs.paperless-ngx.com/
 - https://github.com/paperless-ngx/paperless-ngx
+- https://docs.goauthentik.io/integrations/services/paperless-ngx/
 
 Setup:
 
