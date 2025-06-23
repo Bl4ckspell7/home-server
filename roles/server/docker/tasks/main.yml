@@ -1,0 +1,11 @@
+- name: Create shared Docker network 'svr1-network'
+  community.docker.docker_network:
+    name: svr1-network
+    driver: bridge
+    state: present
+    internal: false
+    enable_ipv4: true
+    enable_ipv6: false
+    attachable: true
+    scope: local
+  become: true
