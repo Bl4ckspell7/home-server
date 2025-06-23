@@ -58,6 +58,7 @@ services:
     ports:
       - "8000:8000"
     networks:
+      - default
       - svr1-network
     volumes:
       - data:/usr/src/paperless/data
@@ -92,5 +93,7 @@ volumes:
   redisdata:
 
 networks:
+  default:
+    driver: bridge
   svr1-network:
     external: true
