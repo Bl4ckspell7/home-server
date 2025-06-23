@@ -73,6 +73,25 @@ services:
       PAPERLESS_TIKA_ENABLED: 1
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+      PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+      # not working, problem with url
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
+        {
+            "openid_connect": {
+                "APPS": [
+                    {
+                        "provider_id": "authentik",
+                        "name": "Authentik",
+                        "client_id": "${AUTHENTIK_CLIENT_ID}",
+                        "secret": "${AUTHENTIK_CLIENT_SECRET}",
+                        "settings": {
+                            "server_url": "http://???:9000/application/o/paperless-ngx/.well-known/openid-configuration"
+                        }
+                    }
+                ],
+                "OAUTH_PKCE_ENABLED": "True"
+            }
+        }
   gotenberg:
     image: docker.io/gotenberg/gotenberg:8.20
     restart: always
