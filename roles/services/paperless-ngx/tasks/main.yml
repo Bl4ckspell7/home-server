@@ -10,14 +10,6 @@
     - /opt/stacks
     - /opt/stacks/paperless-ngx
 
-- name: Copy paperless-ngx docker-compose file
-  ansible.builtin.copy:
-    src: docker-compose.postgres-tika.yml
-    dest: /opt/stacks/paperless-ngx/docker-compose.yml
-    owner: root
-    group: root
-    mode: "0644"
-
 - name: Load secrets for Paperless-ngx
   ansible.builtin.include_vars:
     file: "secrets.yml"
@@ -29,6 +21,14 @@
     owner: root
     group: root
     mode: "0600"
+
+- name: Copy paperless-ngx docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.postgres-tika.yml
+    dest: /opt/stacks/paperless-ngx/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
 
 - name: Start paperless-ngx stack
   community.docker.docker_compose_v2:
