@@ -57,6 +57,8 @@ services:
       - tika
     ports:
       - "8000:8000"
+    networks:
+      - svr1-network
     volumes:
       - data:/usr/src/paperless/data
       - media:/usr/src/paperless/media
@@ -82,8 +84,13 @@ services:
   tika:
     image: docker.io/apache/tika:latest
     restart: always
+
 volumes:
   data:
   media:
   pgdata:
   redisdata:
+
+networks:
+  svr1-network:
+    external: true

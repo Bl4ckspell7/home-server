@@ -48,6 +48,8 @@ services:
     ports:
       - "${COMPOSE_PORT_HTTP:-9000}:9000"
       - "${COMPOSE_PORT_HTTPS:-9443}:9443"
+    networks:
+      - svr1-network
     depends_on:
       postgresql:
         condition: service_healthy
@@ -89,3 +91,7 @@ volumes:
     driver: local
   redis:
     driver: local
+
+networks:
+  svr1-network:
+    external: true

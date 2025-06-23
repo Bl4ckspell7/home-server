@@ -54,3 +54,7 @@ services:
 volumes:
   redis:
     driver: local
+
+networks:
+  svr1-network:
+    external: true
