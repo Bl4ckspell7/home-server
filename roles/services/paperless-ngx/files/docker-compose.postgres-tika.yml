@@ -31,27 +31,6 @@
 
 name: paperless-ngx
 services:
-  broker:
-    image: docker.io/library/redis:8
-    restart: always
-    volumes:
-      - redisdata:/data
-  db:
-    image: docker.io/library/postgres:17
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 30s
-      retries: 5
-      timeout: 5s
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    env_file:
-      - .env
-    environment:
-      POSTGRES_DB: ${PAPERLESS_DBNAME}
-      POSTGRES_USER: ${PAPERLESS_DBUSER}
-      POSTGRES_PASSWORD: ${PAPERLESS_DBPASS}
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     restart: always
@@ -94,6 +73,27 @@ services:
                 "OAUTH_PKCE_ENABLED": "True"
             }
         }
+  broker:
+    image: docker.io/library/redis:8
+    restart: always
+    volumes:
+      - redisdata:/data
+  db:
+    image: docker.io/library/postgres:17
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${PAPERLESS_DBNAME}
+      POSTGRES_USER: ${PAPERLESS_DBUSER}
+      POSTGRES_PASSWORD: ${PAPERLESS_DBPASS}
   gotenberg:
     image: docker.io/gotenberg/gotenberg:8.20
     restart: always
