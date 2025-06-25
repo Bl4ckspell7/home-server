@@ -12,6 +12,7 @@
       - com.leinardi.gst
       - com.mattjakeman.ExtensionManager
       - dev.geopjr.Collision
+      - io.github.nokse22.inspector
       - io.missioncenter.MissionCenter
       - org.gabmus.whatip
       - org.gnome.Firmware
