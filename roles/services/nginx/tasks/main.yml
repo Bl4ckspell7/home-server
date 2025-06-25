@@ -1,0 +1,40 @@
+- name: Ensure nginx-proxy-manager directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/nginx-proxy-manager
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy nginx-proxy-manager docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/nginx-proxy-manager/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Load secrets for nginx-proxy-manager
+  ansible.builtin.include_vars:
+    file: "secrets.yml"
+  no_log: true
+
+- name: Template .env for nginx-proxy-manager
+  ansible.builtin.template:
+    src: nginx.env.j2
+    dest: /opt/stacks/nginx-proxy-manager/.env
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Deploy nginx-proxy-manager stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/nginx-proxy-manager
+    state: present
+    files:
+      - docker-compose.yml
+  register: nginx_pm_result
+
+- name: Debug nginx-proxy-manager result
+  ansible.builtin.debug:
+    var: nginx_pm_result

@@ -15,3 +15,6 @@
 
     - role: paperless-ngx
       tags: paperless-ngx
+
+    - role: nginx
+      tags: nginx

@@ -100,3 +100,22 @@ authentik_client_secret:
 ```
 
 (don't use special characters)
+
+## Nging Proxy Manager
+
+Port: `81`
+
+- https://nginxproxymanager.com/
+- https://github.com/NginxProxyManager/nginx-proxy-manager
+
+Setup:
+
+create and encrypt `secrets.yml`:
+
+```yaml
+nginx_db_name:
+nginx_db_user:
+nginx_db_password:
+```
+
+(don't use special characters)
