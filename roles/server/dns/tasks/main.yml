@@ -8,6 +8,7 @@
       DNS=185.222.222.222 45.11.45.11 2a09:: 2a11::
       DNSOverTLS=true
       DNSSEC=true
+      DNSStubListener=no
     create: true
     owner: root
     group: root
