@@ -119,3 +119,12 @@ nginx_db_password:
 ```
 
 (don't use special characters)
+
+## Cobalt
+
+(currently instance only, no web ui)
+
+Port: `9111`
+
+- https://cobalt.tools/
+- https://github.com/imputnet/cobalt

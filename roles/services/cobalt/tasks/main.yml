@@ -1,0 +1,28 @@
+# cobalt-task.yml
+- name: Ensure cobalt directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/cobalt
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy Cobalt docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/cobalt/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy Cobalt stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/cobalt
+    state: present
+    files:
+      - docker-compose.yml
+  register: cobalt_result
+
+- name: Debug Cobalt result
+  ansible.builtin.debug:
+    var: cobalt_result
