@@ -4,7 +4,7 @@ services:
     image: ghcr.io/imputnet/cobalt:11
     init: true
     read_only: true
-    restart: always
+    restart: unless-stopped
     container_name: cobalt
 
     ports:
@@ -38,7 +38,7 @@ services:
   # watchtower updates the cobalt image automatically
   watchtower:
     image: ghcr.io/containrrr/watchtower
-    restart: always
+    restart: unless-stopped
     command: --cleanup --scope cobalt --interval 900 --include-restarting
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

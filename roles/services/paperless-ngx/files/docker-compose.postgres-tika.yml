@@ -33,7 +33,7 @@ name: paperless-ngx
 services:
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
-    restart: always
+    restart: unless-stopped
     depends_on:
       - db
       - broker
@@ -75,12 +75,12 @@ services:
         }
   broker:
     image: docker.io/library/redis:8
-    restart: always
+    restart: unless-stopped
     volumes:
       - redisdata:/data
   db:
     image: docker.io/library/postgres:17
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 30s
@@ -96,7 +96,7 @@ services:
       POSTGRES_PASSWORD: ${PAPERLESS_DBPASS}
   gotenberg:
     image: docker.io/gotenberg/gotenberg:8.20
-    restart: always
+    restart: unless-stopped
     # The gotenberg chromium route is used to convert .eml files. We do not
     # want to allow external content like tracking pixels or even javascript.
     command:
@@ -105,7 +105,7 @@ services:
       - "--chromium-allow-list=file:///tmp/.*"
   tika:
     image: docker.io/apache/tika:latest
-    restart: always
+    restart: unless-stopped
 
 volumes:
   data:
