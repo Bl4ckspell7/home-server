@@ -6,7 +6,6 @@ services:
     read_only: true
     restart: unless-stopped
     container_name: cobalt
-
     ports:
       - 9111:9111/tcp
       # if you use a reverse proxy (such as nginx),
@@ -27,7 +26,6 @@ services:
       # see /docs/protect-an-instance.md for more info
 
       # see /docs/run-an-instance.md for more variables that you can use here
-
     labels:
       - com.centurylinklabs.watchtower.scope=cobalt
 
