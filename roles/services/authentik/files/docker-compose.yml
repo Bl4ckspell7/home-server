@@ -4,7 +4,6 @@ services:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.6.3}
     restart: always
     command: server
-
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
