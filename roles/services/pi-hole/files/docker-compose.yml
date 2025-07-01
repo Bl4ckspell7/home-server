@@ -27,6 +27,19 @@ services:
       FTLCONF_webserver_api_password: ${PIHOLE_WEB_PASSWORD}
       # If using Docker's default `bridge` network setting the dns listening mode should be set to 'all'
       FTLCONF_dns_listeningMode: "all"
+      FTLCONF_dns_dnssec: "true"
+      FTLCONF_dns_upstreams: |
+        185.222.222.222
+        45.11.45.11
+      FTLCONF_dns_hosts: |
+        172.21.255.254 pihole.lan
+        172.21.255.253 authentik.lan
+        172.21.255.252 paperless.lan
+        172.21.255.251 dockge.lan
+        172.21.255.250 cobalt.lan
+        172.21.255.249 npm.lan
+        172.21.255.248 kuma.lan
+        172.21.255.247 wallabag.lan
     # Volumes store your data between container upgrades
     volumes:
       # For persisting Pi-hole's databases and common configuration file
