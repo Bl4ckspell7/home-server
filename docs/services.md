@@ -6,7 +6,7 @@
 
 ## Authentik
 
-Port: `9443`
+Port: `9080`, `9443`
 
 - https://goauthentik.io/
 - https://github.com/goauthentik/authentik
