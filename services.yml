@@ -21,3 +21,6 @@
 
     - role: cobalt
       tags: cobalt
+
+    - role: pi-hole
+      tags: pi-hole

@@ -1,0 +1,41 @@
+# pi-hole-task.yml
+- name: Ensure pi-hole directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/pi-hole
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Load secrets for pi-hole
+  ansible.builtin.include_vars:
+    file: "secrets.yml"
+  no_log: true
+
+- name: Template .env for pi-hole
+  ansible.builtin.template:
+    src: pihole.env.j2
+    dest: /opt/stacks/pi-hole/.env
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Copy Pi-hole docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/pi-hole/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy Pi-hole stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/pi-hole
+    state: present
+    files:
+      - docker-compose.yml
+  register: pihole_result
+
+- name: Debug Pi-hole result
+  ansible.builtin.debug:
+    var: pihole_result

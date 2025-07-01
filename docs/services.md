@@ -128,3 +128,18 @@ Port: `9111`
 
 - https://cobalt.tools/
 - https://github.com/imputnet/cobalt
+
+## Pi-hole
+
+Ports: `7080`, `7443`,
+
+- https://pi-hole.net/
+- https://github.com/pi-hole/docker-pi-hole
+
+Setup:
+
+create and encrypt `secrets.yml`:
+
+```yaml
+pihole_web_password:
+```
