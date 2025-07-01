@@ -8,4 +8,6 @@
     enable_ipv6: false
     attachable: true
     scope: local
+    ipam_config:
+      - subnet: 172.21.0.0/16
   become: true
