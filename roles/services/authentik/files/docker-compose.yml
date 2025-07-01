@@ -10,8 +10,8 @@ services:
     env_file:
       - .env
     ports:
-      - "${COMPOSE_PORT_HTTP:-9080}:9080"
-      - "${COMPOSE_PORT_HTTPS:-9443}:9443"
+      - "9080:9080"
+      - "9443:9443"
     environment:
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
       AUTHENTIK_REDIS__HOST: redis
