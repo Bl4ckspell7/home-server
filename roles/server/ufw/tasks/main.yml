@@ -36,3 +36,24 @@
     port: 5901
     proto: tcp
     comment: "Allow TigerVNC"
+
+- name: Allow HTTP traffic for Nginx Proxy Manager
+  community.general.ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+    comment: "Allow HTTP traffic for Nginx Proxy Manager"
+
+- name: Allow HTTPS traffic for Nginx Proxy Manager
+  community.general.ufw:
+    rule: allow
+    port: 443
+    proto: tcp
+    comment: "Allow HTTPS traffic for Nginx Proxy Manager"
+
+- name: Allow NPM admin UI traffic on port 81
+  community.general.ufw:
+    rule: allow
+    port: 81
+    proto: tcp
+    comment: "Allow Nginx Proxy Manager Web UI"
