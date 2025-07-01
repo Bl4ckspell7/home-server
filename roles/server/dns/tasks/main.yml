@@ -5,10 +5,12 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK - CUSTOM DNS"
     block: |
       [Resolve]
-      DNS=185.222.222.222 45.11.45.11 2a09:: 2a11::
-      DNSOverTLS=true
+      DNS=192.168.178.117
+      FallbackDNS=185.222.222.222 45.11.45.11 2a09:: 2a11::
+      DNSOverTLS=false
       DNSSEC=true
-      DNSStubListener=no
+      DNSStubListener=yes
+      Domains=lan
     create: true
     owner: root
     group: root

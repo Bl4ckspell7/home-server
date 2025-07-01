@@ -5,10 +5,13 @@ services:
     container_name: pihole
     image: pihole/pihole:latest
     restart: always
+    dns:
+      - 185.222.222.222
+      - 45.11.45.11
     ports:
       # DNS Ports
-      - "53:53/tcp"
-      - "53:53/udp"
+      - "192.168.178.117:53:53/tcp"
+      - "192.168.178.117:53:53/udp"
       # Default HTTP Port
       - "7080:80/tcp"
       # Default HTTPs Port. FTL will generate a self-signed certificate
