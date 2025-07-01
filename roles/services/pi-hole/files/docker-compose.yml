@@ -45,6 +45,7 @@ services:
         172.21.255.249 npm.lan
         172.21.255.248 kuma.lan
         172.21.255.247 wallabag.lan
+        172.21.255.246 homepage.lan
     # Volumes store your data between container upgrades
     volumes:
       # For persisting Pi-hole's databases and common configuration file
