@@ -17,7 +17,7 @@ services:
       SYMFONY__ENV__DATABASE_TABLE_PREFIX: "wallabag_"
       SYMFONY__ENV__MAILER_DSN: smtp://127.0.0.1
       SYMFONY__ENV__FROM_EMAIL: wallabag@example.com
-      SYMFONY__ENV__DOMAIN_NAME: http://192.168.178.117:8090
+      SYMFONY__ENV__DOMAIN_NAME: ${WALLABAG_DOMAIN_NAME}
       SYMFONY__ENV__SERVER_NAME: "Wallabag"
     ports:
       - "8090:80"

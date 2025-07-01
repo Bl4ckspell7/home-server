@@ -61,6 +61,7 @@ Port: `8090`
 wallabag_db_user: wallabag
 wallabag_db_pass: "super-secure-generated-password"
 wallabag_db_root_pass: "another-strong-password"
+wallabag_domain_name: "http://router-public-ip"
 ```
 
 (don't use special characters)
