@@ -1,4 +1,3 @@
-# cobalt-task.yml
 - name: Ensure cobalt directory exists
   ansible.builtin.file:
     path: /opt/stacks/cobalt
