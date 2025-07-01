@@ -21,6 +21,12 @@ services:
       SYMFONY__ENV__SERVER_NAME: "Wallabag"
     ports:
       - "8090:80"
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.247
+    dns:
+      - 172.21.255.254
     volumes:
       - /opt/stacks/wallabag/images:/var/www/wallabag/web/assets/images
     depends_on:

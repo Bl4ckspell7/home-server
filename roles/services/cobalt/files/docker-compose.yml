@@ -11,7 +11,12 @@ services:
       # if you use a reverse proxy (such as nginx),
       # uncomment the next line and remove the one above (9000:9000/tcp):
       # - 127.0.0.1:9000:9000
-
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.250
+    dns:
+      - 172.21.255.254
     environment:
       # replace https://api.url.example/ with your instance's url
       # or else tunneling functionality won't work properly
@@ -50,3 +55,9 @@ services:
   #     container_name: yt-session-generator
   #     labels:
   #       - com.centurylinklabs.watchtower.scope=cobalt
+
+networks:
+  default:
+    driver: bridge
+  svr1-network:
+    external: true

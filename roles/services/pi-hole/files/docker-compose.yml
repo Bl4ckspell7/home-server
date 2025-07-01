@@ -5,7 +5,12 @@ services:
     container_name: pihole
     image: pihole/pihole:latest
     restart: always
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.254
     dns:
+      - 172.21.255.254
       - 185.222.222.222
       - 45.11.45.11
     ports:
@@ -58,3 +63,5 @@ services:
 networks:
   default:
     driver: bridge
+  svr1-network:
+    external: true

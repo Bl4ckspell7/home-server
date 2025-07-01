@@ -2,11 +2,17 @@ name: uptime-kuma
 services:
   uptime-kuma:
     image: louislam/uptime-kuma:1
+    restart: unless-stopped
     volumes:
       - ./uptime-kuma-data:/app/data
     ports:
       - 3001:3001 # <Host Port>:<Container Port>
-    restart: unless-stopped
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.248
+    dns:
+      - 172.21.255.254
 
 networks:
   default:

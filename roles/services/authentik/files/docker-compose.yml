@@ -12,6 +12,12 @@ services:
     ports:
       - "9080:9080"
       - "9443:9443"
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.253
+    dns:
+      - 172.21.255.254
     environment:
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
       AUTHENTIK_REDIS__HOST: redis

@@ -10,6 +10,12 @@ services:
       - "81:81" # Admin Web Port
       # Add any other Stream port you want to expose
       # - '21:21' # FTP
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.249
+    dns:
+      - 172.21.255.254
     healthcheck:
       test: ["CMD", "/usr/bin/check-health"]
       interval: 10s
