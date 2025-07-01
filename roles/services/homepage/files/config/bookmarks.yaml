@@ -1,0 +1,35 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/bookmarks
+
+- Connections:
+    - Github:
+        - abbr: GH
+          icon: si-github
+          href: https://github.com/Bl4ckspell7
+
+    - Steam:
+        - abbr: ST
+          icon: si-steam
+          href: https://steamcommunity.com/id/Bl4ckspell/
+
+    - YouTube:
+        - abbr: YT
+          icon: si-youtube
+          href: https://www.youtube.com/@bl4ckspell
+
+- Contact:
+    - Email:
+        - abbr: EM
+          icon: si-protonmail
+          href: mailto:bl4ckspell@proton.me
+
+    - Matrix:
+        - abbr: MT
+          icon: si-matrix
+          href: https://matrix.to/#/@bl4ckspell:matrix.org
+
+    - Mastodon:
+        - abbr: MD
+          icon: si-mastodon
+          href: https://mastodon.social/@bl4ckspell

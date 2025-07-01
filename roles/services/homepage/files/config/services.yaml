@@ -1,0 +1,39 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/services/
+
+- Server:
+    - Authentik:
+        icon: si-authentik
+        href: https://authentik.bl4ckspell.freeddns.org/
+        description: Login
+
+    - Nginx:
+        icon: si-nginxproxymanager
+        href: https://npm.bl4ckspell.freeddns.org/
+        description: Reverse-Proxy
+
+    - Pi-hole:
+        icon: si-pihole
+        href: https://pihole.bl4ckspell.freeddns.org/admin/
+        description: DNS Server & Filter
+
+    - Uptime-Kuma:
+        icon: si-uptimekuma
+        href: https://kuma.bl4ckspell.freeddns.org/
+        description: Status
+
+    - Dockge:
+        href: https://dockge.bl4ckspell.freeddns.org/
+        description: Docker Stacks Management
+
+- Tools:
+    - Paperless:
+        icon: si-paperlessngx
+        href: https://paperless.bl4ckspell.freeddns.org/
+        description: Document management
+
+    - Wallabag:
+        icon: si-wallabag
+        href: https://wallabag.bl4ckspell.freeddns.org/
+        description: Document management

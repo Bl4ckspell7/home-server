@@ -144,3 +144,10 @@ create and encrypt `secrets.yml`:
 ```yaml
 pihole_web_password:
 ```
+
+## Homepage
+
+Ports: `3000`
+
+- https://gethomepage.dev/
+- https://github.com/gethomepage/homepage

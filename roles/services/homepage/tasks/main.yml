@@ -1,0 +1,43 @@
+- name: Ensure Homepage directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - /opt/stacks/homepage
+    - /opt/stacks/homepage/config
+
+- name: Copy Homepage config YAML files
+  ansible.builtin.copy:
+    src: "config/{{ item }}"
+    dest: "/opt/stacks/homepage/config/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - bookmarks.yaml
+    - services.yaml
+    - settings.yaml
+    - widgets.yaml
+
+- name: Copy Homepage docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/homepage/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy Homepage stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/homepage
+    state: present
+    files:
+      - docker-compose.yml
+  register: homepage_result
+
+- name: Debug Homepage result
+  ansible.builtin.debug:
+    var: homepage_result

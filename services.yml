@@ -24,3 +24,6 @@
 
     - role: pi-hole
       tags: pi-hole
+
+    - role: homepage
+      tags: homepage

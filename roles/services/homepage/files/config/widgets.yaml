@@ -1,0 +1,38 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/info-widgets/
+
+- greeting:
+    text_size: xl
+    text: Welcome!
+
+- resources:
+    cpu: true
+    cputemp: true
+    memory: true
+    disk: /
+    uptime: true
+    units: metric
+    refresh: 1000
+    network: true
+
+- datetime:
+    text_size: xl
+    format:
+      hourCycle: h23
+      dateStyle: long
+      timeStyle: short
+
+- search:
+    provider: duckduckgo
+    target: _blank
+
+- openmeteo:
+    label: Karlsruhe # optional
+    latitude: 49.00686
+    longitude: 8.40343
+    timezone: Europe/Berlin # optional
+    units: metric # or imperial
+    cache: 5 # Time in minutes to cache API responses, to stay within limits
+    format: # optional, Intl.NumberFormat options
+      maximumFractionDigits: 1
