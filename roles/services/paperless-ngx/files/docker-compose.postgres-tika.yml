@@ -55,6 +55,19 @@ services:
     env_file:
       - .env
     environment:
+      # This is required if you will be exposing Paperless-ngx on a public domain
+      # (if doing so please consider security measures such as reverse proxy)
+      PAPERLESS_URL: "https://paperless.bl4ckspell.freeddns.org"
+
+      # PAPERLESS_FORCE_SCRIPT_NAME: "/"
+      
+      # Use this variable to set a timezone for the Paperless Docker containers. Defaults to UTC.
+      PAPERLESS_TIME_ZONE: "Europe/Berlin"
+
+      # The default language to use for OCR. Set this to the language most of your
+      # documents are written in.
+      PAPERLESS_OCR_LANGUAGE: "deu"
+
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
       PAPERLESS_TIKA_ENABLED: 1
