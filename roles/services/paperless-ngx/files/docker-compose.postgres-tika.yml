@@ -74,7 +74,6 @@ services:
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://tika:9998
       PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
-      # not working, problem with url
       PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
         {
             "openid_connect": {
@@ -85,7 +84,7 @@ services:
                         "client_id": "${AUTHENTIK_CLIENT_ID}",
                         "secret": "${AUTHENTIK_CLIENT_SECRET}",
                         "settings": {
-                            "server_url": "http://???:9000/application/o/paperless-ngx/.well-known/openid-configuration"
+                            "server_url": "https://authentik.bl4ckspell.freeddns.org/application/o/paperless-ngx/.well-known/openid-configuration"
                         }
                     }
                 ],
