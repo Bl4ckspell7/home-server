@@ -3,12 +3,6 @@
 # https://gethomepage.dev/configs/services/
 
 - Server:
-    - Authentik:
-        icon: si-authentik
-        href: https://authentik.bl4ckspell.freeddns.org/
-        description: Login
-        ping: authentik.lan
-
     - Nginx:
         icon: si-nginxproxymanager
         href: https://npm.bl4ckspell.freeddns.org/
@@ -33,6 +27,12 @@
         ping: dockge.lan
 
 - Tools:
+    - Authentik:
+        icon: si-authentik
+        href: https://authentik.bl4ckspell.freeddns.org/
+        description: Login
+        ping: authentik.lan
+
     - Paperless:
         icon: si-paperlessngx
         href: https://paperless.bl4ckspell.freeddns.org/
