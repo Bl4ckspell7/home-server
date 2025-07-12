@@ -4,6 +4,21 @@
 
 # Services
 
+## Setup new service
+
+### Docker
+
+- create compose, .env, secrets and ansible task
+
+### Network
+
+- Pihole new IP entry (`xxx.xxx.xxx.xxx service.lan`) in the shared docker subnet
+
+- NPM: 
+  - Proxy Host: `service.DDNS.ORG`, `http://service.lan:DOCKER_CONTAINER_PORT`
+  - request ssl certificate via "Let's Encrypt" (make sure Port `80` is forwarded in the router)
+
+
 ## Authentik
 
 Port: `9080`, `9443`
@@ -142,3 +157,16 @@ Ports: `3000`
 
 - https://gethomepage.dev/
 - https://github.com/gethomepage/homepage
+
+## Linkwarden
+
+Ports: `3000`
+
+- https://docs.linkwarden.app/
+- https://github.com/linkwarden/linkwarden
+
+```yaml
+linkwarden_nextauth_secret: ""
+linkwarden_postgres_password: ""
+linkwarden_meili_master_key: ""
+```
