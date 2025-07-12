@@ -1,4 +1,4 @@
-[← Back to README](../README.md)  
+[← Back to README](../README.md)
 
 ---
 
@@ -6,4 +6,4 @@
 
 - always assign same ipv4 address
 - enable wake on lan
-- enable port forwarding for port 22 (ssh)
+- enable port forwarding for port 80 & 443
