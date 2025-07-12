@@ -24,3 +24,6 @@
 
     - role: homepage
       tags: homepage
+
+    - role: linkwarden
+      tags: linkwarden

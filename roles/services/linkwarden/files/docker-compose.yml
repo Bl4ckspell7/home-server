@@ -1,0 +1,41 @@
+name: linkwarden
+services:
+  linkwarden:
+    image: ghcr.io/linkwarden/linkwarden:latest
+    restart: always
+    ports:
+      # Host Port : Container Port
+      - 3010:3000
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.250
+    dns:
+      - 172.21.255.254
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+    volumes:
+      - ./data:/data/data
+    depends_on:
+      - postgres
+      - meilisearch
+  postgres:
+    image: postgres:16-alpine
+    env_file: .env
+    restart: always
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+  meilisearch:
+    image: getmeili/meilisearch:v1.12.8
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./meili_data:/meili_data
+
+networks:
+  default:
+    driver: bridge
+  svr1-network:
+    external: true

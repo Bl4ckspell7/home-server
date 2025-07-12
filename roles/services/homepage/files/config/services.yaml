@@ -37,3 +37,8 @@
         icon: si-wallabag
         href: https://wallabag.bl4ckspell.freeddns.org/
         description: Save articles. Read them later.
+
+    - Linkwarden:
+        # icon:
+        href: https://linkwarden.bl4ckspell.freeddns.org/
+        description: Collect, read, annotate, and preserve your webpages.

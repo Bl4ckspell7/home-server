@@ -1,0 +1,40 @@
+- name: Ensure Linkwarden directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/linkwarden
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Load secrets for linkwarden
+  ansible.builtin.include_vars:
+    file: "secrets.yml"
+  no_log: true
+
+- name: Template .env for linkwarden
+  ansible.builtin.template:
+    src: linkwarden.env.j2
+    dest: /opt/stacks/linkwarden/.env
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Copy Linkwarden docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/linkwarden/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy Linkwarden stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/linkwarden
+    state: present
+    files:
+      - docker-compose.yml
+  register: linkwarden_result
+
+- name: Debug Linkwarden result
+  ansible.builtin.debug:
+    var: linkwarden_result
