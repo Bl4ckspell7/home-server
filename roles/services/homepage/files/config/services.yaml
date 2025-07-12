@@ -7,38 +7,46 @@
         icon: si-authentik
         href: https://authentik.bl4ckspell.freeddns.org/
         description: Login
+        ping: authentik.lan
 
     - Nginx:
         icon: si-nginxproxymanager
         href: https://npm.bl4ckspell.freeddns.org/
         description: Reverse-Proxy
+        ping: npm.lan
 
     - Pi-hole:
         icon: si-pihole
         href: https://pihole.bl4ckspell.freeddns.org/admin/
         description: DNS Server & Filter
+        ping: pihole.lan
 
     - Uptime-Kuma:
         icon: si-uptimekuma
         href: https://kuma.bl4ckspell.freeddns.org/
         description: Status
+        ping: kuma.lan
 
     - Dockge:
         href: https://dockge.bl4ckspell.freeddns.org/
         description: Docker Stacks Management
+        ping: dockge.lan
 
 - Tools:
     - Paperless:
         icon: si-paperlessngx
         href: https://paperless.bl4ckspell.freeddns.org/
         description: Document management
+        ping: paperless.lan
 
     - Wallabag:
         icon: si-wallabag
         href: https://wallabag.bl4ckspell.freeddns.org/
         description: Save articles. Read them later.
+        ping: wallabag.lan
 
     - Linkwarden:
         # icon:
         href: https://linkwarden.bl4ckspell.freeddns.org/
         description: Collect, read, annotate, and preserve your webpages.
+        ping: linkwarden.lan
