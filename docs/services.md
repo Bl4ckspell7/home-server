@@ -14,10 +14,9 @@
 
 - Pihole new IP entry (`xxx.xxx.xxx.xxx service.lan`) in the shared docker subnet
 
-- NPM: 
+- NPM:
   - Proxy Host: `service.DDNS.ORG`, `http://service.lan:DOCKER_CONTAINER_PORT`
   - request ssl certificate via "Let's Encrypt" (make sure Port `80` is forwarded in the router)
-
 
 ## Authentik
 
