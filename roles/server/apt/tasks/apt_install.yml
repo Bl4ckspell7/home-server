@@ -47,6 +47,7 @@
       - gnome-shell-extension-appindicator
       - gnome-software-plugin-flatpak
       - initramfs-tools
+      - iputils-ping
       - libayatana-appindicator3-1
       - linux-headers-amd64
       - locales
