@@ -1,4 +1,3 @@
-# pi-hole-task.yml
 - name: Ensure pi-hole directory exists
   ansible.builtin.file:
     path: /opt/stacks/pi-hole
