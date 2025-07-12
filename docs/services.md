@@ -168,4 +168,7 @@ Ports: `3000`
 linkwarden_nextauth_secret: ""
 linkwarden_postgres_password: ""
 linkwarden_meili_master_key: ""
+linkwarden_authentik_issuer: ""
+linkwarden_authentik_client_id: ""
+linkwarden_authentik_client_secret: ""
 ```
