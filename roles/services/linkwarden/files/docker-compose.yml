@@ -2,7 +2,7 @@ name: linkwarden
 services:
   linkwarden:
     image: ghcr.io/linkwarden/linkwarden:latest
-    restart: always
+    restart: unless-stopped
     ports:
       # Host Port : Container Port
       - 3010:3000
@@ -23,12 +23,12 @@ services:
   postgres:
     image: postgres:16-alpine
     env_file: .env
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./pgdata:/var/lib/postgresql/data
   meilisearch:
     image: getmeili/meilisearch:v1.12.8
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env
     volumes:

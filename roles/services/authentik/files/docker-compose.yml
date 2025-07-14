@@ -2,7 +2,7 @@ name: authentik
 services:
   server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.6.3}
-    restart: always
+    restart: unless-stopped
     command: server
     volumes:
       - ./media:/media
@@ -32,7 +32,7 @@ services:
         condition: service_healthy
   worker:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.6.3}
-    restart: always
+    restart: unless-stopped
     command: worker
     # `user: root` and the docker socket volume are optional.
     # See more for the docker socket integration here:
@@ -62,7 +62,7 @@ services:
         condition: service_healthy
   postgresql:
     image: docker.io/library/postgres:16-alpine
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       start_period: 20s
@@ -81,7 +81,7 @@ services:
   redis:
     image: docker.io/library/redis:alpine
     command: --save 60 1 --loglevel warning
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
       start_period: 20s
