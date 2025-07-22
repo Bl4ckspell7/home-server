@@ -6,7 +6,8 @@ services:
     volumes:
       - ./uptime-kuma-data:/app/data
     ports:
-      - 3001:3001 # <Host Port>:<Container Port>
+      # Host Port : Container Port
+      - 3001:3001
     networks:
       default:
       svr1-network:
