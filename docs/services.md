@@ -18,9 +18,27 @@
   - Proxy Host: `service.DDNS.ORG`, `http://service.lan:DOCKER_CONTAINER_PORT`
   - request ssl certificate via "Let's Encrypt" (make sure Port `80` is forwarded in the router)
 
+#### Ports
+
+| **Service**          | **Host Port** | **Container Port** |
+| -------------------- | ------------- | ------------------ |
+| **Authentik**        | 9080          | 9080               |
+|                      | 9443          | 9443               |
+| **Dockge**           | 5001          | 5001               |
+| **Wallabag**         | 8090          | 80                 |
+| **Uptime Kuma**      | 3001          | 3001               |
+| **Paperless-ngx**    | 8000          | 8000               |
+| **Nginx Proxy Mgr.** | 80            | 80                 |
+|                      | 443           | 443                |
+|                      | 81            | 81                 |
+| **Pi-hole**          | 53            | 53                 |
+|                      | 7080          | 80                 |
+|                      | 7443          | 443                |
+| **Homepage**         | 3000          | 3000               |
+| **Linkwarden**       | 3010          | 3000               |
 ## Authentik
 
-Port: `9080`, `9443`
+Port: `9080:9080`, `9443:9443`
 
 - https://goauthentik.io/
 - https://github.com/goauthentik/authentik
@@ -55,14 +73,14 @@ Flows and Stages -> Flows:
 
 ## Dockge
 
-Port: `5001`
+Ports: `5001:5001`
 
 - https://dockge.kuma.pet/
 - https://github.com/louislam/dockge
 
 ## Wallabag
 
-Port: `8090`
+Ports: `8090:80`
 
 - https://wallabag.org/
 - https://github.com/wallabag/wallabag
@@ -88,14 +106,14 @@ ansible-vault encrypt secrets.yml
 
 ## Uptime Kuma
 
-Port: `3001`
+Ports: `3001:3001`
 
 - https://uptime.kuma.pet/
 - https://github.com/louislam/uptime-kuma
 
 ## Paperless-ngx
 
-Port: `8000`
+Ports: `8000:8000`
 
 - https://docs.paperless-ngx.com/
 - https://github.com/paperless-ngx/paperless-ngx
@@ -118,7 +136,7 @@ authentik_client_secret:
 
 ## Nging Proxy Manager
 
-Port: `81`
+Ports: `80:80`, `443:443`, `81:81`
 
 - https://nginxproxymanager.com/
 - https://github.com/NginxProxyManager/nginx-proxy-manager
@@ -137,7 +155,7 @@ nginx_db_password:
 
 ## Pi-hole
 
-Ports: `7080`, `7443`,
+Ports: `53:53`, `7080:80`, `7443:443`
 
 - https://pi-hole.net/
 - https://github.com/pi-hole/docker-pi-hole
@@ -152,14 +170,14 @@ pihole_web_password:
 
 ## Homepage
 
-Ports: `3000`
+Ports: `3000:3000`
 
 - https://gethomepage.dev/
 - https://github.com/gethomepage/homepage
 
 ## Linkwarden
 
-Ports: `3000`
+Ports: `3010:3000`
 
 - https://docs.linkwarden.app/
 - https://github.com/linkwarden/linkwarden
