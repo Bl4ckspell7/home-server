@@ -36,6 +36,10 @@
 |                      | 7443          | 443                |
 | **Homepage**         | 3000          | 3000               |
 | **Linkwarden**       | 3010          | 3000               |
+| **Nextcloud**        | 6080          | 8080               |
+| **Seafile**          | –             | –                  |
+| **Immich**           | 2283          | 2283               |
+
 ## Authentik
 
 Port: `9080:9080`, `9443:9443`
@@ -45,7 +49,7 @@ Port: `9080:9080`, `9443:9443`
 
 ### Setup
 
-- create `secrets.yml`
+`secrets.yml`:
 
 ```yaml
 pg_pass: 80 characters
@@ -85,23 +89,13 @@ Ports: `8090:80`
 - https://wallabag.org/
 - https://github.com/wallabag/wallabag
 
-### Setup
-
-- create `secrets.yml`:
+`secrets.yml`:
 
 ```yaml
 wallabag_db_user: wallabag
-wallabag_db_pass: "super-secure-generated-password"
-wallabag_db_root_pass: "another-strong-password"
-wallabag_domain_name: "http://router-public-ip"
-```
-
-(don't use special characters)
-
-- encrypt
-
-```bash
-ansible-vault encrypt secrets.yml
+wallabag_db_pass: ""
+wallabag_db_root_pass: ""
+wallabag_domain_name: ""
 ```
 
 ## Uptime Kuma
@@ -119,20 +113,16 @@ Ports: `8000:8000`
 - https://github.com/paperless-ngx/paperless-ngx
 - https://docs.goauthentik.io/integrations/services/paperless-ngx/
 
-Setup:
-
-create and encrypt `secrets.yml`:
+`secrets.yml`:
 
 ```yaml
-paperless_secret_key:
-paperless_db_name:
-paperless_db_user:
-paperless_db_password:
-authentik_client_id:
-authentik_client_secret:
+paperless_secret_key: ""
+paperless_db_name: ""
+paperless_db_user: ""
+paperless_db_password: ""
+authentik_client_id: ""
+authentik_client_secret: ""
 ```
-
-(don't use special characters)
 
 ## Nging Proxy Manager
 
@@ -141,17 +131,13 @@ Ports: `80:80`, `443:443`, `81:81`
 - https://nginxproxymanager.com/
 - https://github.com/NginxProxyManager/nginx-proxy-manager
 
-Setup:
-
-create and encrypt `secrets.yml`:
+`secrets.yml`:
 
 ```yaml
-nginx_db_name:
-nginx_db_user:
-nginx_db_password:
+nginx_db_name: ""
+nginx_db_user: ""
+nginx_db_password: ""
 ```
-
-(don't use special characters)
 
 ## Pi-hole
 
@@ -160,12 +146,10 @@ Ports: `53:53`, `7080:80`, `7443:443`
 - https://pi-hole.net/
 - https://github.com/pi-hole/docker-pi-hole
 
-Setup:
-
-create and encrypt `secrets.yml`:
+`secrets.yml`:
 
 ```yaml
-pihole_web_password:
+pihole_web_password: ""
 ```
 
 ## Homepage
@@ -182,6 +166,8 @@ Ports: `3010:3000`
 - https://docs.linkwarden.app/
 - https://github.com/linkwarden/linkwarden
 
+`secrets.yml`:
+
 ```yaml
 linkwarden_nextauth_secret: ""
 linkwarden_postgres_password: ""
@@ -189,4 +175,39 @@ linkwarden_meili_master_key: ""
 linkwarden_authentik_issuer: ""
 linkwarden_authentik_client_id: ""
 linkwarden_authentik_client_secret: ""
+```
+
+## Nextcloud
+
+Ports: `6080:8080`
+
+- https://nextcloud.com/home-users/
+- https://nextcloud.com/blog/how-to-install-the-nextcloud-all-in-one-on-linux/
+- https://github.com/nextcloud/all-in-one
+
+Setup:
+
+- open aio setup on local ip
+- domaincheck: NPM: forward http to port 11000 of "nextcloud-aio-domaincheck"
+- NPM: forward to "nextcloud-aio-apache"
+
+## Seafile
+
+Ports: ``
+
+- https://manual.seafile.com/latest/
+- https://manual.seafile.com/latest/setup/setup_ce_by_docker/
+- https://github.com/haiwen/seafile
+
+## Immich
+
+Ports: `2283:2283`
+
+- https://immich.app/docs/overview/quick-start
+- https://github.com/immich-app/immich
+
+`secrets.yml`:
+
+```yaml
+immich_postgres_password: ""
 ```
