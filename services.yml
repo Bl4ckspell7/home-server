@@ -27,3 +27,6 @@
 
     - role: linkwarden
       tags: linkwarden
+
+    - role: immich
+      tags: immich

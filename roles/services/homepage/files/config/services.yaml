@@ -63,3 +63,10 @@
             description: Collect, read, annotate, and preserve your webpages.
             ping: linkwarden.lan
             statusStyle: "basic"
+
+        - Immich:
+            icon: sh-immich.svg
+            href: https://immich.bl4ckspell.freeddns.org/
+            description: High performance self-hosted photo and video management solution.
+            ping: immich.lan
+            statusStyle: "basic"
