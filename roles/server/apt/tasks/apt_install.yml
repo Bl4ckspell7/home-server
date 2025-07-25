@@ -78,6 +78,7 @@
       - strace
       - systemd-resolved
       - tigervnc-standalone-server
+      - tree
       - ufw
       - util-linux
       - virt-manager
