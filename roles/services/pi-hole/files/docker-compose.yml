@@ -3,7 +3,7 @@ name: pi-hole
 services:
   pihole:
     container_name: pihole
-    image: pihole/pihole:latest
+    image: pihole/pihole:2025.08.0
     restart: always
     networks:
       default:
