@@ -6,13 +6,13 @@ providers:
   openweathermap: openweathermapapikey
   weatherapi: weatherapiapikey
 
-
 title: Bl4ckspell's Homepage
 description: Dashboard of my self-hosted services
-theme: dark
+theme: "dark"
 fullWidth: false
 disableCollapse: true
-headerStyle: boxed # underlined, boxed, clean, boxedWidgets
-language: en
+headerStyle: "boxed" # underlined, boxed, clean, boxedWidgets
+language: "en"
 hideVersion: true
 disableUpdateCheck: true
+color: "slate"
