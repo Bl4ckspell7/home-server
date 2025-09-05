@@ -1,0 +1,38 @@
+- name: Ensure Cup stack and stacks directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - /opt/stacks
+    - /opt/stacks/cup
+
+- name: Copy Cup docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/cup/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy Cup config file
+  ansible.builtin.copy:
+    src: cup.json
+    dest: /opt/stacks/cup/cup.json
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Start Cup
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/cup
+    state: present
+    files:
+      - docker-compose.yml
+  register: cup_result
+
+- name: Debug Docker Compose result
+  ansible.builtin.debug:
+    var: cup_result

@@ -30,3 +30,6 @@
 
     - role: immich
       tags: immich
+
+    - role: cup
+      tags: cup
