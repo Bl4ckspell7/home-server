@@ -7,6 +7,18 @@ services:
     ports:
       # Host Port : Container Port
       - 8010:8000
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.242
+    dns:
+      - 172.21.255.254
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./cup.json:/config/cup.json
+
+networks:
+  default:
+    driver: bridge
+  svr1-network:
+    external: true

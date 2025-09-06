@@ -49,6 +49,7 @@ services:
         172.21.255.247 wallabag.lan
         172.21.255.246 homepage.lan
         172.21.255.243 immich.lan
+        172.21.255.242 cup.lan
       FTLCONF_dhcp_active: "false"
     volumes:
       # For persisting Pi-hole's databases and common configuration file
