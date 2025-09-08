@@ -20,3 +20,4 @@ alias gcl="git clone"
 
 alias sd='containers=$(docker ps -q); [ -n "$containers" ] && docker stop $containers; shutdown now'
 alias sr='containers=$(docker ps -q); [ -n "$containers" ] && docker stop $containers; systemctl reboot'
+alias sn="shutdown now"
