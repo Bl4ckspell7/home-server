@@ -90,3 +90,9 @@
             description: High performance self-hosted photo and video management solution.
             ping: immich.lan
             statusStyle: "basic"
+
+        - Ollama:
+            icon: sh-ollama.svg
+            description: Local AI models
+            ping: ollama.lan
+            statusStyle: "basic"

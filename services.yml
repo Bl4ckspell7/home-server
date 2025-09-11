@@ -33,3 +33,6 @@
 
     - role: cup
       tags: cup
+
+    - role: ollama
+      tags: ollama
