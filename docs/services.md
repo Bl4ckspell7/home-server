@@ -227,12 +227,11 @@ Ports: `11434:11434`
 - https://ollama.com/
 - https://github.com/ollama/ollama
 
-Model: `phi4-mini`
-
 ```bash
 docker exec -it ollama-ollama-1 /bin/bash
 ```
 
 ```bash
 ollama pull phi4-mini
+ollama pull mistral
 ```
