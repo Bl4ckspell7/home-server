@@ -1,7 +1,11 @@
 name: authentik
+
+x-variables:
+  authentik_image: &authentik_image ghcr.io/goauthentik/server:2025.8.2
+
 services:
   server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.8.1}
+    image: *authentik_image
     restart: unless-stopped
     command: server
     volumes:
@@ -31,7 +35,7 @@ services:
       redis:
         condition: service_healthy
   worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.8.1}
+    image: *authentik_image
     restart: unless-stopped
     command: worker
     # `user: root` and the docker socket volume are optional.
