@@ -212,6 +212,9 @@ Ports: `2283:2283`
 immich_postgres_password: ""
 ```
 
+Web UI Error: "Server offline, Version unknown"
+-> NPM: Enable Websockets
+
 ## Cup
 
 Ports: `8010:8000`
