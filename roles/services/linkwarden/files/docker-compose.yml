@@ -1,7 +1,7 @@
 name: linkwarden
 services:
   linkwarden:
-    image: ghcr.io/linkwarden/linkwarden:v2.13.0
+    image: ghcr.io/linkwarden/linkwarden:v2.13.1
     restart: unless-stopped
     ports:
       # Host Port : Container Port
