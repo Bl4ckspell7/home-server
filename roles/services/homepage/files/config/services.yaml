@@ -91,6 +91,13 @@
             ping: immich.lan
             statusStyle: "basic"
 
+        - Dawarich:
+            icon: sh-dawarich.svg
+            href: https://dawarich.bl4ckspell.freeddns.org/
+            description: Location History Tracker
+            ping: dawarich.lan
+            statusStyle: "basic"
+
         - Ollama:
             icon: sh-ollama.svg
             description: Local AI models

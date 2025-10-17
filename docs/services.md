@@ -38,6 +38,7 @@
 | **Linkwarden**       | 3010          | 3000               |
 | **Seafile**          | –             | –                  |
 | **Immich**           | 2283          | 2283               |
+| **Dawarich**         | 3002          | 3000               |
 
 ## Authentik
 
@@ -236,4 +237,19 @@ docker exec -it ollama-ollama-1 /bin/bash
 ```bash
 ollama pull phi4-mini
 ollama pull mistral
+```
+
+## Dawarich
+
+Ports: `3002:3000`
+
+- https://dawarich.app/docs/intro/#setup-your-dawarich-instance
+- https://github.com/Freika/dawarich
+
+Default credentials: `demo@dawarich.app` `password`
+
+`secrets.yml`:
+
+```yaml
+dawarich_postgres_password: ""
 ```

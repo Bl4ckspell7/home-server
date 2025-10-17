@@ -1,0 +1,40 @@
+- name: Ensure Dawarich directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/dawarich
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Load secrets for dawarich
+  ansible.builtin.include_vars:
+    file: "secrets.yml"
+  no_log: true
+
+- name: Template .env for dawarich
+  ansible.builtin.template:
+    src: dawarich.env.j2
+    dest: /opt/stacks/dawarich/.env
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Copy Dawarich docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/dawarich/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy Dawarich stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/dawarich
+    state: present
+    files:
+      - docker-compose.yml
+  register: dawarich_result
+
+- name: Debug Dawarich result
+  ansible.builtin.debug:
+    var: dawarich_result

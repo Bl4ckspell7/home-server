@@ -36,3 +36,6 @@
 
     - role: ollama
       tags: ollama
+
+    - role: dawarich
+      tags: dawarich
