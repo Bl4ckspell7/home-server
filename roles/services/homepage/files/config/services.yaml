@@ -63,6 +63,27 @@
             statusStyle: "basic"
 
     - Tools:
+        - Dawarich:
+            icon: sh-dawarich.svg
+            href: https://dawarich.bl4ckspell.freeddns.org/
+            description: Location History Tracker
+            ping: dawarich.lan
+            statusStyle: "basic"
+
+        - Immich:
+            icon: sh-immich.svg
+            href: https://immich.bl4ckspell.freeddns.org/
+            description: High performance self-hosted photo and video management solution.
+            ping: immich.lan
+            statusStyle: "basic"
+
+        - Linkwarden:
+            icon: sh-linkwarden.svg
+            href: https://linkwarden.bl4ckspell.freeddns.org/
+            description: Collect, read, annotate, and preserve your webpages.
+            ping: linkwarden.lan
+            statusStyle: "basic"
+
         - Paperless:
             icon: sh-paperless-ngx.svg
             href: https://paperless.bl4ckspell.freeddns.org/
@@ -75,31 +96,4 @@
             href: https://wallabag.bl4ckspell.freeddns.org/
             description: Save articles. Read them later.
             ping: wallabag.lan
-            statusStyle: "basic"
-
-        - Linkwarden:
-            icon: sh-linkwarden.svg
-            href: https://linkwarden.bl4ckspell.freeddns.org/
-            description: Collect, read, annotate, and preserve your webpages.
-            ping: linkwarden.lan
-            statusStyle: "basic"
-
-        - Immich:
-            icon: sh-immich.svg
-            href: https://immich.bl4ckspell.freeddns.org/
-            description: High performance self-hosted photo and video management solution.
-            ping: immich.lan
-            statusStyle: "basic"
-
-        - Dawarich:
-            icon: sh-dawarich.svg
-            href: https://dawarich.bl4ckspell.freeddns.org/
-            description: Location History Tracker
-            ping: dawarich.lan
-            statusStyle: "basic"
-
-        - Ollama:
-            icon: sh-ollama.svg
-            description: Local AI models
-            ping: ollama.lan
             statusStyle: "basic"
