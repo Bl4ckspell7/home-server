@@ -78,7 +78,7 @@
             statusStyle: "basic"
 
         - Linkwarden:
-            icon: sh-linkwarden
+            icon: sh-linkwarden.svg
             href: https://linkwarden.bl4ckspell.freeddns.org/
             description: Collect, read, annotate, and preserve your webpages.
             ping: linkwarden.lan
