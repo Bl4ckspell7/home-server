@@ -14,6 +14,7 @@ services:
       - 172.21.255.254
     volumes:
       - ./config:/app/config # Make sure your local config directory exists
+      - ./icons:/app/public/icons
       - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
     environment:
       # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts

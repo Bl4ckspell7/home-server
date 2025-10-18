@@ -8,6 +8,7 @@
   loop:
     - /opt/stacks/homepage
     - /opt/stacks/homepage/config
+    - /opt/stacks/homepage/icons
 
 - name: Copy Homepage config YAML files
   ansible.builtin.copy:
@@ -21,6 +22,14 @@
     - services.yaml
     - settings.yaml
     - widgets.yaml
+
+- name: Copy Homepage icons
+  ansible.builtin.copy:
+    src: "icons/"
+    dest: "/opt/stacks/homepage/icons/"
+    owner: root
+    group: root
+    mode: "0644"
 
 - name: Copy Homepage docker-compose file
   ansible.builtin.copy:
