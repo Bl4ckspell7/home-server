@@ -48,6 +48,7 @@ services:
         172.21.255.248 kuma.lan
         172.21.255.247 wallabag.lan
         172.21.255.246 homepage.lan
+        172.21.255.245 photon.lan
         172.21.255.244 dawarich.lan
         172.21.255.243 immich.lan
         172.21.255.242 cup.lan

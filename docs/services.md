@@ -39,6 +39,7 @@
 | **Seafile**          | –             | –                  |
 | **Immich**           | 2283          | 2283               |
 | **Dawarich**         | 3002          | 3000               |
+| **Photon**           | 2322          | 2322               |
 
 ## Authentik
 
@@ -253,3 +254,9 @@ Default credentials: `demo@dawarich.app` `password`
 ```yaml
 dawarich_postgres_password: ""
 ```
+
+## Photon
+
+Ports: `2322:2322`
+
+- https://github.com/rtuszik/photon-docker

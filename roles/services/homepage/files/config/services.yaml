@@ -69,6 +69,12 @@
             ping: ollama.lan
             statusStyle: "basic"
 
+        - Photon:
+            icon: /icons/photon.png
+            description: Geocoder
+            ping: photon.lan
+            statusStyle: "basic"
+
     - Tools:
         - Dawarich:
             icon: sh-dawarich.svg

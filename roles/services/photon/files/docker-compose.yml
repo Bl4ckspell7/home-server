@@ -1,0 +1,29 @@
+name: photon
+services:
+  photon:
+    image: rtuszik/photon-docker:latest
+    restart: unless-stopped
+    environment:
+      UPDATE_STRATEGY: PARALLEL
+      UPDATE_INTERVAL: 720h # Check for updates every 30 days
+      REGION: europe # Optional: specific region (continent, country, or planet)
+    volumes:
+      - photon_data:/photon/data
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.245
+    dns:
+      - 172.21.255.254
+    ports:
+      # Host Port : Container Port
+      - "2322:2322"
+
+volumes:
+  photon_data:
+
+networks:
+  default:
+    driver: bridge
+  svr1-network:
+    external: true

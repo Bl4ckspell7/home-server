@@ -1,0 +1,27 @@
+- name: Ensure photon directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/photon
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy Photon docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/photon/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy Photon stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/photon
+    state: present
+    files:
+      - docker-compose.yml
+  register: pihole_result
+
+- name: Debug Photon result
+  ansible.builtin.debug:
+    var: pihole_result
