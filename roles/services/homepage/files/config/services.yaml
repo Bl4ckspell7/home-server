@@ -62,6 +62,13 @@
             ping: authentik.lan
             statusStyle: "basic"
 
+    - AI & Data:
+        - Ollama:
+            icon: sh-ollama.svg
+            description: Local AI models
+            ping: ollama.lan
+            statusStyle: "basic"
+
     - Tools:
         - Dawarich:
             icon: sh-dawarich.svg
