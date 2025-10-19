@@ -90,6 +90,13 @@
             ping: immich.lan
             statusStyle: "basic"
 
+        - Jellyfin:
+            icon: sh-jellyfin.svg
+            href: https://jellyfin.bl4ckspell.freeddns.org/
+            description: The Free Software Media System
+            ping: jellyfin.lan
+            statusStyle: "basic"
+
         - Linkwarden:
             icon: sh-linkwarden.svg
             href: https://linkwarden.bl4ckspell.freeddns.org/

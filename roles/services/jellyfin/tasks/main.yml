@@ -1,0 +1,52 @@
+- name: Ensure jellyfin directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/jellyfin
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Create jellyfin group
+  ansible.builtin.group:
+    name: jellyfin
+    system: true
+    gid: 900
+    state: present
+
+- name: Create jellyfin user
+  ansible.builtin.user:
+    name: jellyfin
+    system: true
+    uid: 900
+    group: jellyfin
+    create_home: false
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Create media directory
+  ansible.builtin.file:
+    path: /srv/jellyfin-media
+    state: directory
+    owner: jellyfin
+    group: jellyfin
+    mode: "0755"
+
+- name: Copy Jellyfin docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/jellyfin/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy Jellyfin stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/jellyfin
+    state: present
+    files:
+      - docker-compose.yml
+  register: pihole_result
+
+- name: Debug Jellyfin result
+  ansible.builtin.debug:
+    var: pihole_result

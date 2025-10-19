@@ -1,0 +1,43 @@
+name: jellyfin
+services:
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    restart: "unless-stopped"
+    user: 900:900
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.240
+    dns:
+      - 172.21.255.254
+    ports:
+      # Host Port : Container Port
+      - 8096:8096/tcp
+      # - 7359:7359/udp
+    volumes:
+      - config:/config
+      - cache:/cache
+      - /srv/jellyfin-media:/media
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8096/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+    # Optional - alternative address used for autodiscovery
+    # environment:
+      # JELLYFIN_PublishedServerUrl: http://example.com
+    # Optional - may be necessary for docker healthcheck to pass if running in host network mode
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+
+volumes:
+  config:
+  cache:
+
+networks:
+  default:
+    driver: bridge
+  svr1-network:
+    external: true

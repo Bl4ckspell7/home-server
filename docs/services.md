@@ -271,3 +271,10 @@ dawarich_postgres_password: ""
 Ports: `2322:2322`
 
 - https://github.com/rtuszik/photon-docker
+
+## Jellyfin
+
+Ports: `8096:8096`
+
+- https://jellyfin.org/docs/
+- https://github.com/jellyfin/jellyfin
