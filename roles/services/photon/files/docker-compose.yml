@@ -18,6 +18,8 @@ services:
     ports:
       # Host Port : Container Port
       - "2322:2322"
+    healthcheck:
+      test: ["NONE"]
 
 volumes:
   photon_data:
