@@ -278,3 +278,7 @@ Ports: `8096:8096`
 
 - https://jellyfin.org/docs/
 - https://github.com/jellyfin/jellyfin
+
+Permissions:
+
+Afer copying media: `chown -R jellyfin:jellyfin /srv/jellyfin-media`
