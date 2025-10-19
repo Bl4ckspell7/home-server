@@ -18,7 +18,7 @@
   - Proxy Host: `service.DDNS.ORG`, `http://service.lan:DOCKER_CONTAINER_PORT`
   - request ssl certificate via "Let's Encrypt" (make sure Port `80` is forwarded in the router)
 
-#### Ports
+## Ports
 
 | **Service**          | **Host Port** | **Container Port** |
 | -------------------- | ------------- | ------------------ |
