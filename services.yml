@@ -43,3 +43,5 @@
     - role: photon
       tags: photon
 
+    - role: jellyfin
+      tags: jellyfin
