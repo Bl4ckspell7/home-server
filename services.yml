@@ -1,47 +1,47 @@
 - name: Deploy server applications
   hosts: svr1
   roles:
-    - role: dockge
-      tags: dockge
-
     - role: authentik
       tags: authentik
-
-    - role: wallabag
-      tags: wallabag
-
-    - role: uptime-kuma
-      tags: uptime-kuma
-
-    - role: paperless-ngx
-      tags: paperless-ngx
-
-    - role: nginx
-      tags: nginx
-
-    - role: pi-hole
-      tags: pi-hole
-
-    - role: homepage
-      tags: homepage
-
-    - role: linkwarden
-      tags: linkwarden
-
-    - role: immich
-      tags: immich
 
     - role: cup
       tags: cup
 
+    - role: dawarich
+      tags: dawarich
+
+    - role: dockge
+      tags: dockge
+
+    - role: homepage
+      tags: homepage
+
+    - role: immich
+      tags: immich
+
+    - role: jellyfin
+      tags: jellyfin
+
+    - role: linkwarden
+      tags: linkwarden
+
+    - role: nginx
+      tags: nginx
+
     - role: ollama
       tags: ollama
 
-    - role: dawarich
-      tags: dawarich
+    - role: paperless-ngx
+      tags: paperless-ngx
 
     - role: photon
       tags: photon
 
-    - role: jellyfin
-      tags: jellyfin
+    - role: pi-hole
+      tags: pi-hole
+
+    - role: uptime-kuma
+      tags: uptime-kuma
+
+    - role: wallabag
+      tags: wallabag
