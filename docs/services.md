@@ -244,7 +244,7 @@ ollama pull mistral
 
 Ports: `3002:3000`
 
-- https://dawarich.app/docs/intro/#setup-your-dawarich-instance
+- https://dawarich.app/docs/intro
 - https://github.com/Freika/dawarich
 
 Default credentials: `demo@dawarich.app` `password`
