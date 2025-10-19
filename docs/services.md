@@ -41,6 +41,14 @@
 | **Dawarich**         | 3002          | 3000               |
 | **Photon**           | 2322          | 2322               |
 
+## Service Users and Groups
+
+System users and groups created by Ansible for running services:
+
+| **Service**  | **User** | **UID** | **Group** | **GID** |
+| ------------ | -------- | ------- | --------- | ------- |
+| **Jellyfin** | jellyfin | 900     | jellyfin  | 900     |
+
 ## Authentik
 
 Port: `9080:9080`, `9443:9443`
