@@ -22,24 +22,27 @@
 
 | **Service**          | **Host Port** | **Container Port** |
 | -------------------- | ------------- | ------------------ |
-| **Authentik**        | 9080          | 9080               |
-|                      | 9443          | 9443               |
-| **Dockge**           | 5001          | 5001               |
-| **Wallabag**         | 8090          | 80                 |
-| **Uptime Kuma**      | 3001          | 3001               |
-| **Paperless-ngx**    | 8000          | 8000               |
-| **Nginx Proxy Mgr.** | 80            | 80                 |
-|                      | 443           | 443                |
-|                      | 81            | 81                 |
 | **Pi-hole**          | 53            | 53                 |
-|                      | 7080          | 80                 |
-|                      | 7443          | 443                |
-| **Homepage**         | 3000          | 3000               |
-| **Linkwarden**       | 3010          | 3000               |
-| **Seafile**          | –             | –                  |
+| **Nginx Proxy Mgr.** | 80            | 80                 |
+| **Nginx Proxy Mgr.** | 81            | 81                 |
+| **Nginx Proxy Mgr.** | 443           | 443                |
 | **Immich**           | 2283          | 2283               |
-| **Dawarich**         | 3002          | 3000               |
 | **Photon**           | 2322          | 2322               |
+| **Homepage**         | 3000          | 3000               |
+| **Uptime Kuma**      | 3001          | 3001               |
+| **Dawarich**         | 3002          | 3000               |
+| **Linkwarden**       | 3010          | 3000               |
+| **Dockge**           | 5001          | 5001               |
+| **Pi-hole**          | 7080          | 80                 |
+| **Pi-hole**          | 7443          | 443                |
+| **Paperless-ngx**    | 8000          | 8000               |
+| **Cup**              | 8010          | 8000               |
+| **Wallabag**         | 8090          | 80                 |
+| **Jellyfin**         | 8096          | 8096               |
+| **Authentik**        | 9080          | 9080               |
+| **Authentik**        | 9443          | 9443               |
+| **Ollama**           | 11434         | 11434              |
+| **Seafile**          | –             | –                  |
 
 ## Service Users and Groups
 
