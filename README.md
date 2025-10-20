@@ -1,4 +1,4 @@
-# Svr1
+# home-server
 
 Setup code for my homeserver.
 
