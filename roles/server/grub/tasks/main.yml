@@ -11,4 +11,6 @@
   loop:
     - { key: "GRUB_TIMEOUT", value: "0" }
     - { key: "GRUB_DISABLE_OS_PROBER", value: "true" }
+    - { key: "GRUB_CMDLINE_LINUX_DEFAULT", value: "'quiet'" }
+    - { key: "GRUB_CMDLINE_LINUX", value: "''" }
   notify: Update grub
