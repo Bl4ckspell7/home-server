@@ -23,6 +23,7 @@
       - gnome-weather
       - libreoffice*
       - malcontent
+      - plymouth
       - shotwell
       - totem
       - xterm
