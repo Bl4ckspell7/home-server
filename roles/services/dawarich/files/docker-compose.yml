@@ -1,6 +1,7 @@
 name: dawarich
 
 x-variables:
+  dawarich_image: &dawarich_image freikin/dawarich:0.33.1
   app_hosts: &app_hosts localhost,dawarich.bl4ckspell.freeddns.org
   photon_api_host: &photon_api_host photon.lan:2322
   photon_api_use_https: &photon_api_use_https false
@@ -45,7 +46,7 @@ services:
       timeout: 10s
     # command: postgres -c config_file=/etc/postgresql/postgresql.conf # Use custom config, uncomment if you want to use a custom config
   dawarich_app:
-    image: freikin/dawarich:latest
+    image: *dawarich_image
     container_name: dawarich_app
     volumes:
       - dawarich_public:/var/app/public
@@ -106,7 +107,7 @@ services:
           cpus: "0.50" # Limit CPU usage to 50% of one core
           memory: "4G" # Limit memory usage to 4GB
   dawarich_sidekiq:
-    image: freikin/dawarich:latest
+    image: *dawarich_image
     container_name: dawarich_sidekiq
     volumes:
       - dawarich_public:/var/app/public
