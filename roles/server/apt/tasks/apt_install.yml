@@ -10,6 +10,7 @@
       - ansible
       - ansible-core
       - ansible-lint
+      - bat
       - btop
       - build-essential
       - ca-certificates
