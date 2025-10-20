@@ -266,6 +266,10 @@ Default credentials: `demo@dawarich.app` `password`
 dawarich_postgres_password: ""
 ```
 
+**Reverse Geocoding:**
+
+-> Disable DNS Rate-limiting
+
 ## Photon
 
 Ports: `2322:2322`
