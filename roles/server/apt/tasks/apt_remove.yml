@@ -16,6 +16,7 @@
       - gnome-font-viewer
       - gnome-maps
       - gnome-music
+      - gnome-remote-desktop
       - gnome-snapshot
       - gnome-sound-recorder
       - gnome-tour
