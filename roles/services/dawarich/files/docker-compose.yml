@@ -2,6 +2,8 @@ name: dawarich
 
 x-variables:
   app_hosts: &app_hosts localhost,dawarich.bl4ckspell.freeddns.org
+  photon_api_host: &photon_api_host photon.lan:2322
+  photon_api_use_https: &photon_api_use_https false
 
 services:
   dawarich_redis:
@@ -9,7 +11,7 @@ services:
     container_name: dawarich_redis
     command: redis-server
     networks:
-      - dawarich
+      default:
     volumes:
       - dawarich_shared:/data
     restart: unless-stopped
@@ -28,7 +30,7 @@ services:
       - dawarich_shared:/var/shared
       # - ./postgresql.conf:/etc/postgresql/postgresql.conf # Optional, uncomment if you want to use a custom config
     networks:
-      - dawarich
+      default:
     env_file: .env
     environment:
       POSTGRES_USER: postgres
@@ -52,11 +54,12 @@ services:
       - dawarich_db_data:/dawarich_db_data
     networks:
       default:
-      dawarich:
       svr1-network:
         ipv4_address: 172.21.255.244
     dns:
       - 172.21.255.254
+    dns_search:
+      - "."
     ports:
       # Host Port : Container Port
       - 3002:3000
@@ -68,22 +71,13 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      RAILS_ENV: development
-      REDIS_URL: redis://dawarich_redis:6379
-      DATABASE_HOST: dawarich_db
-      DATABASE_USERNAME: postgres
-      # DATABASE_PASSWORD: password # in .env file
-      DATABASE_NAME: dawarich_development
-      MIN_MINUTES_SPENT_IN_CITY: 60
       APPLICATION_HOSTS: *app_hosts
-      TIME_ZONE: Europe/Berlin
-      APPLICATION_PROTOCOL: http
+      PHOTON_API_HOST: *photon_api_host
+      PHOTON_API_USE_HTTPS: *photon_api_use_https
       PROMETHEUS_EXPORTER_ENABLED: "false"
       PROMETHEUS_EXPORTER_HOST: 0.0.0.0
       PROMETHEUS_EXPORTER_PORT: 9394
-      SELF_HOSTED: "true"
-      STORE_GEODATA: "true"
-      DISABLE_TELEMETRY: "true"
+      MIN_MINUTES_SPENT_IN_CITY: 60
     logging:
       driver: "json-file"
       options:
@@ -119,7 +113,13 @@ services:
       - dawarich_watched:/var/app/tmp/imports/watched
       - dawarich_storage:/var/app/storage
     networks:
-      - dawarich
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.239
+    dns:
+      - 172.21.255.254
+    dns_search:
+      - "."
     stdin_open: true
     tty: true
     entrypoint: sidekiq-entrypoint.sh
@@ -127,20 +127,13 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      RAILS_ENV: development
-      REDIS_URL: redis://dawarich_redis:6379
-      DATABASE_HOST: dawarich_db
-      DATABASE_USERNAME: postgres
-      # DATABASE_PASSWORD: password # in .env file
-      DATABASE_NAME: dawarich_development
-      APPLICATION_HOSTS: localhost
-      BACKGROUND_PROCESSING_CONCURRENCY: 10
-      APPLICATION_PROTOCOL: http
+      APPLICATION_HOSTS: *app_hosts
+      PHOTON_API_HOST: *photon_api_host
+      PHOTON_API_USE_HTTPS: *photon_api_use_https
       PROMETHEUS_EXPORTER_ENABLED: "false"
       PROMETHEUS_EXPORTER_HOST: dawarich_app
       PROMETHEUS_EXPORTER_PORT: 9394
-      SELF_HOSTED: "true"
-      STORE_GEODATA: "true"
+      BACKGROUND_PROCESSING_CONCURRENCY: 10
     logging:
       driver: "json-file"
       options:
@@ -175,4 +168,3 @@ networks:
     driver: bridge
   svr1-network:
     external: true
-  dawarich:
