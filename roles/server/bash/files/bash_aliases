@@ -19,6 +19,8 @@ alias ff="fastfetch"
 alias gcl="git clone"
 alias bat="batcat"
 
+alias jf="chown -R jellyfin:jellyfin /srv/jellyfin-media"
+
 alias sd='containers=$(docker ps -q); [ -n "$containers" ] && docker stop $containers; shutdown now'
 alias sr='containers=$(docker ps -q); [ -n "$containers" ] && docker stop $containers; systemctl reboot'
 alias sn="shutdown now"
