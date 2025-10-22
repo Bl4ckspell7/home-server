@@ -1,6 +1,17 @@
-- name: Ensure UFW is enabled
-  community.general.ufw:
-    state: enabled
+- name: Get current UFW rules
+  ansible.builtin.shell:
+    cmd: set -o pipefail && ufw status numbered | grep -E '^\[' | sed 's/\[\s*\([0-9]*\)\].*/\1/' | sort -rn
+    executable: /bin/bash
+  register: ufw_rule_numbers
+  changed_when: false
+  failed_when: false
+
+- name: Delete all existing UFW rules
+  ansible.builtin.command:
+    cmd: ufw --force delete {{ item }}
+  loop: "{{ ufw_rule_numbers.stdout_lines }}"
+  when: ufw_rule_numbers.stdout_lines | length > 0
+  changed_when: true
 
 - name: Enable UFW logging with recommended level
   community.general.ufw:
@@ -57,3 +68,7 @@
     port: 81
     proto: tcp
     comment: "Allow Nginx Proxy Manager Web UI"
+
+- name: Ensure UFW is enabled
+  community.general.ufw:
+    state: enabled
