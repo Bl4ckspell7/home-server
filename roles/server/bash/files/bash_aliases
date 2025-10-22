@@ -17,7 +17,8 @@ alias h="history"
 alias uefi="sudo systemctl reboot --firmware-setup"
 alias ff="fastfetch"
 alias gcl="git clone"
-alias bat="batcat"
+alias cat="batcat"
+alias catt='/usr/bin/cat'
 
 alias jf="chown -R jellyfin:jellyfin /srv/jellyfin-media"
 
