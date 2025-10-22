@@ -1,23 +1,31 @@
-# https://dns.sb/
-- name: Configure custom DNS in /etc/systemd/resolved.conf
+- name: Remove all existing DNS configuration lines from resolved.conf
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: "{{ item }}"
+    state: absent
+  loop:
+    - "^#?DNS="
+    - "^#?FallbackDNS="
+    - "^#?DNSOverTLS="
+    - "^#?DNSSEC="
+    - "^#?Cache="
+    - "^#?DNSStubListener="
+    - "^#?ReadEtcHosts="
+    - "^#?Domains="
+
+- name: Configure systemd-resolved DNS settings
   ansible.builtin.blockinfile:
     path: /etc/systemd/resolved.conf
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - CUSTOM DNS"
-    block: |
-      [Resolve]
-      DNS=192.168.178.117
-      FallbackDNS=185.222.222.222 45.11.45.11 2a09:: 2a11::
-      DNSOverTLS=false
-      DNSSEC=true
-      DNSStubListener=yes
-      Domains=lan
-    create: true
-    owner: root
-    group: root
+    insertafter: '^\[Resolve\]'
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
     mode: "0644"
-
-- name: Restart systemd-resolved to apply DNS changes
-  ansible.builtin.systemd:
-    name: systemd-resolved
-    state: restarted
-    enabled: true
+    block: |
+      DNS=185.222.222.222#dot.sb 45.11.45.11#dot.sb 2a09::#dot.sb 2a11::#dot.sb
+      FallbackDNS=1.1.1.1#one.one.one.one 1.0.0.1#one.one.one.one 2606:4700:4700::1111#one.one.one.one 2606:4700:4700::1001#one.one.one.one
+      DNSOverTLS=false
+      DNSSEC=yes
+      Cache=yes
+      DNSStubListener=yes
+      ReadEtcHosts=yes
+      Domains=lan
+  notify: Restart systemd-resolved
