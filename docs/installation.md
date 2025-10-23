@@ -47,12 +47,6 @@ chmod 600 /root/.ssh/authorized_keys
 chown -R root:root /root/.ssh
 ```
 
-### APT _(from remote)_
-
-```bash
-apt modernize-sources
-```
-
 ### Automatic LUKS Decryption _(on server/from remote)_
 
 Save your key to disk:
