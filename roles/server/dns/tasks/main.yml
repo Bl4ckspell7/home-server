@@ -29,3 +29,16 @@
       ReadEtcHosts=yes
       Domains=lan
   notify: Restart systemd-resolved
+
+- name: Remove existing /etc/resolv.conf
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    state: absent
+
+- name: Symlink systemd-resolved stub to /etc/resolv.conf
+  ansible.builtin.file:
+    src: /run/systemd/resolve/stub-resolv.conf
+    dest: /etc/resolv.conf
+    state: link
+    force: true
+  notify: Restart systemd-resolved
