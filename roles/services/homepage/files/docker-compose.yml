@@ -13,6 +13,8 @@ services:
         ipv4_address: 172.21.255.246
     dns:
       - 172.21.255.254
+    dns_search:
+      - "."
     volumes:
       - ./config:/app/config # Make sure your local config directory exists
       - ./icons:/app/public/icons

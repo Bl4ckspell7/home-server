@@ -12,6 +12,8 @@ services:
         ipv4_address: 172.21.255.251
     dns:
       - 172.21.255.254
+    dns_search:
+      - "."
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data

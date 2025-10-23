@@ -12,6 +12,8 @@ services:
         ipv4_address: 172.21.255.250
     dns:
       - 172.21.255.254
+    dns_search:
+      - "."
     env_file: .env
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres

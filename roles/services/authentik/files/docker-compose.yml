@@ -23,6 +23,8 @@ services:
         ipv4_address: 172.21.255.253
     dns:
       - 172.21.255.254
+    dns_search: # don't append any search domain
+      - "."
     environment:
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
       AUTHENTIK_REDIS__HOST: redis

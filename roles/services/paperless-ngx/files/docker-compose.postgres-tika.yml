@@ -48,6 +48,8 @@ services:
         ipv4_address: 172.21.255.252
     dns:
       - 172.21.255.254
+    dns_search:
+      - "."
     volumes:
       - data:/usr/src/paperless/data
       - media:/usr/src/paperless/media
