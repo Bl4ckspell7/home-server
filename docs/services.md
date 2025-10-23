@@ -136,6 +136,9 @@ authentik_client_id: ""
 authentik_client_secret: ""
 ```
 
+Docker compose atom feed:
+- https://github.com/paperless-ngx/paperless-ngx/commits/main/docker/compose/docker-compose.postgres-tika.yml.atom
+
 ## Nging Proxy Manager
 
 Ports: `80:80`, `443:443`, `81:81`
