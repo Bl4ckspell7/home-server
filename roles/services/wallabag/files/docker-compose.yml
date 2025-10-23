@@ -20,6 +20,7 @@ services:
       SYMFONY__ENV__DOMAIN_NAME: ${WALLABAG_DOMAIN_NAME}
       SYMFONY__ENV__SERVER_NAME: "Wallabag"
     ports:
+      # Host Port : Container Port
       - "8090:80"
     networks:
       default:

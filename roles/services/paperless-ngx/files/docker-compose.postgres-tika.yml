@@ -40,6 +40,7 @@ services:
       - gotenberg
       - tika
     ports:
+      # Host Port : Container Port
       - "8000:8000"
     networks:
       default:
@@ -60,7 +61,7 @@ services:
       PAPERLESS_URL: "https://paperless.bl4ckspell.freeddns.org"
 
       # PAPERLESS_FORCE_SCRIPT_NAME: "/"
-      
+
       # Use this variable to set a timezone for the Paperless Docker containers. Defaults to UTC.
       PAPERLESS_TIME_ZONE: "Europe/Berlin"
 

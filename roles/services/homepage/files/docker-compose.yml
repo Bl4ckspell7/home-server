@@ -5,6 +5,7 @@ services:
     container_name: homepage
     restart: unless-stopped
     ports:
+      # Host Port : Container Port
       - "3000:3000"
     networks:
       default:

@@ -4,7 +4,7 @@ services:
     image: "jc21/nginx-proxy-manager:2.12.6"
     restart: always
     ports:
-      # These ports are in format <host-port>:<container-port>
+      # Host Port : Container Port
       - "80:80" # Public HTTP Port
       - "443:443" # Public HTTPS Port
       - "81:81" # Admin Web Port
