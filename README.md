@@ -8,6 +8,7 @@ Setup code for my homeserver.
 - [Router](docs/router.md)
 - [Services](docs/services.md)
 - [SSH](docs/ssh.md)
+- [Network](docs/network.md)
 - [VNC (How-To)](docs/howto/vnc.md)
 
 ## Components
