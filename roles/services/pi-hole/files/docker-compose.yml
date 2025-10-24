@@ -9,15 +9,14 @@ services:
       default:
       svr1-network:
         ipv4_address: 172.21.255.254
-    dns:
-      # - 172.21.255.254
-      - 185.222.222.222
-      - 45.11.45.11
-      - 1.1.1.1
-      - 1.0.0.1
+    # commented out to use DNS settings of the host and make Docker start it's embedded DNS server
+    # dns:
+    #   - 172.17.0.1 # docker bridge gateway
+    dns_search:
+      - "."
     ports:
       # Host Port : Container Port
-      - "192.168.178.117:53:53/tcp"
+      - "192.168.178.117:53:53/tcp" # avoid port conflict with host DNS configuration
       - "192.168.178.117:53:53/udp"
       # Default HTTP Port
       # - "7080:80/tcp"
@@ -38,11 +37,9 @@ services:
       FTLCONF_dns_listeningMode: "all"
       FTLCONF_dns_dnssec: "true"
       FTLCONF_dns_port: "53"
+      # use Docker's embedded DNS server (which uses host's DNS settings)
       FTLCONF_dns_upstreams: |
-        185.222.222.222
-        45.11.45.11
-        1.1.1.1
-        1.0.0.1
+        127.0.0.11
       FTLCONF_dns_domain: "lan"
       FTLCONF_dns_hosts: |
         172.21.255.254 pihole.lan
