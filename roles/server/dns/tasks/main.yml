@@ -22,7 +22,7 @@
     block: |
       DNS=185.222.222.222#dot.sb 45.11.45.11#dot.sb 2a09::#dot.sb 2a11::#dot.sb
       FallbackDNS=1.1.1.1#one.one.one.one 1.0.0.1#one.one.one.one 2606:4700:4700::1111#one.one.one.one 2606:4700:4700::1001#one.one.one.one
-      DNSOverTLS=false
+      DNSOverTLS=yes
       DNSSEC=yes
       Cache=yes
       DNSStubListener=yes
