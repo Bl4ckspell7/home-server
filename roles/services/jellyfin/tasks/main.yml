@@ -45,8 +45,8 @@
     state: present
     files:
       - docker-compose.yml
-  register: pihole_result
+  register: jellyfin_result
 
 - name: Debug Jellyfin result
   ansible.builtin.debug:
-    var: pihole_result
+    var: jellyfin_result
