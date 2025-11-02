@@ -14,7 +14,7 @@
     uptime: true
     units: metric
     refresh: 1000
-    network: false
+    network: true
 
 - datetime:
     text_size: xl
