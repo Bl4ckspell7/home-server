@@ -37,6 +37,8 @@
             icon: sh-cup-updates.svg
             href: http://192.168.178.117:8010/
             description: "[LAN only] Docker container updates made easy."
+            ping: cup.lan
+            statusStyle: "basic"
             widget:
               type: customapi
               url: http://cup.lan:8000/api/v3/json
