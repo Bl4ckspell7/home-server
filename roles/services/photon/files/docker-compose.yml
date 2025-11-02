@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     environment:
       UPDATE_STRATEGY: PARALLEL
-      UPDATE_INTERVAL: 720h # Check for updates every 30 days
+      UPDATE_INTERVAL: 14d
       REGION: europe # Optional: specific region (continent, country, or planet)
       BASE_URL: https://download1.graphhopper.com/public/ # Official
       # BASE_URL: https://r2.koalasec.org/public # Community mirror
