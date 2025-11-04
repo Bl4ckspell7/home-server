@@ -1,7 +1,7 @@
 name: authentik
 
 x-variables:
-  authentik_image: &authentik_image ghcr.io/goauthentik/server:2025.8.4
+  authentik_image: &authentik_image ghcr.io/goauthentik/server:2025.10.1
 
 services:
   server:
@@ -27,15 +27,12 @@ services:
       - "."
     environment:
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
-      AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
     depends_on:
       postgresql:
-        condition: service_healthy
-      redis:
         condition: service_healthy
   worker:
     image: *authentik_image
@@ -57,15 +54,12 @@ services:
       - .env
     environment:
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
-      AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
     depends_on:
       postgresql:
-        condition: service_healthy
-      redis:
         condition: service_healthy
   postgresql:
     image: docker.io/library/postgres:16-alpine
@@ -85,23 +79,8 @@ services:
       POSTGRES_USER: ${PG_USER:-authentik}
       POSTGRES_DB: ${PG_DB:-authentik}
 
-  redis:
-    image: docker.io/library/redis:alpine
-    command: --save 60 1 --loglevel warning
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
-      start_period: 20s
-      interval: 30s
-      retries: 5
-      timeout: 3s
-    volumes:
-      - redis:/data
-
 volumes:
   database:
-    driver: local
-  redis:
     driver: local
 
 networks:
