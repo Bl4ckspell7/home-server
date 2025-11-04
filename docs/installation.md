@@ -100,5 +100,5 @@ Output should contain `"g"`.
 4. Wake the server:
 
 ```bash
-wakeonlan xx:xx:xx:xx:xx:xx
+sudo etherwake  xx:xx:xx:xx:xx:xx
 ```
