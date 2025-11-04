@@ -1,0 +1,17 @@
+[Unit]
+Description=Watch Jellyfin media directories for permission enforcement
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/jellyfin-watch.sh
+Restart=always
+RestartSec=5
+Nice=10
+IOSchedulingClass=idle
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=jellyfin-watch
+
+[Install]
+WantedBy=multi-user.target

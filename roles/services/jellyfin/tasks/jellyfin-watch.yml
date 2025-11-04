@@ -1,0 +1,36 @@
+---
+# Jellyfin permissions and watcher setup
+
+- name: Deploy Jellyfin permissions fixer script
+  ansible.builtin.template:
+    src: jellyfin-set-permissions.sh.j2
+    dest: /usr/local/bin/jellyfin-set-permissions.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy Jellyfin watcher script
+  ansible.builtin.template:
+    src: jellyfin-watch.sh.j2
+    dest: /usr/local/bin/jellyfin-watch.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy Jellyfin watcher systemd service
+  ansible.builtin.copy:
+    src: jellyfin-watch.service
+    dest: /etc/systemd/system/jellyfin-watch.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Reload systemd to register Jellyfin watcher
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Enable and start Jellyfin watcher
+  ansible.builtin.systemd:
+    name: jellyfin-watch.service
+    enabled: true
+    state: started
