@@ -1,7 +1,7 @@
 name: nginx-proxy-manager
 services:
   app:
-    image: "jc21/nginx-proxy-manager:2.12.6"
+    image: "jc21/nginx-proxy-manager:2.13.0"
     restart: always
     ports:
       # Host Port : Container Port
