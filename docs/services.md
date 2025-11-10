@@ -42,7 +42,6 @@
 | **Authentik**        | 9080          | 9080               |
 | **Authentik**        | 9443          | 9443               |
 | **Ollama**           | 11434         | 11434              |
-| **Seafile**          | –             | –                  |
 
 ## Service Users and Groups
 
@@ -136,9 +135,6 @@ authentik_client_id: ""
 authentik_client_secret: ""
 ```
 
-Docker compose atom feed:
-- https://github.com/paperless-ngx/paperless-ngx/commits/main/docker/compose/docker-compose.postgres-tika.yml.atom
-
 ## Nging Proxy Manager
 
 Ports: `80:80`, `443:443`, `81:81`
@@ -205,14 +201,6 @@ Setup:
 - open aio setup on local ip
 - domaincheck: NPM: forward http to port 11000 of "nextcloud-aio-domaincheck"
 - NPM: forward to "nextcloud-aio-apache"
-
-## Seafile
-
-Ports: ``
-
-- https://manual.seafile.com/latest/
-- https://manual.seafile.com/latest/setup/setup_ce_by_docker/
-- https://github.com/haiwen/seafile
 
 ## Immich
 
@@ -286,6 +274,4 @@ Ports: `8096:8096`
 - https://jellyfin.org/docs/
 - https://github.com/jellyfin/jellyfin
 
-Permissions:
-
-Afer copying media: `chown -R jellyfin:jellyfin /srv/jellyfin-media`
+Permissions are automatically enforced on media directories by a dedicated watcher script and corresponding `systemd` service. These ensure correct ownership (`jellyfin:jellyfin`) and access permissions are maintained continuously.
