@@ -20,7 +20,7 @@ services:
     volumes:
       - config:/config
       - cache:/cache
-      - /srv/jellyfin-media:/media
+      - /mnt/wd_red_pro_20tb/jellyfin:/media
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8096/health"]
       interval: 30s

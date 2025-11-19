@@ -2,7 +2,7 @@
 
   vars:
     jellyfin_media_paths:
-      - /srv/jellyfin-media
+      - /mnt/wd_red_pro_20tb/jellyfin
 
   block:
     - name: Create jellyfin group
