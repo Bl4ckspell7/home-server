@@ -1,0 +1,43 @@
+---
+- name: Deploy Immich stack
+  block:
+    - name: Ensure Immich stack directory exists
+      ansible.builtin.file:
+        path: /opt/stacks/immich
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Load Immich secrets
+      ansible.builtin.include_vars:
+        file: "secrets.yml"
+      no_log: true
+
+    - name: Template Immich .env
+      ansible.builtin.template:
+        src: immich.env.j2
+        dest: /opt/stacks/immich/.env
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Install Immich docker-compose file
+      ansible.builtin.copy:
+        src: docker-compose.yml
+        dest: /opt/stacks/immich/docker-compose.yml
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Deploy Immich stack
+      community.docker.docker_compose_v2:
+        project_src: /opt/stacks/immich
+        state: present
+        files:
+          - docker-compose.yml
+      register: immich_result
+
+    - name: Debug Immich deploy result
+      ansible.builtin.debug:
+        var: immich_result

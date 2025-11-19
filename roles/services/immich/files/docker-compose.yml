@@ -17,6 +17,7 @@ services:
     container_name: immich_server
     restart: unless-stopped
     image: *immich_image_server
+    user: 901:901
     # extends:
     #   file: hwaccel.transcoding.yml
     #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding

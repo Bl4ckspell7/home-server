@@ -1,0 +1,35 @@
+---
+- name: Configure Immich service user
+  block:
+    - name: Create immich group
+      ansible.builtin.group:
+        name: immich
+        system: true
+        gid: 901
+        state: present
+
+    - name: Create immich user
+      ansible.builtin.user:
+        name: immich
+        system: true
+        uid: 901
+        group: immich
+        create_home: false
+        shell: /usr/sbin/nologin
+        state: present
+
+    - name: Ensure Immich media directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: immich
+        group: immich
+        mode: "0700"
+      loop:
+        - "{{ immich_upload_location }}"
+        - "{{ immich_upload_location }}/backups"
+        - "{{ immich_upload_location }}/encoded-video"
+        - "{{ immich_upload_location }}/library"
+        - "{{ immich_upload_location }}/profile"
+        - "{{ immich_upload_location }}/thumbs"
+        - "{{ immich_upload_location }}/upload"
