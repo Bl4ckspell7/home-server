@@ -55,15 +55,6 @@
                   label: Available updates
                   format: number
 
-- Services:
-    - SSO:
-        - Authentik:
-            icon: sh-authentik.svg
-            href: https://authentik.bl4ckspell.freeddns.org/
-            description: Login
-            ping: authentik.lan
-            statusStyle: "basic"
-
     - AI & Data:
         - Ollama:
             icon: sh-ollama.svg
@@ -75,6 +66,15 @@
             icon: /icons/photon.png
             description: Geocoder
             ping: photon.lan
+            statusStyle: "basic"
+
+- Services:
+    - SSO:
+        - Authentik:
+            icon: sh-authentik.svg
+            href: https://authentik.bl4ckspell.freeddns.org/
+            description: Login
+            ping: authentik.lan
             statusStyle: "basic"
 
     - Tools:
