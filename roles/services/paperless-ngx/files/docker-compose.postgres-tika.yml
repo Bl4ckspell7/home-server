@@ -32,7 +32,7 @@
 name: paperless-ngx
 services:
   webserver:
-    image: ghcr.io/paperless-ngx/paperless-ngx:2.19.6
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.20.0
     restart: unless-stopped
     depends_on:
       - db
@@ -100,7 +100,7 @@ services:
     volumes:
       - redisdata:/data
   db:
-    image: docker.io/library/postgres:18.0
+    image: docker.io/library/postgres:18.1
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
@@ -116,7 +116,7 @@ services:
       POSTGRES_USER: ${PAPERLESS_DBUSER}
       POSTGRES_PASSWORD: ${PAPERLESS_DBPASS}
   gotenberg:
-    image: docker.io/gotenberg/gotenberg:8.24
+    image: docker.io/gotenberg/gotenberg:8.25
     restart: unless-stopped
     # The gotenberg chromium route is used to convert .eml files. We do not
     # want to allow external content like tracking pixels or even javascript.
