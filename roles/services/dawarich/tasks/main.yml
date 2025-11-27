@@ -33,6 +33,7 @@
     state: present
     files:
       - docker-compose.yml
+    remove_orphans: true
   register: dawarich_result
 
 - name: Debug Dawarich result

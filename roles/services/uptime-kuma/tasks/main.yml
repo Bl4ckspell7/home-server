@@ -20,6 +20,7 @@
     state: present
     files:
       - docker-compose.yml
+    remove_orphans: true
   register: uptime_kuma_result
 
 - name: Debug Uptime Kuma result

@@ -23,6 +23,7 @@
     state: present
     files:
       - docker-compose.yml
+    remove_orphans: true
   register: dockge_result
 
 - name: Debug Docker Compose result

@@ -44,6 +44,7 @@
     state: present
     files:
       - docker-compose.yml
+    remove_orphans: true
   register: wallabag_result
 
 - name: Debug Docker Compose result

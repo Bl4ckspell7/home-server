@@ -20,6 +20,7 @@
     state: present
     files:
       - docker-compose.yml
+    remove_orphans: true
   register: pihole_result
 
 - name: Debug Ollama result

@@ -33,6 +33,7 @@
     state: present
     files:
       - docker-compose.yml
+    remove_orphans: true
   register: linkwarden_result
 
 - name: Debug Linkwarden result

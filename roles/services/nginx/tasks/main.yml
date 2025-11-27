@@ -33,6 +33,7 @@
     state: present
     files:
       - docker-compose.yml
+    remove_orphans: true
   register: nginx_pm_result
 
 - name: Debug nginx-proxy-manager result

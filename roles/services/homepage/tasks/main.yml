@@ -45,6 +45,7 @@
     state: present
     files:
       - docker-compose.yml
+    remove_orphans: true
   register: homepage_result
 
 - name: Debug Homepage result

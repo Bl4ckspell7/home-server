@@ -36,6 +36,7 @@
         state: present
         files:
           - docker-compose.yml
+        remove_orphans: true
       register: immich_result
 
     - name: Debug Immich deploy result
