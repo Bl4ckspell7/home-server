@@ -1,6 +1,7 @@
 name: ollama
 services:
   ollama:
+    container_name: ollama
     image: ollama/ollama:latest
     restart: unless-stopped
     ports:
