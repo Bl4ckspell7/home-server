@@ -7,8 +7,8 @@ x-variables:
   photon_api_use_https: &photon_api_use_https false
 
 services:
-  dawarich_redis:
-    container_name: dawarich_redis
+  dawarich-redis:
+    container_name: dawarich-redis
     image: redis:7.4-alpine
     command: redis-server
     networks:
@@ -22,8 +22,9 @@ services:
       retries: 5
       start_period: 30s
       timeout: 10s
-  dawarich_db:
-    container_name: dawarich_db
+
+  dawarich-postgres:
+    container_name: dawarich-postgres
     image: postgis/postgis:17-3.5-alpine
     shm_size: 1G
     volumes:
@@ -49,8 +50,9 @@ services:
       start_period: 30s
       timeout: 10s
     # command: postgres -c config_file=/etc/postgresql/postgresql.conf # Use custom config, uncomment if you want to use a custom config
-  dawarich_app:
-    container_name: dawarich_app
+
+  dawarich-app:
+    container_name: dawarich-app
     image: *dawarich_image
     volumes:
       - dawarich_public:/var/app/public
@@ -100,10 +102,10 @@ services:
       start_period: 30s
       timeout: 10s
     depends_on:
-      dawarich_db:
+      dawarich-postgres:
         condition: service_healthy
         restart: true
-      dawarich_redis:
+      dawarich-redis:
         condition: service_healthy
         restart: true
     deploy:
@@ -111,8 +113,9 @@ services:
         limits:
           cpus: ${APP_CPU_LIMIT:-0.50}
           memory: ${APP_MEMORY_LIMIT:-4G}
-  dawarich_sidekiq:
-    container_name: dawarich_sidekiq
+
+  dawarich-sidekiq:
+    container_name: dawarich-sidekiq
     image: *dawarich_image
     volumes:
       - dawarich_public:/var/app/public
@@ -137,7 +140,7 @@ services:
       PHOTON_API_HOST: *photon_api_host
       PHOTON_API_USE_HTTPS: *photon_api_use_https
       PROMETHEUS_EXPORTER_ENABLED: ${PROMETHEUS_EXPORTER_ENABLED:-"false"}
-      PROMETHEUS_EXPORTER_HOST: ${PROMETHEUS_EXPORTER_HOST_SIDEKIQ:-dawarich_app}
+      PROMETHEUS_EXPORTER_HOST: ${PROMETHEUS_EXPORTER_HOST_SIDEKIQ:-dawarich-app}
       PROMETHEUS_EXPORTER_PORT: ${PROMETHEUS_EXPORTER_PORT:-9394}
       BACKGROUND_PROCESSING_CONCURRENCY: ${BACKGROUND_PROCESSING_CONCURRENCY:-10}
     logging:
@@ -152,13 +155,13 @@ services:
       start_period: 30s
       timeout: 10s
     depends_on:
-      dawarich_db:
+      dawarich-postgres:
         condition: service_healthy
         restart: true
-      dawarich_redis:
+      dawarich-redis:
         condition: service_healthy
         restart: true
-      dawarich_app:
+      dawarich-app:
         condition: service_healthy
         restart: true
 
