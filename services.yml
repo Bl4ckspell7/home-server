@@ -4,6 +4,9 @@
     - role: authentik
       tags: authentik
 
+    - role: caddy
+      tags: caddy
+
     - role: cup
       tags: cup
 
