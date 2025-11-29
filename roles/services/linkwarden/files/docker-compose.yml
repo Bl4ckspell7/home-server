@@ -1,6 +1,7 @@
 name: linkwarden
 services:
   linkwarden:
+    container_name: linkwarden
     image: ghcr.io/linkwarden/linkwarden:v2.13.1
     restart: unless-stopped
     ports:
@@ -16,21 +17,25 @@ services:
       - "."
     env_file: .env
     environment:
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@linkwarden-postgres:5432/postgres
       NEXT_PUBLIC_OLLAMA_ENDPOINT_URL: http://ollama.lan:11434
       OLLAMA_MODEL: mistral
     volumes:
       - ./data:/data/data
     depends_on:
-      - postgres
-      - meilisearch
-  postgres:
+      - linkwarden-postgres
+      - linkwarden-meilisearch
+
+  linkwarden-postgres:
+    container_name: linkwarden-postgres
     image: postgres:16-alpine
     env_file: .env
     restart: unless-stopped
     volumes:
       - ./pgdata:/var/lib/postgresql/data
-  meilisearch:
+
+  linkwarden-meilisearch:
+    container_name: linkwarden-meilisearch
     image: getmeili/meilisearch:v1.12.8
     restart: unless-stopped
     env_file:
