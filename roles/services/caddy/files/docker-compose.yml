@@ -1,0 +1,32 @@
+services:
+  caddy:
+    container_name: caddy
+    image: caddy:2.10.2
+    restart: always
+    ports:
+      # - "80:80"
+      - "443:443/tcp"
+      - "443:443/udp"
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.238
+    dns:
+      - 172.21.255.254
+    dns_search: # don't append any search domain
+      - "."
+    volumes:
+      - ./conf:/etc/caddy
+      # - ./site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  default:
+    driver: bridge
+  svr1-network:
+    external: true

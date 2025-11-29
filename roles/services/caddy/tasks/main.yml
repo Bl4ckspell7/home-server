@@ -1,0 +1,48 @@
+- name: Ensure Caddy stack and config directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - /opt/stacks
+    - /opt/stacks/caddy
+    - /opt/stacks/caddy/conf
+
+- name: Copy Caddy docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/caddy/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy Caddyfile
+  ansible.builtin.copy:
+    src: conf/Caddyfile
+    dest: /opt/stacks/caddy/conf/Caddyfile
+    owner: root
+    group: root
+    mode: "0400"
+
+- name: Stop Caddy
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/caddy
+    state: absent
+    files:
+      - docker-compose.yml
+    remove_orphans: true
+
+- name: Start Caddy
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/caddy
+    state: present
+    files:
+      - docker-compose.yml
+    remove_orphans: true
+  register: caddy_result
+
+- name: Debug Docker Compose result
+  ansible.builtin.debug:
+    var: caddy_result

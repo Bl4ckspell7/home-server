@@ -1,0 +1,102 @@
+{
+	# Enable automatic HTTPS
+	email bl4ckspell@proton.me # Replace with your email for Let's Encrypt
+}
+
+(error_page) {
+	handle_errors {
+		respond "{err.status_code} {err.status_text}"
+	}
+}
+
+# Authentik
+authentik.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy https://authentik.lan:9443 {
+		transport http {
+			tls_insecure_skip_verify
+		}
+	}
+}
+
+# Homepage (root domain)
+bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://homepage.lan:3000
+}
+
+# Cup
+cup.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://cup.lan:8000
+}
+
+# Dawarich
+dawarich.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://dawarich.lan:3000
+}
+
+# Dockge
+dockge.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://dockge.lan:5001
+}
+
+# Homepage
+homepage.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://homepage.lan:3000
+}
+
+# Immich
+immich.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://immich.lan:2283
+}
+
+# Jellyfin
+jellyfin.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://jellyfin.lan:8096
+}
+
+# Uptime Kuma
+kuma.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://kuma.lan:3001
+}
+
+# Linkwarden
+linkwarden.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://linkwarden.lan:3000
+}
+
+# NPM (Nginx Proxy Manager)
+npm.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://npm.lan:81
+}
+
+# Paperless
+paperless.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://paperless.lan:8000
+}
+
+# Pi-hole
+pihole.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy https://pihole.lan:443 {
+		transport http {
+			tls_insecure_skip_verify
+		}
+	}
+}
+
+# Wallabag
+wallabag.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://wallabag.lan:80
+}
