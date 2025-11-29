@@ -1,6 +1,7 @@
 name: dockge
 services:
   dockge:
+    container_name: dockge
     image: louislam/dockge:1
     restart: always
     ports:
