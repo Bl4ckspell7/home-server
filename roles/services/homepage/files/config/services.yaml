@@ -4,6 +4,12 @@
 
 - Server:
     - Essential:
+        - Caddy:
+            icon: sh-caddy.svg
+            description: Reverse-Proxy
+            ping: caddy.lan
+            statusStyle: "basic"
+
         - Nginx Proxy Manager:
             icon: sh-nginx-proxy-manager.svg
             href: https://npm.bl4ckspell.freeddns.org/
