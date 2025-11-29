@@ -1,6 +1,7 @@
 name: photon
 services:
   photon:
+    container_name: photon
     image: rtuszik/photon-docker:1.3.0
     restart: unless-stopped
     environment:
