@@ -8,8 +8,8 @@ x-variables:
 
 services:
   dawarich_redis:
-    image: redis:7.4-alpine
     container_name: dawarich_redis
+    image: redis:7.4-alpine
     command: redis-server
     networks:
       default:
@@ -23,9 +23,9 @@ services:
       start_period: 30s
       timeout: 10s
   dawarich_db:
+    container_name: dawarich_db
     image: postgis/postgis:17-3.5-alpine
     shm_size: 1G
-    container_name: dawarich_db
     volumes:
       - dawarich_db_data:/var/lib/postgresql/data
       - dawarich_shared:/var/shared
@@ -50,8 +50,8 @@ services:
       timeout: 10s
     # command: postgres -c config_file=/etc/postgresql/postgresql.conf # Use custom config, uncomment if you want to use a custom config
   dawarich_app:
-    image: *dawarich_image
     container_name: dawarich_app
+    image: *dawarich_image
     volumes:
       - dawarich_public:/var/app/public
       - dawarich_watched:/var/app/tmp/imports/watched
@@ -112,8 +112,8 @@ services:
           cpus: ${APP_CPU_LIMIT:-0.50}
           memory: ${APP_MEMORY_LIMIT:-4G}
   dawarich_sidekiq:
-    image: *dawarich_image
     container_name: dawarich_sidekiq
+    image: *dawarich_image
     volumes:
       - dawarich_public:/var/app/public
       - dawarich_watched:/var/app/tmp/imports/watched
