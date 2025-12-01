@@ -2,7 +2,7 @@ name: jellyfin
 services:
   jellyfin:
     container_name: jellyfin
-    image: jellyfin/jellyfin:10.11.3
+    image: jellyfin/jellyfin:10.11.4
     restart: "unless-stopped"
     user: 900:900
     networks:
