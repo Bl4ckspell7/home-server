@@ -1,7 +1,7 @@
 name: dawarich
 
 x-variables:
-  dawarich_image: &dawarich_image freikin/dawarich:0.35.1
+  dawarich_image: &dawarich_image freikin/dawarich:0.36.1
   app_hosts: &app_hosts localhost,dawarich.bl4ckspell.freeddns.org
   photon_api_host: &photon_api_host photon.lan:2322
   photon_api_use_https: &photon_api_use_https false
@@ -26,11 +26,11 @@ services:
   dawarich-postgres:
     container_name: dawarich-postgres
     image: postgis/postgis:17-3.5-alpine
+    # image: imresamu/postgis:17-3.5-alpine # If you're on ARM architecture, use this image instead
     shm_size: 1G
     volumes:
       - dawarich_db_data:/var/lib/postgresql/data
       - dawarich_shared:/var/shared
-      # - ./postgresql.conf:/etc/postgresql/postgresql.conf # Optional, uncomment if you want to use a custom config
     networks:
       default:
     env_file: .env
@@ -86,6 +86,13 @@ services:
       PROMETHEUS_EXPORTER_HOST: ${PROMETHEUS_EXPORTER_HOST:-0.0.0.0}
       PROMETHEUS_EXPORTER_PORT: ${PROMETHEUS_EXPORTER_PORT:-9394}
       MIN_MINUTES_SPENT_IN_CITY: 60
+      OIDC_CLIENT_ID: ${AUTHENTIK_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${AUTHENTIK_CLIENT_SECRET}
+      OIDC_ISSUER: "https://authentik.bl4ckspell.freeddns.org/application/o/dawarich/"
+      OIDC_REDIRECT_URI: "https://dawarich.bl4ckspell.freeddns.org/users/auth/openid_connect/callback"
+      OIDC_AUTO_REGISTER: false # optional, default is false
+      OIDC_PROVIDER_NAME: "Authentik" # optional, default is OpenID Connect
+      ALLOW_EMAIL_PASSWORD_REGISTRATION: false # optional, default is true
     logging:
       driver: "json-file"
       options:

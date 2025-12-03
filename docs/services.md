@@ -255,6 +255,8 @@ Default credentials: `demo@dawarich.app` `password`
 
 ```yaml
 dawarich_postgres_password: ""
+authentik_client_id: ""
+authentik_client_secret: ""
 ```
 
 **Reverse Geocoding:**
