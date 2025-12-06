@@ -1,7 +1,7 @@
 name: dawarich
 
 x-variables:
-  dawarich_image: &dawarich_image freikin/dawarich:0.36.1
+  dawarich_image: &dawarich_image freikin/dawarich:0.36.2
   app_hosts: &app_hosts localhost,dawarich.bl4ckspell.freeddns.org
   photon_api_host: &photon_api_host photon.lan:2322
   photon_api_use_https: &photon_api_use_https false
