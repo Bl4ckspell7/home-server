@@ -2,7 +2,7 @@ name: homepage
 services:
   homepage:
     container_name: homepage
-    image: ghcr.io/gethomepage/homepage:v1.7.0
+    image: ghcr.io/gethomepage/homepage:v1.8.0
     restart: unless-stopped
     ports:
       # Host Port : Container Port
