@@ -16,3 +16,4 @@ language: "en"
 hideVersion: false
 disableUpdateCheck: true
 color: "slate"
+disableIndexing: true
