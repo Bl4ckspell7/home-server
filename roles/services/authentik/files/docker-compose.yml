@@ -1,7 +1,7 @@
 name: authentik
 
 x-variables:
-  authentik_image: &authentik_image ghcr.io/goauthentik/server:2025.10.2
+  authentik_image: &authentik_image ghcr.io/goauthentik/server:2025.10.3
 
 services:
   authentik-server:
