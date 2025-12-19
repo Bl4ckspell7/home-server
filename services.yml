@@ -35,13 +35,13 @@
       tags: ollama
 
     - role: paperless-ngx
-      tags: paperless-ngx
+      tags: paperless
 
     - role: photon
       tags: photon
 
     - role: pi-hole
-      tags: pi-hole
+      tags: pihole
 
     - role: uptime-kuma
       tags: uptime-kuma
