@@ -45,6 +45,3 @@
 
     - role: uptime-kuma
       tags: uptime-kuma
-
-    - role: wallabag
-      tags: wallabag

@@ -118,10 +118,3 @@
             description: Document management
             ping: paperless.lan
             statusStyle: "basic"
-
-        - Wallabag:
-            icon: sh-wallabag.svg
-            href: https://wallabag.bl4ckspell.freeddns.org/
-            description: Save articles. Read them later.
-            ping: wallabag.lan
-            statusStyle: "basic"

@@ -94,9 +94,3 @@ pihole.bl4ckspell.freeddns.org {
 		}
 	}
 }
-
-# Wallabag
-wallabag.bl4ckspell.freeddns.org {
-	import error_page
-	reverse_proxy http://wallabag.lan:80
-}

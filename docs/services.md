@@ -47,7 +47,6 @@
 | **Pi-hole**          | 7443          | 443                |
 | **Paperless-ngx**    | 8000          | 8000               |
 | **Cup**              | 8010          | 8000               |
-| **Wallabag**         | 8090          | 80                 |
 | **Jellyfin**         | 8096          | 8096               |
 | **Authentik**        | 9080          | 9080               |
 | **Authentik**        | 9443          | 9443               |
@@ -102,22 +101,6 @@ Ports: `5001:5001`
 
 - https://dockge.kuma.pet/
 - https://github.com/louislam/dockge
-
-## Wallabag
-
-Ports: `8090:80`
-
-- https://wallabag.org/
-- https://github.com/wallabag/wallabag
-
-`secrets.yml`:
-
-```yaml
-wallabag_db_user: wallabag
-wallabag_db_pass: ""
-wallabag_db_root_pass: ""
-wallabag_domain_name: ""
-```
 
 ## Uptime Kuma
 
