@@ -20,7 +20,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK"
     mode: "0644"
     block: |
-      DNS=185.222.222.222#dot.sb 45.11.45.11#dot.sb 1.1.1.1#one.one.one.one 1.0.0.1#one.one.one.one 2606:4700:4700::1111#one.one.one.one 2a09::#dot.sb
+      DNS=185.222.222.222#dot.sb 9.9.9.9#dns.quad9.net 1.1.1.1#one.one.one.one
       FallbackDNS=
       DNSOverTLS=yes
       DNSSEC=yes
