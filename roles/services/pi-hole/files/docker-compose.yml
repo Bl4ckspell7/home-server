@@ -35,7 +35,7 @@ services:
       PIHOLE_GID: "1000"
       # If using Docker's default `bridge` network setting the dns listening mode should be set to 'ALL'
       FTLCONF_dns_listeningMode: "ALL"
-      FTLCONF_dns_dnssec: "true"
+      FTLCONF_dns_dnssec: "false"
       FTLCONF_dns_port: "53"
       # use Docker's embedded DNS server (which uses host's DNS settings)
       FTLCONF_dns_upstreams: |
