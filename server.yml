@@ -7,8 +7,8 @@
     - role: bash
       tags: bash
 
-    - role: cursor
-      tags: cursor
+    - role: sysctl
+      tags: sysctl
 
     - role: flatpak
       tags: flatpak
