@@ -1,7 +1,7 @@
 name: authentik
 
 x-variables:
-  authentik_image: &authentik_image ghcr.io/goauthentik/server:2025.10.3
+  authentik_image: &authentik_image ghcr.io/goauthentik/server:2025.12.1
 
 services:
   authentik-server:
@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     command: server
     volumes:
-      - ./media:/media
+      - ./data:/data
       - ./custom-templates:/templates
     env_file:
       - .env
@@ -49,7 +49,7 @@ services:
     user: root
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./media:/media
+      - ./data:/data
       - ./certs:/certs
       - ./custom-templates:/templates
     env_file:
