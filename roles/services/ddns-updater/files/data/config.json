@@ -1,0 +1,25 @@
+{
+    "settings": [
+        {
+            "provider": "namecheap",
+            "domain": "example.com",
+            "password": "e5322165c1d74692bfa6d807100c0310"
+        },
+        {
+            "provider": "duckdns",
+            "domain": "example.duckdns.org",
+            "token": "00000000-0000-0000-0000-000000000000"
+        },
+        {
+            "provider": "godaddy",
+            "domain": "subdomain.example.org",
+            "key": "aaaaaaaaaaaaaaaa",
+            "secret": "aaaaaaaaaaaaaaaa"
+        },
+        {
+            "provider": "dreamhost",
+            "domain": "example.info",
+            "key": "aaaaaaaaaaaaaaaa"
+        }
+    ]
+}

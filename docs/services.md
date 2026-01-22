@@ -40,6 +40,7 @@
 | **Homepage**         | 3000          | 3000               |
 | **Uptime Kuma**      | 3001          | 3001               |
 | **Dawarich**         | 3002          | 3000               |
+| **ddns-updater**     | 3003          | 8000               |
 | **Linkwarden**       | 3010          | 3000               |
 | **Dockge**           | 5001          | 5001               |
 | **Pi-hole**          | 7080          | 80                 |
@@ -269,3 +270,11 @@ Ports: `8096:8096`
 - https://github.com/jellyfin/jellyfin
 
 Permissions are automatically enforced on media directories by a dedicated watcher script and corresponding `systemd` service. These ensure correct ownership (`jellyfin:jellyfin`) and access permissions are maintained continuously.
+
+## ddns-updater
+
+Ports: `3003:8000`
+
+- https://github.com/qdm12/ddns-updater
+
+Fill `data/config.json` with correct data.

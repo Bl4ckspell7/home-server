@@ -1,0 +1,53 @@
+name: ddns-updater
+services:
+  ddns-updater:
+    image: ghcr.io/qdm12/ddns-updater:v2.9.0
+    container_name: ddns-updater
+    restart: unless-stopped
+    user: 1000:1000
+    ports:
+      # Host Port : Container Port
+      - 3003:8000/tcp
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.247
+    dns:
+      - 172.21.255.254
+    dns_search:
+      - "."
+    volumes:
+      - ./data:/updater/data
+    environment:
+      # CONFIG: ""
+      CONFIG_FILEPATH: /updater/data/config.json
+      PERIOD: 15m
+      UPDATE_COOLDOWN_PERIOD: 15m
+      PUBLICIP_FETCHERS: all
+      PUBLICIP_HTTP_PROVIDERS: all
+      PUBLICIPV4_HTTP_PROVIDERS: all
+      PUBLICIPV6_HTTP_PROVIDERS: all
+      PUBLICIP_DNS_PROVIDERS: all
+      PUBLICIP_DNS_TIMEOUT: 10s
+      HTTP_TIMEOUT: 30s
+
+      # Web UI
+      SERVER_ENABLED: true
+      LISTENING_ADDRESS: :8000
+      ROOT_URL: /
+
+      # Backup
+      BACKUP_PERIOD: 168h # 0 to disable
+      BACKUP_DIRECTORY: /updater/data/backups
+
+      # Other
+      TZ: Europe/Berlin
+      LOG_LEVEL: info
+      LOG_CALLER: short # hidden
+      SHOUTRRR_ADDRESSES: ""
+
+networks:
+  default:
+    driver: bridge
+  svr1-network:
+    external: true

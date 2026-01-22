@@ -1,0 +1,45 @@
+---
+- name: Ensure ddns-updater directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/ddns-updater
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Ensure ddns-updater data directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/ddns-updater/data
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+
+- name: Copy ddns-updater config file
+  ansible.builtin.copy:
+    src: data/config.json
+    dest: /opt/stacks/ddns-updater/data/config.json
+    owner: "1000"
+    group: "1000"
+    mode: "0600"
+
+- name: Copy ddns-updater docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/ddns-updater/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy ddns-updater stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/ddns-updater
+    state: present
+    files:
+      - docker-compose.yml
+    remove_orphans: true
+  register: ddns_updater_result
+
+- name: Debug ddns-updater result
+  ansible.builtin.debug:
+    var: ddns_updater_result
