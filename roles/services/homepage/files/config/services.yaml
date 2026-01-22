@@ -39,6 +39,12 @@
             ping: kuma.lan
             statusStyle: "basic"
 
+        - ddns-updater:
+            icon: sh-ddns-updater.svg
+            description: Dynamic DNS Updater
+            ping: ddns-updater.lan
+            statusStyle: "basic"
+
         - Cup:
             icon: sh-cup-updates.svg
             href: https://cup.bl4ckspell.freeddns.org/
