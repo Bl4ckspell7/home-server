@@ -15,7 +15,6 @@
 - Pihole new IP entry (`xxx.xxx.xxx.xxx service.lan`) in the shared docker subnet
 
 - Caddy:
-
   - Add reverse proxy entry in Caddyfile:
     ```
     service.DDNS.ORG {
