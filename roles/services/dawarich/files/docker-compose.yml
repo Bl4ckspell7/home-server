@@ -1,7 +1,7 @@
 name: dawarich
 
 x-variables:
-  dawarich_image: &dawarich_image freikin/dawarich:0.37.3
+  dawarich_image: &dawarich_image freikin/dawarich:1.0.1
   app_hosts: &app_hosts localhost,dawarich.bl4ckspell.freeddns.org
   photon_api_host: &photon_api_host photon.lan:2322
   photon_api_use_https: &photon_api_use_https false
@@ -54,6 +54,7 @@ services:
   dawarich-app:
     container_name: dawarich-app
     image: *dawarich_image
+    user: root
     volumes:
       - dawarich_public:/var/app/public
       - dawarich_watched:/var/app/tmp/imports/watched
@@ -92,7 +93,7 @@ services:
       OIDC_REDIRECT_URI: "https://dawarich.bl4ckspell.freeddns.org/users/auth/openid_connect/callback"
       OIDC_AUTO_REGISTER: false # optional, default is false
       OIDC_PROVIDER_NAME: "Authentik" # optional, default is OpenID Connect
-      ALLOW_EMAIL_PASSWORD_REGISTRATION: false # optional, default is true
+      ALLOW_EMAIL_PASSWORD_REGISTRATION: true # optional, default is true
     logging:
       driver: "json-file"
       options:
@@ -124,6 +125,7 @@ services:
   dawarich-sidekiq:
     container_name: dawarich-sidekiq
     image: *dawarich_image
+    user: root
     volumes:
       - dawarich_public:/var/app/public
       - dawarich_watched:/var/app/tmp/imports/watched
