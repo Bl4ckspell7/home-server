@@ -2,7 +2,7 @@ name: photon
 services:
   photon:
     container_name: photon
-    image: rtuszik/photon-docker:1.3.0
+    image: rtuszik/photon-docker:1.3.1
     restart: unless-stopped
     environment:
       UPDATE_STRATEGY: PARALLEL
@@ -10,6 +10,10 @@ services:
       REGION: europe # Optional: specific region (continent, country, or planet)
       BASE_URL: https://download1.graphhopper.com/public/ # Official
       # BASE_URL: https://r2.koalasec.org/public # Community mirror
+      DOWNLOAD_MAX_RETRIES: 5
+      FORCE_UPDATE: FALSE
+      LOG_LEVEL: INFO
+      SKIP_MD5_CHECK: FALSE
     volumes:
       - photon_data:/photon/data
     networks:
