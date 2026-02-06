@@ -8,8 +8,8 @@
 # The compose file on main may not be compatible with the latest release.
 
 x-variables:
-  immich_image_server: &immich_image_server ghcr.io/immich-app/immich-server:v2.5.3
-  immich_image_ml: &immich_image_ml ghcr.io/immich-app/immich-machine-learning:v2.5.3
+  immich_image_server: &immich_image_server ghcr.io/immich-app/immich-server:v2.5.5
+  immich_image_ml: &immich_image_ml ghcr.io/immich-app/immich-machine-learning:v2.5.5
 
 name: immich
 services:
