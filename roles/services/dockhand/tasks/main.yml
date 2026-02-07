@@ -1,0 +1,39 @@
+- name: Ensure Dockhand stack directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - /opt/stacks
+    - /opt/stacks/dockhand
+
+- name: Ensure Dockhand data directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/dockhand/data
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+
+- name: Copy Dockhand docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/dockhand/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Start Dockhand
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/dockhand
+    state: present
+    files:
+      - docker-compose.yml
+    remove_orphans: true
+  register: dockhand_result
+
+- name: Debug Docker Compose result
+  ansible.builtin.debug:
+    var: dockhand_result

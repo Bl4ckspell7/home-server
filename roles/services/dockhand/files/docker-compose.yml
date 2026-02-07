@@ -1,0 +1,31 @@
+name: dockhand
+services:
+  dockhand:
+    container_name: dockhand
+    image: fnsys/dockhand:v1.0.14
+    restart: unless-stopped
+    user: "1000:1000"
+    group_add:
+      - "990" # Docker group GID for socket access
+    ports:
+      # Host Port : Container Port
+      - 3004:3000
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.237
+    environment:
+      DISABLE_LOCAL_LOGIN: false
+    dns:
+      - 172.21.255.254
+    dns_search: # don't append any search domain
+      - "."
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/app/data # Must use bind mount, not named volume
+
+networks:
+  default:
+    driver: bridge
+  svr1-network:
+    external: true

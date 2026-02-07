@@ -45,6 +45,13 @@
             ping: ddns-updater.lan
             statusStyle: "basic"
 
+        - Dockhand:
+            icon: sh-dockhand.png
+            href: https://dockhand.bl4ckspell.freeddns.org/
+            description: Docker Container Management
+            ping: dockhand.lan
+            statusStyle: "basic"
+
         - Cup:
             icon: sh-cup-updates.svg
             href: https://cup.bl4ckspell.freeddns.org/

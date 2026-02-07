@@ -59,6 +59,7 @@ services:
         172.21.255.240 jellyfin.lan
         172.21.255.239 dawarich-sidekiq.lan
         172.21.255.238 caddy.lan
+        172.21.255.237 dockhand.lan
       FTLCONF_dhcp_active: "false"
     volumes:
       # For persisting Pi-hole's databases and common configuration file

@@ -37,6 +37,12 @@ dawarich.bl4ckspell.freeddns.org {
 	reverse_proxy http://dawarich.lan:3000
 }
 
+# Dockhand
+dockhand.bl4ckspell.freeddns.org {
+	import error_page
+	reverse_proxy http://dockhand.lan:3000
+}
+
 # Dockge
 dockge.bl4ckspell.freeddns.org {
 	import error_page

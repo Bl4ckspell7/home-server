@@ -16,6 +16,9 @@
     - role: ddns-updater
       tags: ddns-updater
 
+    - role: dockhand
+      tags: dockhand
+
     - role: dockge
       tags: dockge
 
