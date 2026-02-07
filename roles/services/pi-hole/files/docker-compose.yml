@@ -6,7 +6,6 @@ services:
     image: pihole/pihole:2025.11.1
     restart: always
     networks:
-      default:
       svr1-network:
         ipv4_address: 172.21.255.254
     # commented out to use DNS settings of the host and make Docker start it's embedded DNS server
@@ -78,7 +77,5 @@ volumes:
     name: pihole_data
 
 networks:
-  default:
-    driver: bridge
   svr1-network:
     external: true

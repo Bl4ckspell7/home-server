@@ -6,7 +6,6 @@ services:
     restart: "unless-stopped"
     user: 900:900
     networks:
-      default:
       svr1-network:
         ipv4_address: 172.21.255.240
     dns:
@@ -39,7 +38,5 @@ volumes:
   cache:
 
 networks:
-  default:
-    driver: bridge
   svr1-network:
     external: true

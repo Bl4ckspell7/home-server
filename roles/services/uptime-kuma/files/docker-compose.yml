@@ -9,7 +9,6 @@ services:
       # Host Port : Container Port
       - 3001:3001
     networks:
-      default:
       svr1-network:
         ipv4_address: 172.21.255.248
     dns:
@@ -18,7 +17,5 @@ services:
       - "."
 
 networks:
-  default:
-    driver: bridge
   svr1-network:
     external: true

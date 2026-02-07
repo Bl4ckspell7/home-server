@@ -17,7 +17,6 @@ services:
     volumes:
       - photon_data:/photon/data
     networks:
-      default:
       svr1-network:
         ipv4_address: 172.21.255.245
     dns:
@@ -34,7 +33,5 @@ volumes:
   photon_data:
 
 networks:
-  default:
-    driver: bridge
   svr1-network:
     external: true

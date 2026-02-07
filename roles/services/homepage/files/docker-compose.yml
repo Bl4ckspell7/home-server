@@ -8,7 +8,6 @@ services:
       # Host Port : Container Port
       - "3000:3000"
     networks:
-      default:
       svr1-network:
         ipv4_address: 172.21.255.246
     dns:
@@ -26,7 +25,5 @@ services:
       PGID: 1000 # optional, your group id
 
 networks:
-  default:
-    driver: bridge
   svr1-network:
     external: true

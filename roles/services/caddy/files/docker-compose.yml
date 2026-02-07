@@ -8,7 +8,6 @@ services:
       - "443:443/tcp"
       - "443:443/udp"
     networks:
-      default:
       svr1-network:
         ipv4_address: 172.21.255.238
     dns:
@@ -26,7 +25,5 @@ volumes:
   caddy_config:
 
 networks:
-  default:
-    driver: bridge
   svr1-network:
     external: true

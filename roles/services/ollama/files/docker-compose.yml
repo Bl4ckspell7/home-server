@@ -8,7 +8,6 @@ services:
       # Host Port : Container Port
       - "11434:11434"
     networks:
-      default:
       svr1-network:
         ipv4_address: 172.21.255.241
     dns:
@@ -25,7 +24,5 @@ volumes:
   ollama_data:
 
 networks:
-  default:
-    driver: bridge
   svr1-network:
     external: true

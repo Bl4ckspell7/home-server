@@ -9,7 +9,6 @@ services:
       # Host Port : Container Port
       - 3003:8000/tcp
     networks:
-      default:
       svr1-network:
         ipv4_address: 172.21.255.247
     dns:
@@ -47,7 +46,5 @@ services:
       SHOUTRRR_ADDRESSES: ""
 
 networks:
-  default:
-    driver: bridge
   svr1-network:
     external: true
