@@ -1,7 +1,7 @@
 name: dawarich
 
 x-variables:
-  dawarich_image: &dawarich_image freikin/dawarich:1.0.4
+  dawarich_image: &dawarich_image freikin/dawarich:1.1.0
   app_hosts: &app_hosts localhost,dawarich.bl4ckspell.freeddns.org
   photon_api_host: &photon_api_host photon.lan:2322
   photon_api_use_https: &photon_api_use_https false
@@ -86,7 +86,6 @@ services:
       PROMETHEUS_EXPORTER_ENABLED: ${PROMETHEUS_EXPORTER_ENABLED:-"false"}
       PROMETHEUS_EXPORTER_HOST: ${PROMETHEUS_EXPORTER_HOST:-0.0.0.0}
       PROMETHEUS_EXPORTER_PORT: ${PROMETHEUS_EXPORTER_PORT:-9394}
-      MIN_MINUTES_SPENT_IN_CITY: 60
       OIDC_CLIENT_ID: ${AUTHENTIK_CLIENT_ID}
       OIDC_CLIENT_SECRET: ${AUTHENTIK_CLIENT_SECRET}
       OIDC_ISSUER: "https://authentik.bl4ckspell.freeddns.org/application/o/dawarich/"
