@@ -45,17 +45,22 @@ pihole.bl4ckspell.freeddns.org {
 :8080 {
 	@root host bl4ckspell.freeddns.org
 	handle @root {
-		reverse_proxy http://homepage.lan:3000
+		reverse_proxy http://homepage.lan:3000 {
+			header_up X-Forwarded-Proto https
+		}
 	}
 
 	@homepage host homepage.bl4ckspell.freeddns.org
 	handle @homepage {
-		reverse_proxy http://homepage.lan:3000
+		reverse_proxy http://homepage.lan:3000 {
+			header_up X-Forwarded-Proto https
+		}
 	}
 
 	@authentik host authentik.bl4ckspell.freeddns.org
 	handle @authentik {
 		reverse_proxy https://authentik.lan:9443 {
+			header_up X-Forwarded-Proto https
 			transport http {
 				tls_insecure_skip_verify
 			}
@@ -64,47 +69,64 @@ pihole.bl4ckspell.freeddns.org {
 
 	@dawarich host dawarich.bl4ckspell.freeddns.org
 	handle @dawarich {
-		reverse_proxy http://dawarich.lan:3000
+		reverse_proxy http://dawarich.lan:3000 {
+			header_up X-Forwarded-Proto https
+		}
 	}
 
 	@dockhand host dockhand.bl4ckspell.freeddns.org
 	handle @dockhand {
-		reverse_proxy http://dockhand.lan:3000
+		reverse_proxy http://dockhand.lan:3000 {
+			header_up X-Forwarded-Proto https
+		}
 	}
 
 	@dockge host dockge.bl4ckspell.freeddns.org
 	handle @dockge {
-		reverse_proxy http://dockge.lan:5001
+		reverse_proxy http://dockge.lan:5001 {
+			header_up X-Forwarded-Proto https
+		}
 	}
 
 	@immich host immich.bl4ckspell.freeddns.org
 	handle @immich {
-		reverse_proxy http://immich.lan:2283
+		reverse_proxy http://immich.lan:2283 {
+			header_up X-Forwarded-Proto https
+		}
 	}
 
 	@jellyfin host jellyfin.bl4ckspell.freeddns.org
 	handle @jellyfin {
-		reverse_proxy http://jellyfin.lan:8096
+		reverse_proxy http://jellyfin.lan:8096 {
+			header_up X-Forwarded-Proto https
+		}
 	}
 
 	@kuma host kuma.bl4ckspell.freeddns.org
 	handle @kuma {
-		reverse_proxy http://kuma.lan:3001
+		reverse_proxy http://kuma.lan:3001 {
+			header_up X-Forwarded-Proto https
+		}
 	}
 
 	@linkwarden host linkwarden.bl4ckspell.freeddns.org
 	handle @linkwarden {
-		reverse_proxy http://linkwarden.lan:3000
+		reverse_proxy http://linkwarden.lan:3000 {
+			header_up X-Forwarded-Proto https
+		}
 	}
 
 	@paperless host paperless.bl4ckspell.freeddns.org
 	handle @paperless {
-		reverse_proxy http://paperless.lan:8000
+		reverse_proxy http://paperless.lan:8000 {
+			header_up X-Forwarded-Proto https
+		}
 	}
 
 	@pihole host pihole.bl4ckspell.freeddns.org
 	handle @pihole {
 		reverse_proxy https://pihole.lan:443 {
+			header_up X-Forwarded-Proto https
 			transport http {
 				tls_insecure_skip_verify
 			}
