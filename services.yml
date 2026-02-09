@@ -1,6 +1,9 @@
 - name: Deploy server applications
   hosts: svr1
   roles:
+    - role: anubis
+      tags: anubis
+
     - role: authentik
       tags: authentik
 

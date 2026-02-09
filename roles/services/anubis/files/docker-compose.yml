@@ -1,0 +1,22 @@
+name: anubis
+services:
+  anubis:
+    container_name: anubis
+    image: ghcr.io/techarohq/anubis:v1.24.0
+    restart: unless-stopped
+    expose:
+      - "3000"
+    networks:
+      svr1-network:
+        ipv4_address: 172.21.255.236
+    dns:
+      - 172.21.255.254
+    dns_search:
+      - "."
+    environment:
+      BIND: ":3000"
+      TARGET: "http://homepage.lan:3000"
+
+networks:
+  svr1-network:
+    external: true

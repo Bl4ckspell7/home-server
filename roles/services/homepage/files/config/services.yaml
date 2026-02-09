@@ -4,6 +4,12 @@
 
 - Server:
     - Essential:
+        - Anubis:
+            icon: /icons/anubis.png
+            description: AI-powered bot protection
+            ping: anubis.lan
+            statusStyle: "basic"
+
         - Caddy:
             icon: sh-caddy.svg
             description: Reverse-Proxy

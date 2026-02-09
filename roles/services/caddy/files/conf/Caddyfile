@@ -49,10 +49,13 @@ dockge.bl4ckspell.freeddns.org {
 	reverse_proxy http://dockge.lan:5001
 }
 
-# Homepage
+# Homepage (protected by Anubis)
 homepage.bl4ckspell.freeddns.org {
 	import error_page
-	reverse_proxy http://homepage.lan:3000
+	reverse_proxy http://anubis.lan:3000 {
+		header_up X-Real-Ip {remote_host}
+		header_up X-Http-Version {http.request.proto}
+	}
 }
 
 # Immich
