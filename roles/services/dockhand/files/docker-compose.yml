@@ -2,7 +2,7 @@ name: dockhand
 services:
   dockhand:
     container_name: dockhand
-    image: fnsys/dockhand:v1.0.15
+    image: fnsys/dockhand:v1.0.16
     restart: unless-stopped
     user: "1000:1000"
     group_add:
