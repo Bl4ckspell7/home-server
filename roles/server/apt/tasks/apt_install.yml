@@ -1,6 +1,6 @@
 - name: Install packages
   become: true
-  register: output_apt_install
+  register: apt_output_install
   ignore_errors: true
   ansible.builtin.apt:
     autoremove: true
@@ -92,4 +92,4 @@
 - name: Show apt install output
   ansible.builtin.include_tasks: view_logs.yml
   vars:
-    output: "{{ output_apt_install }}"
+    output: "{{ apt_output_install }}"

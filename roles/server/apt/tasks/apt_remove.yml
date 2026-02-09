@@ -1,6 +1,6 @@
 - name: Remove unwanted default packages
   become: true
-  register: output_apt_remove
+  register: apt_output_remove
   ansible.builtin.apt:
     autoremove: true
     purge: true
@@ -32,4 +32,4 @@
 - name: Show apt remove output
   ansible.builtin.include_tasks: view_logs.yml
   vars:
-    output: "{{ output_apt_remove }}"
+    output: "{{ apt_output_remove }}"
