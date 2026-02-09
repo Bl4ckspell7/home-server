@@ -15,7 +15,8 @@ services:
       - "."
     environment:
       BIND: ":3000"
-      TARGET: "http://homepage.lan:3000"
+      TARGET: "http://caddy.lan:8080"
+      COOKIE_DOMAIN: ".bl4ckspell.freeddns.org"
 
 networks:
   svr1-network:
