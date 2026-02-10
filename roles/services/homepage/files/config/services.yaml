@@ -5,7 +5,7 @@
 - Server:
     - Essential:
         - Anubis:
-            icon: /icons/anubis.png
+            icon: sh-anubis.png
             description: AI-powered bot protection
             ping: anubis.lan
             statusStyle: "basic"
