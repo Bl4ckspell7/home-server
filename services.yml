@@ -37,9 +37,6 @@
     - role: linkwarden
       tags: linkwarden
 
-    - role: nginx
-      tags: nginx
-
     - role: ollama
       tags: ollama
 

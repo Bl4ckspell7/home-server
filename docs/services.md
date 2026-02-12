@@ -23,18 +23,11 @@
     ```
   - SSL certificates are automatically managed
 
-- NPM (legacy):
-  - Proxy Host: `service.DDNS.ORG`, `http://service.lan:DOCKER_CONTAINER_PORT`
-  - request ssl certificate via "Let's Encrypt" (make sure Port `80` is forwarded in the router)
-
 ## Ports
 
 | **Service**          | **Host Port** | **Container Port** |
 | -------------------- | ------------- | ------------------ |
 | **Pi-hole**          | 53            | 53                 |
-| **Nginx Proxy Mgr.** | 80            | 80                 |
-| **Nginx Proxy Mgr.** | 81            | 81                 |
-| **Nginx Proxy Mgr.** | 443           | 443                |
 | **Anubis**           | -             | 3000               |
 | **Immich**           | 2283          | 2283               |
 | **Photon**           | 2322          | 2322               |
@@ -141,21 +134,6 @@ authentik_client_id: ""
 authentik_client_secret: ""
 ```
 
-## Nging Proxy Manager
-
-Ports: `80:80`, `443:443`, `81:81`
-
-- https://nginxproxymanager.com/
-- https://github.com/NginxProxyManager/nginx-proxy-manager
-
-`secrets.yml`:
-
-```yaml
-nginx_db_name: ""
-nginx_db_user: ""
-nginx_db_password: ""
-```
-
 ## Pi-hole
 
 Ports: `53:53`, `7080:80`, `7443:443`
@@ -205,8 +183,8 @@ Ports: `6080:8080`
 Setup:
 
 - open aio setup on local ip
-- domaincheck: NPM: forward http to port 11000 of "nextcloud-aio-domaincheck"
-- NPM: forward to "nextcloud-aio-apache"
+- domaincheck: forward http to port 11000 of "nextcloud-aio-domaincheck"
+- forward to "nextcloud-aio-apache"
 
 ## Immich
 
@@ -220,9 +198,6 @@ Ports: `2283:2283`
 ```yaml
 immich_postgres_password: ""
 ```
-
-Web UI Error: "Server offline, Version unknown"
--> NPM: Enable Websockets
 
 ## Cup
 

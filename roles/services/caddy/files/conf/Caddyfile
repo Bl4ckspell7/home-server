@@ -15,12 +15,6 @@ cup.bl4ckspell.freeddns.org {
 	reverse_proxy http://cup.lan:8000
 }
 
-# NPM (Nginx Proxy Manager)
-npm.bl4ckspell.freeddns.org {
-	import error_page
-	reverse_proxy http://npm.lan:81
-}
-
 # Protected by Anubis
 bl4ckspell.freeddns.org,
 authentik.bl4ckspell.freeddns.org,

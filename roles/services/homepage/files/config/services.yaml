@@ -16,13 +16,6 @@
             ping: caddy.lan
             statusStyle: "basic"
 
-        - Nginx Proxy Manager:
-            icon: sh-nginx-proxy-manager.svg
-            href: https://npm.bl4ckspell.freeddns.org/
-            description: Reverse-Proxy
-            ping: npm.lan
-            statusStyle: "basic"
-
         - Pi-hole:
             icon: sh-pi-hole.svg
             href: https://pihole.bl4ckspell.freeddns.org/admin/
