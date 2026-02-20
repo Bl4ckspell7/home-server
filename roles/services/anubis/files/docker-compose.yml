@@ -2,7 +2,7 @@ name: anubis
 services:
   anubis:
     container_name: anubis
-    image: ghcr.io/techarohq/anubis:v1.24.0
+    image: ghcr.io/techarohq/anubis:v1.25.0
     restart: unless-stopped
     expose:
       - "3000"
