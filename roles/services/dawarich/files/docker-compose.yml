@@ -12,7 +12,7 @@ x-variables:
   photon_api_use_https: &photon_api_use_https false
   prometheus_enabled: &prometheus_enabled "false"
   prometheus_port: &prometheus_port 9394
-  rails_env: &rails_env development
+  rails_env: &rails_env production
   rails_log_to_stdout: &rails_log_to_stdout true
   redis_url: &redis_url redis://dawarich-redis:6379
   self_hosted: &self_hosted true
