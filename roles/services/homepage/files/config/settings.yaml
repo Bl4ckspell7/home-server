@@ -8,7 +8,7 @@ providers:
 
 title: Bl4ckspell's Homepage
 description: Dashboard of my self-hosted services
-theme: "dark"
+# theme: "dark"
 fullWidth: false
 disableCollapse: true
 headerStyle: "boxed" # underlined, boxed, clean, boxedWidgets

@@ -10,7 +10,7 @@
     - /opt/stacks/homepage/config
     - /opt/stacks/homepage/icons
 
-- name: Copy Homepage config YAML files
+- name: Copy Homepage config files
   ansible.builtin.copy:
     src: "config/{{ item }}"
     dest: "/opt/stacks/homepage/config/{{ item }}"
@@ -22,6 +22,7 @@
     - services.yaml
     - settings.yaml
     - widgets.yaml
+    - custom.js
 
 - name: Copy Homepage icons
   ansible.builtin.copy:
