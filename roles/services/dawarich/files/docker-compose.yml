@@ -1,10 +1,22 @@
 name: dawarich
 
 x-variables:
+  # shared variables for dawarich services (app and sidekiq)
   dawarich_image: &dawarich_image freikin/dawarich:1.3.1
   app_hosts: &app_hosts localhost,dawarich.bl4ckspell.freeddns.org
+  database_host: &database_host dawarich-postgres
+  database_name: &database_name dawarich_development
+  database_port: &database_port 5432
+  database_username: &database_username postgres
   photon_api_host: &photon_api_host photon.lan:2322
   photon_api_use_https: &photon_api_use_https false
+  prometheus_enabled: &prometheus_enabled "false"
+  prometheus_port: &prometheus_port 9394
+  rails_env: &rails_env development
+  rails_log_to_stdout: &rails_log_to_stdout true
+  redis_url: &redis_url redis://dawarich-redis:6379
+  self_hosted: &self_hosted true
+  store_geodata: &store_geodata true
 
 services:
   dawarich-redis:
@@ -35,9 +47,9 @@ services:
       default:
     env_file: .env
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_USER: *database_username
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-      POSTGRES_DB: ${POSTGRES_DB:-dawarich_development}
+      POSTGRES_DB: *database_name
     restart: unless-stopped
     healthcheck:
       test:
@@ -80,19 +92,32 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
+      ALLOW_EMAIL_PASSWORD_REGISTRATION: true # optional, default is true
       APPLICATION_HOSTS: *app_hosts
-      PHOTON_API_HOST: *photon_api_host
-      PHOTON_API_USE_HTTPS: *photon_api_use_https
-      PROMETHEUS_EXPORTER_ENABLED: ${PROMETHEUS_EXPORTER_ENABLED:-"false"}
-      PROMETHEUS_EXPORTER_HOST: ${PROMETHEUS_EXPORTER_HOST:-0.0.0.0}
-      PROMETHEUS_EXPORTER_PORT: ${PROMETHEUS_EXPORTER_PORT:-9394}
+      APPLICATION_PROTOCOL: http
+      DATABASE_HOST: *database_host
+      DATABASE_NAME: *database_name
+      DATABASE_PORT: *database_port
+      DATABASE_USERNAME: *database_username
+      DISABLE_TELEMETRY: true
+      DISTANCE_UNIT: "km"
+      OIDC_AUTO_REGISTER: false # optional, default is false
       OIDC_CLIENT_ID: ${AUTHENTIK_CLIENT_ID}
       OIDC_CLIENT_SECRET: ${AUTHENTIK_CLIENT_SECRET}
       OIDC_ISSUER: "https://authentik.bl4ckspell.freeddns.org/application/o/dawarich/"
-      OIDC_REDIRECT_URI: "https://dawarich.bl4ckspell.freeddns.org/users/auth/openid_connect/callback"
-      OIDC_AUTO_REGISTER: false # optional, default is false
       OIDC_PROVIDER_NAME: "Authentik" # optional, default is OpenID Connect
-      ALLOW_EMAIL_PASSWORD_REGISTRATION: true # optional, default is true
+      OIDC_REDIRECT_URI: "https://dawarich.bl4ckspell.freeddns.org/users/auth/openid_connect/callback"
+      PHOTON_API_HOST: *photon_api_host
+      PHOTON_API_USE_HTTPS: *photon_api_use_https
+      PROMETHEUS_EXPORTER_ENABLED: *prometheus_enabled
+      PROMETHEUS_EXPORTER_HOST: ${PROMETHEUS_EXPORTER_HOST:-0.0.0.0}
+      PROMETHEUS_EXPORTER_PORT: *prometheus_port
+      RAILS_ENV: *rails_env
+      RAILS_LOG_TO_STDOUT: *rails_log_to_stdout
+      REDIS_URL: *redis_url
+      SELF_HOSTED: *self_hosted
+      STORE_GEODATA: *store_geodata
+      TIME_ZONE: Europe/Berlin
     logging:
       driver: "json-file"
       options:
@@ -145,12 +170,21 @@ services:
     env_file: .env
     environment:
       APPLICATION_HOSTS: *app_hosts
+      BACKGROUND_PROCESSING_CONCURRENCY: ${BACKGROUND_PROCESSING_CONCURRENCY:-10}
+      DATABASE_HOST: *database_host
+      DATABASE_NAME: *database_name
+      DATABASE_PORT: *database_port
+      DATABASE_USERNAME: *database_username
       PHOTON_API_HOST: *photon_api_host
       PHOTON_API_USE_HTTPS: *photon_api_use_https
-      PROMETHEUS_EXPORTER_ENABLED: ${PROMETHEUS_EXPORTER_ENABLED:-"false"}
+      PROMETHEUS_EXPORTER_ENABLED: *prometheus_enabled
       PROMETHEUS_EXPORTER_HOST: ${PROMETHEUS_EXPORTER_HOST_SIDEKIQ:-dawarich-app}
-      PROMETHEUS_EXPORTER_PORT: ${PROMETHEUS_EXPORTER_PORT:-9394}
-      BACKGROUND_PROCESSING_CONCURRENCY: ${BACKGROUND_PROCESSING_CONCURRENCY:-10}
+      PROMETHEUS_EXPORTER_PORT: *prometheus_port
+      RAILS_ENV: *rails_env
+      RAILS_LOG_TO_STDOUT: *rails_log_to_stdout
+      REDIS_URL: *redis_url
+      SELF_HOSTED: *self_hosted
+      STORE_GEODATA: *store_geodata
     logging:
       driver: "json-file"
       options:
