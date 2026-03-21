@@ -100,7 +100,7 @@ services:
     volumes:
       - redisdata:/data
   db:
-    image: docker.io/library/postgres:18.1
+    image: docker.io/library/postgres:18.3
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
