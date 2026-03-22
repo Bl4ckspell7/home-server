@@ -2,7 +2,7 @@ name: dawarich
 
 x-variables:
   # shared variables for dawarich services (app and sidekiq)
-  dawarich_image: &dawarich_image freikin/dawarich:1.3.4
+  dawarich_image: &dawarich_image freikin/dawarich:1.4.0
   app_hosts: &app_hosts localhost,dawarich.bl4ckspell.freeddns.org
   database_host: &database_host dawarich-postgres
   database_name: &database_name dawarich_development
