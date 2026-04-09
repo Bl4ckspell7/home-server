@@ -8,8 +8,8 @@
 # The compose file on main may not be compatible with the latest release.
 
 x-variables:
-  immich_image_server: &immich_image_server ghcr.io/immich-app/immich-server:v2.6.3
-  immich_image_ml: &immich_image_ml ghcr.io/immich-app/immich-machine-learning:v2.6.3
+  immich_image_server: &immich_image_server ghcr.io/immich-app/immich-server:v2.7.3
+  immich_image_ml: &immich_image_ml ghcr.io/immich-app/immich-machine-learning:v2.7.3
 
 name: immich
 services:
@@ -62,7 +62,7 @@ services:
 
   immich-redis:
     container_name: immich-redis
-    image: docker.io/valkey/valkey:8@sha256:81db6d39e1bba3b3ff32bd3a1b19a6d69690f94a3954ec131277b9a26b95b3aa
+    image: docker.io/valkey/valkey:9@sha256:3b55fbaa0cd93cf0d9d961f405e4dfcc70efe325e2d84da207a0a8e6d8fde4f9
     volumes:
       - redis_data:/data
     healthcheck:
