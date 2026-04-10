@@ -38,6 +38,7 @@
 | **Dockhand**         | 3004          | 3000               |
 | **Linkwarden**       | 3010          | 3000               |
 | **Dockge**           | 5001          | 5001               |
+| **Forgejo**          | 3000          | 3000               |
 | **Pi-hole**          | 7080          | 80                 |
 | **Pi-hole**          | 7443          | 443                |
 | **Paperless-ngx**    | 8000          | 8000               |
@@ -54,6 +55,7 @@ System users and groups created by Ansible for running services:
 | **Service**  | **User** | **UID** | **Group** | **GID** |
 | ------------ | -------- | ------- | --------- | ------- |
 | **Jellyfin** | jellyfin | 900     | jellyfin  | 900     |
+| **Forgejo**  | forgejo  | 902     | forgejo   | 902     |
 
 ## Anubis
 
@@ -258,6 +260,19 @@ Ports: `8096:8096`
 - https://github.com/jellyfin/jellyfin
 
 Permissions are automatically enforced on media directories by a dedicated watcher script and corresponding `systemd` service. These ensure correct ownership (`jellyfin:jellyfin`) and access permissions are maintained continuously.
+
+## Forgejo
+
+Ports: `3000:3000`, SSH: `2222` (exposed internally only, no router port forward)
+
+- https://forgejo.org/docs/latest/
+- https://codeberg.org/forgejo/forgejo
+
+`secrets.yml`:
+
+```yaml
+forgejo_db_password: ""
+```
 
 ## Dockhand
 

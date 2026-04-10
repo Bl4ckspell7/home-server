@@ -103,6 +103,13 @@
             ping: dawarich.lan
             statusStyle: "basic"
 
+        - Forgejo:
+            icon: sh-forgejo.svg
+            href: https://forgejo.bl4ckspell.freeddns.org/
+            description: Self-hosted Git forge
+            ping: forgejo.lan
+            statusStyle: "basic"
+
         - Immich:
             icon: sh-immich.svg
             href: https://immich.bl4ckspell.freeddns.org/

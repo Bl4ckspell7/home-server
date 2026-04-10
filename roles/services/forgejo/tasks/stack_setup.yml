@@ -1,0 +1,44 @@
+---
+- name: Deploy Forgejo stack
+  block:
+    - name: Ensure Forgejo stack directory exists
+      ansible.builtin.file:
+        path: /opt/stacks/forgejo
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Load secrets for forgejo
+      ansible.builtin.include_vars:
+        file: "secrets.yml"
+      no_log: true
+
+    - name: Template .env for forgejo
+      ansible.builtin.template:
+        src: forgejo.env.j2
+        dest: /opt/stacks/forgejo/.env
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Copy Forgejo docker-compose file
+      ansible.builtin.copy:
+        src: docker-compose.yml
+        dest: /opt/stacks/forgejo/docker-compose.yml
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Deploy Forgejo stack
+      community.docker.docker_compose_v2:
+        project_src: /opt/stacks/forgejo
+        state: present
+        files:
+          - docker-compose.yml
+        remove_orphans: true
+      register: forgejo_result
+
+    - name: Debug Forgejo deploy result
+      ansible.builtin.debug:
+        var: forgejo_result

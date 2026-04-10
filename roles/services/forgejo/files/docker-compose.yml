@@ -1,0 +1,57 @@
+name: forgejo
+services:
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:14.0.3-rootless
+    container_name: forgejo
+    user: 902:902
+    env_file: .env
+    environment:
+      USER_UID: 902
+      USER_GID: 902
+      FORGEJO__database__DB_TYPE: postgres
+      FORGEJO__database__HOST: forgejo-postgres:5432
+      FORGEJO__database__NAME: forgejo
+      FORGEJO__database__USER: forgejo
+      FORGEJO__database__PASSWD: ${FORGEJO_DB_PASSWORD}
+    restart: unless-stopped
+    networks:
+      forgejo:
+      svr1-network:
+        ipv4_address: 172.21.255.235
+    dns:
+      - 172.21.255.254
+    dns_search:
+      - "."
+    volumes:
+      - ./forgejo:/var/lib/gitea
+      - ./conf:/etc/gitea
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "3000"
+      - "2222"
+    depends_on:
+      - forgejo-postgres
+
+  forgejo-postgres:
+    image: postgres:18.3-alpine
+    container_name: forgejo-postgres
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: forgejo
+      POSTGRES_PASSWORD: ${FORGEJO_DB_PASSWORD}
+      POSTGRES_DB: forgejo
+    networks:
+      - forgejo
+    volumes:
+      - forgejo_pgdata:/var/lib/postgresql/data
+
+volumes:
+  forgejo_pgdata:
+    name: forgejo_pgdata
+
+networks:
+  forgejo:
+    external: false
+  svr1-network:
+    external: true
