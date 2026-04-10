@@ -25,6 +25,9 @@
     - role: dockge
       tags: dockge
 
+    - role: forgejo
+      tags: forgejo
+
     - role: homepage
       tags: homepage
 

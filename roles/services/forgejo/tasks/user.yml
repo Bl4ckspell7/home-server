@@ -1,0 +1,30 @@
+---
+- name: Configure Forgejo service user
+  block:
+    - name: Create forgejo group
+      ansible.builtin.group:
+        name: forgejo
+        system: true
+        gid: 902
+        state: present
+
+    - name: Create forgejo user
+      ansible.builtin.user:
+        name: forgejo
+        system: true
+        uid: 902
+        group: forgejo
+        create_home: false
+        shell: /usr/sbin/nologin
+        state: present
+
+    - name: Ensure Forgejo data directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: forgejo
+        group: forgejo
+        mode: "0755"
+      loop:
+        - /opt/stacks/forgejo/forgejo
+        - /opt/stacks/forgejo/conf

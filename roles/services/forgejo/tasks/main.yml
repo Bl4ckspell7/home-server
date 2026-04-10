@@ -1,0 +1,8 @@
+---
+- name: Include Forgejo user setup tasks
+  ansible.builtin.include_tasks:
+    file: user.yml
+
+- name: Include Forgejo stack setup tasks
+  ansible.builtin.include_tasks:
+    file: stack_setup.yml
