@@ -55,6 +55,7 @@ System users and groups created by Ansible for running services:
 | **Service**  | **User** | **UID** | **Group** | **GID** |
 | ------------ | -------- | ------- | --------- | ------- |
 | **Jellyfin** | jellyfin | 900     | jellyfin  | 900     |
+| **Immich**   | immich   | 901     | immich    | 901     |
 | **Forgejo**  | forgejo  | 902     | forgejo   | 902     |
 
 ## Anubis
