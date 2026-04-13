@@ -11,8 +11,9 @@
 
 # Cup
 cup.bl4ckspell.freeddns.org {
-	import error_page
-	reverse_proxy http://cup.lan:8000
+	# import error_page
+	# reverse_proxy http://cup.lan:8000
+	respond "currently unavailable" 503
 }
 
 # Protected by Anubis
