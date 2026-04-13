@@ -10,9 +10,22 @@
     - /opt/stacks
     - /opt/stacks/paperless-ngx
 
+- name: Decrypt secrets for Paperless-ngx
+  ansible.builtin.command:
+    cmd: sops decrypt {{ role_path }}/vars/secrets.yml
+  delegate_to: localhost
+  become: false
+  changed_when: false
+  no_log: true
+  register: paperless_secrets_raw
+
 - name: Load secrets for Paperless-ngx
-  ansible.builtin.include_vars:
-    file: "secrets.yml"
+  ansible.builtin.set_fact:
+    "{{ item.key }}": "{{ item.value }}"
+  loop: "{{ paperless_secrets_raw.stdout | from_yaml | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  no_log: true
 
 - name: Template paperless-ngx .env file
   ansible.builtin.template:

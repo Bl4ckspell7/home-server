@@ -15,9 +15,18 @@
     group: "1000"
     mode: "0755"
 
+- name: Decrypt ddns-updater config
+  ansible.builtin.command:
+    cmd: sops decrypt {{ role_path }}/files/data/config.json
+  delegate_to: localhost
+  become: false
+  changed_when: false
+  no_log: true
+  register: ddns_config_raw
+
 - name: Copy ddns-updater config file
   ansible.builtin.copy:
-    src: data/config.json
+    content: "{{ ddns_config_raw.stdout }}"
     dest: /opt/stacks/ddns-updater/data/config.json
     owner: "1000"
     group: "1000"
