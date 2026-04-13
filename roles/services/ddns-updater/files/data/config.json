@@ -1,25 +1,25 @@
 {
     "settings": [
         {
-            "provider": "namecheap",
-            "domain": "example.com",
-            "password": "e5322165c1d74692bfa6d807100c0310"
-        },
-        {
-            "provider": "duckdns",
-            "domain": "example.duckdns.org",
-            "token": "00000000-0000-0000-0000-000000000000"
-        },
-        {
-            "provider": "godaddy",
-            "domain": "subdomain.example.org",
-            "key": "aaaaaaaaaaaaaaaa",
-            "secret": "aaaaaaaaaaaaaaaa"
-        },
-        {
-            "provider": "dreamhost",
-            "domain": "example.info",
-            "key": "aaaaaaaaaaaaaaaa"
+            "provider": "ENC[AES256_GCM,data:FpXTSw==,iv:E3d9u9csdB55Pjvz7ELKKu4N3Z0wqwlQoXv9mVhCN5M=,tag:yfgUfNIFO5uMjDvVgWBJrg==,type:str]",
+            "domain": "ENC[AES256_GCM,data:f2ft9idNUHPFZ6O91WlEizNj2HmY2Bo=,iv:Urx/Gs19+u9aUaldeBr4JfTxvQ6UPB/kDtIY0hu9MR0=,tag:vWsBAXDnQynskLLmdd04BA==,type:str]",
+            "group": "",
+            "username": "ENC[AES256_GCM,data:rd1qyS8AFruC0uWM,iv:BFNuURspsrgJqNs6MZywFYgi9QHNOM3MdpvfPjfwb6k=,tag:cGqgarqhyr87G8nE0JD4+w==,type:str]",
+            "password": "ENC[AES256_GCM,data:VvJtAb9H4oNKOsQ0ke+SGA4imps=,iv:b1D0m6gq4d2V5b52w5OGO7rvnWxTEFvRzunebtsmasA=,tag:SvpP1WOpGLTYvmk+I+Z0WA==,type:str]",
+            "ip_version": "ENC[AES256_GCM,data:nll6eQ==,iv:C1FWKVQ61sL21xHhGc9qiHJyePFmbnFijYTbP8y8Rho=,tag:aT+upTKBUZuz+b1BgKAsDA==,type:str]",
+            "ipv6_suffix": ""
         }
-    ]
+    ],
+    "sops": {
+        "age": [
+            {
+                "recipient": "age1c99t5d0qkam5aqzrpxhgdexk0ss37jtnqwdzpkvtdfvfp8n5c9dsgnrdfv",
+                "enc": "-----BEGIN AGE ENCRYPTED FILE-----\nYWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBJUTNjTWVXdWFMRU5vUHVH\nWXJGanlFRVFNTzRvbjk4cUhvZk5XaklxK0drCmI0VGdia2xvVk1oaUlyU0R0WUVM\nM1pKTFVNMUJMa3hQUkEwWjRRSHhhSDgKLS0tIHJqY05pQk9tT0QwanBZTzZqTVlm\nTS9wVWI3T09UYitVWDh3dDNtdmVDSkkK/FaEboVhz++urcouknLbIgK92/jPhGb0\nYtQZgaDE2RhAQHWn9ojPg3Uf6C3MDjfBeB0E+MoDu/HAwetOhqF2uQ==\n-----END AGE ENCRYPTED FILE-----\n"
+            }
+        ],
+        "lastmodified": "2026-04-13T15:42:19Z",
+        "mac": "ENC[AES256_GCM,data:I/kKEPu0WTSPwID3Gwe/F1sKivXSfIZsUmO6m3Oh0ExsWysj8ig/Gpwz48UEuYTRfg44tDDM62qHc9KO+gs0ZFCY1vu0B9PlFX1P1p26DhsulztyPacGA+jkprBFHkX+14GB1j0U+3WCrlNZ/133tIbplrRqqx0UsSv+DfTIsec=,iv:v+GEcAcuZGgC5NNqktxXOkXf+NvYekgiEmrjTTuNpes=,tag:bhmaMiexyh4m9DoGhAUEuA==,type:str]",
+        "unencrypted_suffix": "_unencrypted",
+        "version": "3.12.2"
+    }
 }

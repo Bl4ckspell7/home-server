@@ -6,9 +6,21 @@
     group: root
     mode: "0755"
 
+- name: Decrypt secrets for linkwarden
+  ansible.builtin.command:
+    cmd: sops decrypt {{ role_path }}/vars/secrets.yml
+  delegate_to: localhost
+  become: false
+  changed_when: false
+  no_log: true
+  register: linkwarden_secrets_raw
+
 - name: Load secrets for linkwarden
-  ansible.builtin.include_vars:
-    file: "secrets.yml"
+  ansible.builtin.set_fact:
+    "{{ item.key }}": "{{ item.value }}"
+  loop: "{{ linkwarden_secrets_raw.stdout | from_yaml | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
   no_log: true
 
 - name: Template .env for linkwarden

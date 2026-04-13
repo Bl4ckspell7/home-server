@@ -9,6 +9,7 @@
 ### Docker
 
 - create compose, .env, secrets and ansible task
+- encrypt secrets with sops: `sops encrypt --in-place secrets.yml`
 
 ### Network
 
@@ -90,10 +91,8 @@ secret_key: 60 characters
 - encrypt
 
 ```bash
-ansible-vault encrypt secrets.yml
+sops encrypt --in-place secrets.yml
 ```
-
-- save vault key to file and specify location in `ansible.cfg`
 
 ### Force MFA
 
@@ -288,4 +287,4 @@ Ports: `3003:8000`
 
 - https://github.com/qdm12/ddns-updater
 
-Fill `data/config.json` with correct data.
+Fill `data/config.json` with correct data and encrypt with `sops encrypt --in-place data/config.json`.
