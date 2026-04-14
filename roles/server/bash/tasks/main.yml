@@ -28,3 +28,15 @@
     owner: root
     group: root
     mode: "0644"
+
+- name: Initialize zoxide in global bashrc
+  ansible.builtin.blockinfile:
+    path: /etc/bash.bashrc
+    marker: "# {mark} ANSIBLE MANAGED ZOXIDE"
+    block: |
+      if command -v zoxide >/dev/null 2>&1; then
+          eval "$(zoxide init bash)"
+      fi
+    owner: root
+    group: root
+    mode: "0644"
