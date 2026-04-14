@@ -37,7 +37,7 @@
 
 - name: Copy paperless-ngx docker-compose file
   ansible.builtin.copy:
-    src: docker-compose.postgres-tika.yml
+    src: docker-compose.yml
     dest: /opt/stacks/paperless-ngx/docker-compose.yml
     owner: root
     group: root
