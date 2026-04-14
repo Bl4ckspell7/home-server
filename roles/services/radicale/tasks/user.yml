@@ -1,0 +1,30 @@
+---
+- name: Configure Radicale service user
+  block:
+    - name: Create radicale group
+      ansible.builtin.group:
+        name: radicale
+        system: true
+        gid: 903
+        state: present
+
+    - name: Create radicale user
+      ansible.builtin.user:
+        name: radicale
+        system: true
+        uid: 903
+        group: radicale
+        create_home: false
+        shell: /usr/sbin/nologin
+        state: present
+
+    - name: Ensure Radicale data directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: radicale
+        group: radicale
+        mode: "0755"
+      loop:
+        - /opt/stacks/radicale/data
+        - /opt/stacks/radicale/config
