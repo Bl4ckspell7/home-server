@@ -58,6 +58,7 @@
       - nmap
       - ovmf
       - pkg-config
+      - power-profiles-daemon
       - python3
       - python3-ansible-runner
       - python3-apt
