@@ -24,9 +24,8 @@ services:
       - 172.21.255.254
     dns_search:
       - "."
-    ports:
-      # Host Port : Container Port
-      - "2322:2322"
+    expose:
+      - "2322"
     healthcheck:
       test: ["NONE"]
 

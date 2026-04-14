@@ -39,9 +39,8 @@ services:
       - broker
       - gotenberg
       - tika
-    ports:
-      # Host Port : Container Port
-      - "8000:8000"
+    expose:
+      - "8000"
     networks:
       default:
       svr1-network:

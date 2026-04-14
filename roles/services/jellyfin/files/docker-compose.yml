@@ -12,9 +12,8 @@ services:
       - 172.21.255.254
     dns_search:
       - "."
-    ports:
-      # Host Port : Container Port
-      - 8096:8096/tcp
+    expose:
+      - "8096"
       # - 7359:7359/udp
     volumes:
       - config:/config

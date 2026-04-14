@@ -27,9 +27,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
-    ports:
-      # Host Port : Container Port
-      - "2283:2283"
+    expose:
+      - "2283"
     networks:
       default:
       svr1-network:

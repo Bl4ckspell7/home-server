@@ -7,9 +7,8 @@ services:
     user: "1000:1000"
     group_add:
       - "990" # Docker group GID for socket access
-    ports:
-      # Host Port : Container Port
-      - 3004:3000
+    expose:
+      - "3000"
     networks:
       svr1-network:
         ipv4_address: 172.21.255.237

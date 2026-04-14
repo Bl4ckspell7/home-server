@@ -84,9 +84,8 @@ services:
       - 172.21.255.254
     dns_search: # don't append any search domain
       - "."
-    ports:
-      # Host Port : Container Port
-      - 3002:3000
+    expose:
+      - "3000"
       # - "${DAWARICH_APP_PORT:-3000}:3000"
       # - "${PROMETHEUS_PORT:-9394}:9394" # Prometheus exporter, uncomment if needed
     stdin_open: true

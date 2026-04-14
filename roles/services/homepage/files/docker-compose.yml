@@ -4,9 +4,8 @@ services:
     container_name: homepage
     image: ghcr.io/gethomepage/homepage:v1.12.3
     restart: unless-stopped
-    ports:
-      # Host Port : Container Port
-      - "3000:3000"
+    expose:
+      - "3000"
     networks:
       svr1-network:
         ipv4_address: 172.21.255.246

@@ -5,9 +5,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./uptime-kuma-data:/app/data
-    ports:
-      # Host Port : Container Port
-      - 3001:3001
+    expose:
+      - "3001"
     networks:
       svr1-network:
         ipv4_address: 172.21.255.248

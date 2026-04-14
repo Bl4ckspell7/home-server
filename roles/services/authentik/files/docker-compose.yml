@@ -14,10 +14,8 @@ services:
       - ./custom-templates:/templates
     env_file:
       - .env
-    ports:
-      # Host Port : Container Port
-      # - "9080:9080"
-      - "9443:9443"
+    expose:
+      - "9443"
     networks:
       default:
       svr1-network:

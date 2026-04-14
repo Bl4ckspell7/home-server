@@ -4,9 +4,8 @@ services:
     container_name: ollama
     image: ollama/ollama:0.18.3
     restart: unless-stopped
-    ports:
-      # Host Port : Container Port
-      - "11434:11434"
+    expose:
+      - "11434"
     networks:
       svr1-network:
         ipv4_address: 172.21.255.241
