@@ -1,0 +1,64 @@
+---
+- name: Deploy Radicale stack
+  block:
+    - name: Ensure Radicale stack directory exists
+      ansible.builtin.file:
+        path: /opt/stacks/radicale
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Decrypt secrets for radicale
+      ansible.builtin.command:
+        cmd: sops decrypt {{ role_path }}/vars/secrets.yml
+      delegate_to: localhost
+      become: false
+      changed_when: false
+      no_log: true
+      register: radicale_secrets_raw
+
+    - name: Load secrets for radicale
+      ansible.builtin.set_fact:
+        "{{ item.key }}": "{{ item.value }}"
+      loop: "{{ radicale_secrets_raw.stdout | from_yaml | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      no_log: true
+
+    - name: Template users file for radicale
+      ansible.builtin.template:
+        src: users.j2
+        dest: /opt/stacks/radicale/config/users
+        owner: radicale
+        group: radicale
+        mode: "0640"
+
+    - name: Copy Radicale config file
+      ansible.builtin.copy:
+        src: config/config
+        dest: /opt/stacks/radicale/config/config
+        owner: radicale
+        group: radicale
+        mode: "0644"
+
+    - name: Copy Radicale docker-compose file
+      ansible.builtin.copy:
+        src: docker-compose.yml
+        dest: /opt/stacks/radicale/docker-compose.yml
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Deploy Radicale stack
+      community.docker.docker_compose_v2:
+        project_src: /opt/stacks/radicale
+        state: present
+        files:
+          - docker-compose.yml
+        remove_orphans: true
+      register: radicale_result
+
+    - name: Debug Radicale deploy result
+      ansible.builtin.debug:
+        var: radicale_result

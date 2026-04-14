@@ -103,6 +103,13 @@
             ping: dawarich.lan
             statusStyle: "basic"
 
+        - Radicale:
+            icon: sh-radicale.svg
+            href: https://radicale.bl4ckspell.freeddns.org/
+            description: CalDAV/CardDAV server
+            ping: radicale.lan
+            statusStyle: "basic"
+
         - Forgejo:
             icon: sh-forgejo.svg
             href: https://forgejo.bl4ckspell.freeddns.org/

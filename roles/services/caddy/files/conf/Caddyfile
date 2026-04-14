@@ -29,7 +29,8 @@ jellyfin.bl4ckspell.freeddns.org,
 kuma.bl4ckspell.freeddns.org,
 linkwarden.bl4ckspell.freeddns.org,
 paperless.bl4ckspell.freeddns.org,
-pihole.bl4ckspell.freeddns.org {
+pihole.bl4ckspell.freeddns.org,
+radicale.bl4ckspell.freeddns.org {
 	import error_page
 	reverse_proxy http://anubis.lan:3000 {
 		header_up X-Real-Ip {remote_host}
@@ -122,6 +123,13 @@ pihole.bl4ckspell.freeddns.org {
 	@paperless host paperless.bl4ckspell.freeddns.org
 	handle @paperless {
 		reverse_proxy http://paperless.lan:8000 {
+			header_up X-Forwarded-Proto https
+		}
+	}
+
+	@radicale host radicale.bl4ckspell.freeddns.org
+	handle @radicale {
+		reverse_proxy http://radicale.lan:5232 {
 			header_up X-Forwarded-Proto https
 		}
 	}

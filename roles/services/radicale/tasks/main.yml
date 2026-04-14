@@ -1,0 +1,8 @@
+---
+- name: Include Radicale user setup tasks
+  ansible.builtin.include_tasks:
+    file: user.yml
+
+- name: Include Radicale stack setup tasks
+  ansible.builtin.include_tasks:
+    file: stack_setup.yml
