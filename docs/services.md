@@ -26,29 +26,30 @@
 
 ## Ports
 
+Services behind Caddy use `expose` (no host port binding). Only services requiring direct LAN access retain host port mappings.
+
 | **Service**          | **Host Port** | **Container Port** |
 | -------------------- | ------------- | ------------------ |
 | **Pi-hole**          | 53            | 53                 |
 | **Anubis**           | -             | 3000               |
-| **Immich**           | 2283          | 2283               |
-| **Photon**           | 2322          | 2322               |
-| **Homepage**         | 3000          | 3000               |
-| **Uptime Kuma**      | 3001          | 3001               |
-| **Dawarich**         | 3002          | 3000               |
+| **Immich**           | -             | 2283               |
+| **Photon**           | -             | 2322               |
+| **Homepage**         | -             | 3000               |
+| **Uptime Kuma**      | -             | 3001               |
+| **Dawarich**         | -             | 3000               |
 | **ddns-updater**     | 3003          | 8000               |
-| **Dockhand**         | 3004          | 3000               |
-| **Linkwarden**       | 3010          | 3000               |
+| **Dockhand**         | -             | 3000               |
+| **Linkwarden**       | -             | 3000               |
 | **Dockge**           | 5001          | 5001               |
 | **Radicale**         | 5232          | 5232               |
 | **Forgejo**          | 3000          | 3000               |
 | **Pi-hole**          | 7080          | 80                 |
 | **Pi-hole**          | 7443          | 443                |
-| **Paperless-ngx**    | 8000          | 8000               |
+| **Paperless-ngx**    | -             | 8000               |
 | **Cup**              | 8010          | 8000               |
-| **Jellyfin**         | 8096          | 8096               |
-| **Authentik**        | 9080          | 9080               |
-| **Authentik**        | 9443          | 9443               |
-| **Ollama**           | 11434         | 11434              |
+| **Jellyfin**         | -             | 8096               |
+| **Authentik**        | -             | 9443               |
+| **Ollama**           | -             | 11434              |
 
 ## Service Users and Groups
 
@@ -74,7 +75,7 @@ Set `TARGET` in the docker-compose environment to the backend service you want t
 
 ## Authentik
 
-Port: `9080:9080`, `9443:9443`
+Port: `:9443` (exposed, no host binding)
 
 - https://goauthentik.io/
 - https://github.com/goauthentik/authentik
@@ -114,14 +115,14 @@ Ports: `5001:5001`
 
 ## Uptime Kuma
 
-Ports: `3001:3001`
+Port: `:3001` (exposed, no host binding)
 
 - https://uptime.kuma.pet/
 - https://github.com/louislam/uptime-kuma
 
 ## Paperless-ngx
 
-Ports: `8000:8000`
+Port: `:8000` (exposed, no host binding)
 
 - https://docs.paperless-ngx.com/
 - https://github.com/paperless-ngx/paperless-ngx
@@ -153,14 +154,14 @@ pihole_web_password: ""
 
 ## Homepage
 
-Ports: `3000:3000`
+Port: `:3000` (exposed, no host binding)
 
 - https://gethomepage.dev/
 - https://github.com/gethomepage/homepage
 
 ## Linkwarden
 
-Ports: `3010:3000`
+Port: `:3000` (exposed, no host binding)
 
 - https://docs.linkwarden.app/
 - https://github.com/linkwarden/linkwarden
@@ -192,7 +193,7 @@ Setup:
 
 ## Immich
 
-Ports: `2283:2283`
+Port: `:2283` (exposed, no host binding)
 
 - https://immich.app/docs/overview/quick-start
 - https://github.com/immich-app/immich
@@ -213,7 +214,7 @@ Ports: `8010:8000`
 
 ## Ollama
 
-Ports: `11434:11434`
+Port: `:11434` (exposed, no host binding)
 
 - https://ollama.com/
 - https://github.com/ollama/ollama
@@ -229,7 +230,7 @@ ollama pull mistral
 
 ## Dawarich
 
-Ports: `3002:3000`
+Port: `:3000` (exposed, no host binding)
 
 - https://dawarich.app/docs/intro
 - https://github.com/Freika/dawarich
@@ -250,13 +251,13 @@ authentik_client_secret: ""
 
 ## Photon
 
-Ports: `2322:2322`
+Port: `:2322` (exposed, no host binding)
 
 - https://github.com/rtuszik/photon-docker
 
 ## Jellyfin
 
-Ports: `8096:8096`
+Port: `:8096` (exposed, no host binding)
 
 - https://jellyfin.org/docs/
 - https://github.com/jellyfin/jellyfin
@@ -307,7 +308,7 @@ Multiple users go on separate lines in the secrets file.
 
 ## Dockhand
 
-Ports: `3004:3000`
+Port: `:3000` (exposed, no host binding)
 
 - https://dockhand.pro/manual/
 - https://github.com/Finsys/dockhand

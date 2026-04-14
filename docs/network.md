@@ -42,7 +42,7 @@ Provides ad-blocking and local `.lan` domain resolution. Uses Docker's embedded 
 
 Pi-hole serves as the DNS server for:
 
--  **Docker containers** (via [Docker's embedded DNS](https://docs.docker.com/engine/network/#dns-services))
+- **Docker containers** (via [Docker's embedded DNS](https://docs.docker.com/engine/network/#dns-services))
 - **Local network devices** (phones, laptops, etc. - set DNS to `192.168.178.117`)
 
 **Key config:**
@@ -56,13 +56,13 @@ FTLCONF_dns_hosts: |
   # ... other services
 ```
 
-**Note:** `.lan` domains resolve to container IPs (172.21.255.x), which only work for container-to-container communication. For external access from phones/laptops, use Nginx Proxy Manager with public domains or `server-ip:port`.
+**Note:** `.lan` domains resolve to container IPs (172.21.255.x), which only work for container-to-container communication. For external access from phones/laptops, use Caddy with public domains.
 
-## Nginx Proxy Manager
+## Caddy
 
-**Container IP:** `172.21.255.249`  
-**Access:** `http://192.168.178.117:81`
+**Container IP:** `172.21.255.238`  
+**Ports:** `443/tcp`, `443/udp` (host-bound), `8080` (exposed internally for Anubis backend routing)
 
-Handles reverse proxy and SSL termination for services. Routes external traffic to internal container IPs.
+Handles reverse proxy and automatic SSL termination (via Let's Encrypt) for services. External traffic hits Caddy on port 443, which routes through Anubis for PoW protection, then to the backend service via `.lan` DNS.
 
-Example: `https://immich.example.com` → NPM → `http://172.21.255.243:80`
+Example: `https://immich.bl4ckspell.freeddns.org` → Caddy (:443) → Anubis → Caddy (:8080) → `http://immich.lan:2283`
