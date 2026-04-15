@@ -44,7 +44,7 @@ services:
     networks:
       - forgejo
     volumes:
-      - forgejo_pgdata:/var/lib/postgresql/data
+      - forgejo_pgdata:/var/lib/postgresql
 
 volumes:
   forgejo_pgdata:
