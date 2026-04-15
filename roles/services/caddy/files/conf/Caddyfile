@@ -20,6 +20,7 @@ cup.bl4ckspell.freeddns.org {
 bl4ckspell.freeddns.org,
 authentik.bl4ckspell.freeddns.org,
 dawarich.bl4ckspell.freeddns.org,
+docs.bl4ckspell.freeddns.org,
 dockge.bl4ckspell.freeddns.org,
 dockhand.bl4ckspell.freeddns.org,
 forgejo.bl4ckspell.freeddns.org,
@@ -74,6 +75,13 @@ radicale.bl4ckspell.freeddns.org {
 	@dawarich host dawarich.bl4ckspell.freeddns.org
 	handle @dawarich {
 		reverse_proxy http://dawarich.lan:3000 {
+			header_up X-Forwarded-Proto https
+		}
+	}
+
+	@docs host docs.bl4ckspell.freeddns.org
+	handle @docs {
+		reverse_proxy http://docs.lan:8349 {
 			header_up X-Forwarded-Proto https
 		}
 	}

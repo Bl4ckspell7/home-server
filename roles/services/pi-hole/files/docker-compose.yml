@@ -61,6 +61,7 @@ services:
         172.21.255.236 anubis.lan
         172.21.255.235 forgejo.lan
         172.21.255.234 radicale.lan
+        172.21.255.233 docs.lan
       FTLCONF_dhcp_active: "false"
     volumes:
       # For persisting Pi-hole's databases and common configuration file

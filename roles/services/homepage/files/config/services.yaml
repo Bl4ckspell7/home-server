@@ -23,6 +23,14 @@
             ping: pihole.lan
             statusStyle: "basic"
 
+    - Documentation:
+        - Docs:
+            icon: sh-docusaurus.svg
+            href: https://docs.bl4ckspell.freeddns.org/docs
+            description: Home Server Documentation
+            ping: docs.lan
+            statusStyle: "basic"
+
     - Management & Monitoring:
         - Dockge:
             icon: sh-dockge.svg

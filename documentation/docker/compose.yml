@@ -1,0 +1,10 @@
+name: home-server-docs
+
+services:
+  home-server-docs:
+    container_name: home-server-docs
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    expose:
+      - "8349"

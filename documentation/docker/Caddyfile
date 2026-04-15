@@ -1,0 +1,10 @@
+{
+	admin off
+	auto_https off
+}
+
+:8349 {
+	root * /srv
+	file_server
+	try_files {path} /404.html
+}
