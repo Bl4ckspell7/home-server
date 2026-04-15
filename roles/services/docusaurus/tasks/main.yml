@@ -1,0 +1,28 @@
+- name: Ensure Docusaurus stack directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/docusaurus
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy Docusaurus docker-compose file
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/docusaurus/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy Docusaurus stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/docusaurus
+    state: present
+    files:
+      - docker-compose.yml
+    remove_orphans: true
+  register: docusaurus_result
+
+- name: Debug Docusaurus deploy result
+  ansible.builtin.debug:
+    var: docusaurus_result

@@ -1,7 +1,3 @@
-[← Back to README](../README.md)
-
----
-
 # Services
 
 ## Setup new service
@@ -28,28 +24,29 @@
 
 Services behind Caddy use `expose` (no host port binding). Only services requiring direct LAN access retain host port mappings.
 
-| **Service**          | **Host Port** | **Container Port** |
-| -------------------- | ------------- | ------------------ |
-| **Pi-hole**          | 53            | 53                 |
-| **Anubis**           | -             | 3000               |
-| **Immich**           | -             | 2283               |
-| **Photon**           | -             | 2322               |
-| **Homepage**         | -             | 3000               |
-| **Uptime Kuma**      | -             | 3001               |
-| **Dawarich**         | -             | 3000               |
-| **ddns-updater**     | 3003          | 8000               |
-| **Dockhand**         | -             | 3000               |
-| **Linkwarden**       | -             | 3000               |
-| **Dockge**           | 5001          | 5001               |
-| **Radicale**         | 5232          | 5232               |
-| **Forgejo**          | 3000          | 3000               |
-| **Pi-hole**          | 7080          | 80                 |
-| **Pi-hole**          | 7443          | 443                |
-| **Paperless-ngx**    | -             | 8000               |
-| **Cup**              | 8010          | 8000               |
-| **Jellyfin**         | -             | 8096               |
-| **Authentik**        | -             | 9443               |
-| **Ollama**           | -             | 11434              |
+| **Service**       | **Host Port** | **Container Port** |
+| ----------------- | ------------- | ------------------ |
+| **Pi-hole**       | 53            | 53                 |
+| **Anubis**        | -             | 3000               |
+| **Immich**        | -             | 2283               |
+| **Photon**        | -             | 2322               |
+| **Homepage**      | -             | 3000               |
+| **Uptime Kuma**   | -             | 3001               |
+| **Dawarich**      | -             | 3000               |
+| **ddns-updater**  | 3003          | 8000               |
+| **Docusaurus**    | -             | 8349               |
+| **Dockhand**      | -             | 3000               |
+| **Linkwarden**    | -             | 3000               |
+| **Dockge**        | 5001          | 5001               |
+| **Radicale**      | 5232          | 5232               |
+| **Forgejo**       | 3000          | 3000               |
+| **Pi-hole**       | 7080          | 80                 |
+| **Pi-hole**       | 7443          | 443                |
+| **Paperless-ngx** | -             | 8000               |
+| **Cup**           | 8010          | 8000               |
+| **Jellyfin**      | -             | 8096               |
+| **Authentik**     | -             | 9443               |
+| **Ollama**        | -             | 11434              |
 
 ## Service Users and Groups
 
@@ -335,6 +332,26 @@ Port: `:3000` (exposed, no host binding)
 
 - https://dockhand.pro/manual/
 - https://github.com/Finsys/dockhand
+
+## Docusaurus
+
+Port: `:8349` (exposed, no host binding)
+
+- https://docusaurus.io/
+- https://github.com/facebook/docusaurus
+
+Documentation site for this project, built with Docusaurus and served by Caddy.
+
+### Build and push
+
+```bash
+cd documentation
+podman login forgejo.bl4ckspell.freeddns.org
+podman build -f docker/Dockerfile -t forgejo.bl4ckspell.freeddns.org/bl4ckspell/home-server-docs:1.0.0 .
+podman push forgejo.bl4ckspell.freeddns.org/bl4ckspell/home-server-docs:1.0.0
+```
+
+Update the image tag in `roles/services/docusaurus/files/docker-compose.yml` to match the pushed version.
 
 ## ddns-updater
 

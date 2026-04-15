@@ -1,7 +1,3 @@
-[← Back to README](../README.md)
-
----
-
 ## Installation Steps
 
 ## Bios
@@ -13,7 +9,6 @@ Perform BIOS update.
 - Leave root password empty.
 
 - Partitions:
-
   - ESP: 500MB
   - boot: ext4 1.5GB
   - root: luks + lvm ext4

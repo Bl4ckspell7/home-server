@@ -1,0 +1,20 @@
+name: docusaurus
+
+services:
+  docusaurus:
+    image: forgejo.bl4ckspell.freeddns.org/bl4ckspell/home-server-docs:1.0.0
+    container_name: docusaurus
+    restart: unless-stopped
+    networks:
+      svr1-network:
+        ipv4_address: 172.21.255.233
+    dns:
+      - 172.21.255.254
+    dns_search:
+      - "."
+    expose:
+      - "8349"
+
+networks:
+  svr1-network:
+    external: true
