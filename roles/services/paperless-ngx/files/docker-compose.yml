@@ -2,7 +2,7 @@ name: paperless-ngx
 services:
   paperless:
     container_name: paperless
-    image: ghcr.io/paperless-ngx/paperless-ngx:2.20.13
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.20.14
     restart: unless-stopped
     depends_on:
       - paperless-redis
