@@ -47,6 +47,7 @@
       - git
       - gnome-shell-extension-appindicator
       - gnome-software-plugin-flatpak
+      - golang-docker-credential-helpers
       - initramfs-tools
       - inotify-tools
       - iputils-ping
@@ -54,6 +55,7 @@
       - linux-headers-amd64
       - locales
       - net-tools
+      - pass
       - ninja-build
       - nmap
       - ovmf
