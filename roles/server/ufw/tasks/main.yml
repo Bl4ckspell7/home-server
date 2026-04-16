@@ -41,13 +41,6 @@
     proto: tcp
     comment: "Allow LocalSend traffic"
 
-- name: Allow TigerVNC incoming on port 5901
-  community.general.ufw:
-    rule: allow
-    port: 5901
-    proto: tcp
-    comment: "Allow TigerVNC"
-
 - name: Allow HTTP traffic for Nginx Proxy Manager
   community.general.ufw:
     rule: allow

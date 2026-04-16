@@ -12,4 +12,3 @@ Documentation is built with [Docusaurus](https://docusaurus.io/) and lives in [`
 - [SSH](documentation/docs/ssh.md)
 - [Network](documentation/docs/network.md)
 - [Hardware](documentation/docs/hardware.md)
-- [VNC (How-To)](documentation/docs/howto/vnc.md)

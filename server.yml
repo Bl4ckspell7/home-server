@@ -25,9 +25,6 @@
     - role: ufw
       tags: ufw
 
-    - role: vnc
-      tags: vnc
-
     - role: luks
       tags: luks
 
