@@ -81,7 +81,6 @@
       - strace
       - systemd-resolved
       - tcpdump
-      - tigervnc-standalone-server
       - tree
       - ufw
       - util-linux
