@@ -55,10 +55,10 @@
       - linux-headers-amd64
       - locales
       - net-tools
-      - pass
       - ninja-build
       - nmap
       - ovmf
+      - pass
       - pkg-config
       - podman
       - power-profiles-daemon
