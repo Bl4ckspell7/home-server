@@ -60,6 +60,7 @@
       - nmap
       - ovmf
       - pkg-config
+      - podman
       - power-profiles-daemon
       - python3
       - python3-ansible-runner
