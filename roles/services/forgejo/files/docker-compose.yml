@@ -1,7 +1,7 @@
 name: forgejo
 services:
   forgejo:
-    image: codeberg.org/forgejo/forgejo:15.0.0-rootless
+    image: codeberg.org/forgejo/forgejo:15.0.1-rootless
     container_name: forgejo
     user: 902:902
     env_file: .env
