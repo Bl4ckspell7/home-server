@@ -2,7 +2,7 @@ name: ollama
 services:
   ollama:
     container_name: ollama
-    image: ollama/ollama:0.18.3
+    image: ollama/ollama:0.23.0
     restart: unless-stopped
     expose:
       - "11434"
