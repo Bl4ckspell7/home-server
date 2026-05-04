@@ -12,4 +12,4 @@ Documentation for the home server setup, services, and configuration.
 - [Network](network.md) — network configuration
 - [Router](router.md) — router settings
 - [SSH](ssh.md) — SSH configuration
-- [Services](services.md) — deployed services and their configuration
+- [Services](services/) — deployed services and their configuration
