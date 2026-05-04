@@ -21,6 +21,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data # Must use bind mount, not named volume
+      - /opt/stacks:/opt/stacks
 
 networks:
   svr1-network:
