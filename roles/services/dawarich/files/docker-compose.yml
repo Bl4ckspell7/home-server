@@ -2,7 +2,7 @@ name: dawarich
 
 x-variables:
   # shared variables for dawarich services (app and sidekiq)
-  dawarich_image: &dawarich_image freikin/dawarich:1.7.5
+  dawarich_image: &dawarich_image freikin/dawarich:1.7.7
   app_hosts: &app_hosts localhost,dawarich.bl4ckspell.freeddns.org
   database_host: &database_host dawarich-postgres
   database_name: &database_name dawarich_development
@@ -11,7 +11,6 @@ x-variables:
   photon_api_host: &photon_api_host photon.lan:2322
   photon_api_use_https: &photon_api_use_https false
   prometheus_enabled: &prometheus_enabled "false"
-  prometheus_port: &prometheus_port 9394
   rails_env: &rails_env production
   rails_log_to_stdout: &rails_log_to_stdout true
   redis_url: &redis_url redis://dawarich-redis:6379
@@ -87,7 +86,6 @@ services:
     expose:
       - "3000"
       # - "${DAWARICH_APP_PORT:-3000}:3000"
-      # - "${PROMETHEUS_PORT:-9394}:9394" # Prometheus exporter, uncomment if needed
     stdin_open: true
     tty: true
     entrypoint: web-entrypoint.sh
@@ -113,8 +111,6 @@ services:
       PHOTON_API_HOST: *photon_api_host
       PHOTON_API_USE_HTTPS: *photon_api_use_https
       PROMETHEUS_EXPORTER_ENABLED: *prometheus_enabled
-      PROMETHEUS_EXPORTER_HOST: ${PROMETHEUS_EXPORTER_HOST:-0.0.0.0}
-      PROMETHEUS_EXPORTER_PORT: *prometheus_port
       RAILS_ENV: *rails_env
       RAILS_LOG_TO_STDOUT: *rails_log_to_stdout
       REDIS_URL: *redis_url
@@ -181,8 +177,6 @@ services:
       PHOTON_API_HOST: *photon_api_host
       PHOTON_API_USE_HTTPS: *photon_api_use_https
       PROMETHEUS_EXPORTER_ENABLED: *prometheus_enabled
-      PROMETHEUS_EXPORTER_HOST: ${PROMETHEUS_EXPORTER_HOST_SIDEKIQ:-dawarich-app}
-      PROMETHEUS_EXPORTER_PORT: *prometheus_port
       RAILS_ENV: *rails_env
       RAILS_LOG_TO_STDOUT: *rails_log_to_stdout
       REDIS_URL: *redis_url
