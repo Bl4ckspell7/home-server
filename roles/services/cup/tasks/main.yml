@@ -17,13 +17,30 @@
     group: root
     mode: "0644"
 
-- name: Copy Cup config file
-  ansible.builtin.copy:
-    src: cup.json
+- name: Decrypt secrets for Cup
+  ansible.builtin.command:
+    cmd: sops decrypt {{ role_path }}/vars/secrets.yml
+  delegate_to: localhost
+  become: false
+  changed_when: false
+  no_log: true
+  register: cup_secrets_raw
+
+- name: Load secrets for Cup
+  ansible.builtin.set_fact:
+    "{{ item.key }}": "{{ item.value }}"
+  loop: "{{ cup_secrets_raw.stdout | from_yaml | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  no_log: true
+
+- name: Template Cup config file
+  ansible.builtin.template:
+    src: cup.json.j2
     dest: /opt/stacks/cup/cup.json
     owner: root
     group: root
-    mode: "0644"
+    mode: "0600"
 
 - name: Start Cup
   community.docker.docker_compose_v2:

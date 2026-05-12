@@ -9,16 +9,29 @@
 	}
 }
 
-# Cup
-cup.bl4ckspell.freeddns.org {
-	# import error_page
-	# reverse_proxy http://cup.lan:8000
-	respond "currently unavailable" 503
+(authentik) {
+	route {
+		reverse_proxy /outpost.goauthentik.io/* https://authentik.lan:9443 {
+			header_up Host {upstream_hostport}
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+		forward_auth https://authentik.lan:9443 {
+			uri /outpost.goauthentik.io/auth/caddy
+			copy_headers X-Authentik-Username X-Authentik-Groups X-Authentik-Entitlements X-Authentik-Email X-Authentik-Name X-Authentik-Uid X-Authentik-Jwt X-Authentik-Meta-Jwks X-Authentik-Meta-Outpost X-Authentik-Meta-Provider X-Authentik-Meta-App X-Authentik-Meta-Version
+			trusted_proxies private_ranges
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+	}
 }
 
 # Protected by Anubis
 bl4ckspell.freeddns.org,
 authentik.bl4ckspell.freeddns.org,
+cup.bl4ckspell.freeddns.org,
 dawarich.bl4ckspell.freeddns.org,
 docs.bl4ckspell.freeddns.org,
 dockge.bl4ckspell.freeddns.org,
@@ -69,6 +82,14 @@ radicale.bl4ckspell.freeddns.org {
 			transport http {
 				tls_insecure_skip_verify
 			}
+		}
+	}
+
+	@cup host cup.bl4ckspell.freeddns.org
+	handle @cup {
+		import authentik
+		reverse_proxy http://cup.lan:8000 {
+			header_up X-Forwarded-Proto https
 		}
 	}
 
