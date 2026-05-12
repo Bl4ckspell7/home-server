@@ -36,9 +36,9 @@ services:
       FTLCONF_dns_listeningMode: "ALL"
       FTLCONF_dns_dnssec: "false"
       FTLCONF_dns_port: "53"
-      # use Docker's embedded DNS server (which uses host's DNS settings)
+      # use host systemd-resolved stub via svr1-network gateway -> encrypted DoT upstreams
       FTLCONF_dns_upstreams: |
-        127.0.0.11
+        172.21.0.1
       FTLCONF_dns_domain: "lan"
       FTLCONF_dns_hosts: |
         172.21.255.254 pihole.lan

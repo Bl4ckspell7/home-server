@@ -10,6 +10,7 @@
     - "^#?DNSSEC="
     - "^#?Cache="
     - "^#?DNSStubListener="
+    - "^#?DNSStubListenerExtra="
     - "^#?ReadEtcHosts="
     - "^#?Domains="
 
@@ -26,8 +27,9 @@
       DNSSEC=yes
       Cache=yes
       DNSStubListener=yes
+      DNSStubListenerExtra=172.21.0.1
       ReadEtcHosts=yes
-      Domains=lan
+      Domains=lan ~.
   notify: Restart systemd-resolved
 
 - name: Remove existing /etc/resolv.conf

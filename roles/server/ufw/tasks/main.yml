@@ -41,6 +41,17 @@
     proto: tcp
     comment: "Allow LocalSend traffic"
 
+- name: Allow DNS from svr1-network to host stub
+  community.general.ufw:
+    rule: allow
+    src: 172.21.0.0/16
+    port: 53
+    proto: "{{ item }}"
+    comment: "Docker containers -> systemd-resolved stub on bridge gateway"
+  loop:
+    - udp
+    - tcp
+
 - name: Allow HTTP traffic for Nginx Proxy Manager
   community.general.ufw:
     rule: allow

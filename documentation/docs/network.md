@@ -11,11 +11,11 @@ Server (192.168.178.117:53)
     ↓
 Pi-hole (172.21.255.254) ─── Ad-blocking & .lan resolution
     ↓
-Docker DNS (127.0.0.11)
+systemd-resolved stub (172.21.0.1, svr1-network gateway)
     ↓
-systemd-resolved ─── DNSSEC validation & caching
+DNSSEC validation & caching
     ↓
-DNS.SB / Cloudflare ─── DNS-over-TLS (port 853)
+DNS.SB / Quad9 / Cloudflare ─── DNS-over-TLS (port 853)
 ```
 
 ## systemd-resolved
@@ -24,21 +24,26 @@ DNS.SB / Cloudflare ─── DNS-over-TLS (port 853)
 
 ```ini
 [Resolve]
-DNS=185.222.222.222#dot.sb 45.11.45.11#dot.sb
-FallbackDNS=1.1.1.1#one.one.one.one 1.0.0.1#one.one.one.one
+DNS=185.222.222.222#dot.sb 9.9.9.9#dns.quad9.net 1.1.1.1#one.one.one.one
+FallbackDNS=
 DNSOverTLS=yes
 DNSSEC=yes
 Cache=yes
 DNSStubListener=yes
+DNSStubListenerExtra=172.21.0.1
 ReadEtcHosts=yes
-Domains=lan
+Domains=lan ~.
 ```
 
-Provides DNS-over-TLS to upstream providers (DNS.SB, Cloudflare) with DNSSEC validation.
+Provides DNS-over-TLS to upstream providers (DNS.SB, Quad9, Cloudflare) with DNSSEC validation.
+
+`DNSStubListenerExtra=172.21.0.1` binds the resolver stub to the svr1-network bridge gateway so containers can reach it. `Domains=lan ~.` routes all queries through the global DoT upstreams instead of any link-level DNS (e.g. Fritz!Box on enp5s0), avoiding router DNS rebind protection issues.
+
+UFW must allow `53/udp` and `53/tcp` from `172.21.0.0/16` to the host (see `roles/server/ufw/tasks/main.yml`).
 
 ## Pi-hole
 
-Provides ad-blocking and local `.lan` domain resolution. Uses Docker's embedded DNS (`127.0.0.11`) as upstream, which forwards to systemd-resolved.
+Provides ad-blocking and local `.lan` domain resolution. Upstream points to the systemd-resolved stub on the svr1-network gateway (`172.21.0.1`), so every query leaves the network encrypted via DoT.
 
 Pi-hole serves as the DNS server for:
 
@@ -49,7 +54,7 @@ Pi-hole serves as the DNS server for:
 
 ```yaml
 FTLCONF_dns_upstreams: |
-  127.0.0.11
+  172.21.0.1
 FTLCONF_dns_hosts: |
   172.21.255.254 pihole.lan
   172.21.255.253 authentik.lan
