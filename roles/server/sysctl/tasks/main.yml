@@ -10,3 +10,13 @@
     group: root
     mode: "0644"
   notify: Reload sysctl
+
+- name: Allow binding to non-local IPs (dnscrypt-proxy on bridge gateway)
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/98-ip-nonlocal-bind.conf
+    content: |
+      net.ipv4.ip_nonlocal_bind = 1
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload sysctl

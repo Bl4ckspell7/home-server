@@ -1,0 +1,65 @@
+# dnscrypt-proxy config — managed by Ansible
+# Pure encrypted DNS transport. Pi-hole sits in front of this and handles caching + filtering.
+
+# bind to svr1-network bridge gateway on non-privileged port (no socket activation needed)
+listen_addresses = ['172.21.0.1:5354']
+
+# pin to a known-good no-log resolver
+server_names = ['quad9-dnscrypt-ip4-filter-pri']
+
+# DNSCrypt protocol enabled, DoH used as fallback
+dnscrypt_servers = true
+
+require_nolog = true
+require_dnssec = false
+
+ipv4_servers = true
+ipv6_servers = false
+block_ipv6 = true
+
+# cache (pi-hole also caches, but a second small layer protects against transient upstream blips)
+cache = true
+cache_size = 8192
+cache_min_ttl = 3600
+cache_max_ttl = 259200
+cache_neg_min_ttl = 60
+cache_neg_max_ttl = 600
+
+# bootstrap (used only to fetch the source list on first start)
+bootstrap_resolvers = ['9.9.9.9:53', '1.1.1.1:53']
+ignore_system_dns = true
+
+# logging
+log_level = 2
+log_files_max_size = 10
+log_files_max_age = 7
+log_files_max_backups = 1
+
+# anonymized DNS — route queries via relays so the resolver never sees the client IP
+[anonymized_dns]
+routes = [
+  { server_name = 'quad9-dnscrypt-ip4-filter-pri', via = ['anon-cs-de', 'anon-cs-dus', 'anon-cs-berlin'] }
+]
+
+[query_log]
+  file = '/var/log/dnscrypt-proxy/query.log'
+  format = 'ltsv'
+
+[nx_log]
+  file = '/var/log/dnscrypt-proxy/nx.log'
+
+[sources]
+  [sources.'public-resolvers']
+  url = 'https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md'
+  cache_file = '/var/cache/dnscrypt-proxy/public-resolvers.md'
+  minisign_key = 'RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3'
+  refresh_delay = 72
+  prefix = ''
+
+  [sources.'relays']
+  url = 'https://download.dnscrypt.info/resolvers-list/v3/relays.md'
+  cache_file = '/var/cache/dnscrypt-proxy/relays.md'
+  minisign_key = 'RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3'
+  refresh_delay = 72
+  prefix = ''
+

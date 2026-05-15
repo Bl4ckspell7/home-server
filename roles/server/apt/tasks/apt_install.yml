@@ -26,6 +26,7 @@
       - curl
       - dislocker
       - dkms
+      - dnscrypt-proxy
       - docker-buildx-plugin
       - docker-ce
       - docker-ce-cli

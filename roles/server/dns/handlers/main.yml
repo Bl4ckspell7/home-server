@@ -1,6 +1,5 @@
 ---
-- name: Restart systemd-resolved
+- name: Restart dnscrypt-proxy
   ansible.builtin.systemd_service:
-    name: systemd-resolved
+    name: dnscrypt-proxy
     state: restarted
-    enabled: true

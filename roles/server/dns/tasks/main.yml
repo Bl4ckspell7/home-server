@@ -1,46 +1,38 @@
-- name: Remove all existing DNS configuration lines from resolved.conf
-  ansible.builtin.lineinfile:
-    path: /etc/systemd/resolved.conf
-    regexp: "{{ item }}"
-    state: absent
-  loop:
-    - "^#?DNS="
-    - "^#?FallbackDNS="
-    - "^#?DNSOverTLS="
-    - "^#?DNSSEC="
-    - "^#?Cache="
-    - "^#?DNSStubListener="
-    - "^#?DNSStubListenerExtra="
-    - "^#?ReadEtcHosts="
-    - "^#?Domains="
+- name: Stop and disable systemd-resolved
+  ansible.builtin.systemd_service:
+    name: systemd-resolved
+    state: stopped
+    enabled: false
+    masked: true
 
-- name: Configure systemd-resolved DNS settings
-  ansible.builtin.blockinfile:
-    path: /etc/systemd/resolved.conf
-    insertafter: '^\[Resolve\]'
-    marker: "# {mark} ANSIBLE MANAGED BLOCK"
-    mode: "0644"
-    block: |
-      DNS=185.222.222.222#dot.sb 9.9.9.9#dns.quad9.net 1.1.1.1#one.one.one.one
-      FallbackDNS=
-      DNSOverTLS=yes
-      DNSSEC=yes
-      Cache=yes
-      DNSStubListener=yes
-      DNSStubListenerExtra=172.21.0.1
-      ReadEtcHosts=yes
-      Domains=lan ~.
-  notify: Restart systemd-resolved
-
-- name: Remove existing /etc/resolv.conf
+- name: Remove resolv.conf symlink
   ansible.builtin.file:
     path: /etc/resolv.conf
     state: absent
 
-- name: Symlink systemd-resolved stub to /etc/resolv.conf
-  ansible.builtin.file:
-    src: /run/systemd/resolve/stub-resolv.conf
+- name: Write static /etc/resolv.conf pointing at pi-hole on loopback
+  ansible.builtin.copy:
     dest: /etc/resolv.conf
-    state: link
-    force: true
-  notify: Restart systemd-resolved
+    content: |
+      # Managed by Ansible — pi-hole on 127.0.0.54 forwards to dnscrypt-proxy
+      nameserver 127.0.0.54
+      options edns0 trust-ad
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy dnscrypt-proxy config
+  ansible.builtin.copy:
+    src: dnscrypt-proxy.toml
+    dest: /etc/dnscrypt-proxy/dnscrypt-proxy.toml
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart dnscrypt-proxy
+
+- name: Ensure dnscrypt-proxy enabled and running
+  ansible.builtin.systemd_service:
+    name: dnscrypt-proxy
+    state: started
+    enabled: true
+    daemon_reload: true

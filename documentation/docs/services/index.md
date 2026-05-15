@@ -26,7 +26,7 @@ Services behind Caddy use `expose` (no host port binding). Only services requiri
 
 | **Service**       | **Host Port** | **Container Port** |
 | ----------------- | ------------- | ------------------ |
-| **Pi-hole**       | 53            | 53                 |
+| **Pi-hole**       | 127.0.0.54:53 | 53                 |
 | **Anubis**        | -             | 3000               |
 | **Immich**        | -             | 2283               |
 | **Photon**        | -             | 2322               |

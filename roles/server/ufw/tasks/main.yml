@@ -41,13 +41,13 @@
     proto: tcp
     comment: "Allow LocalSend traffic"
 
-- name: Allow DNS from svr1-network to host stub
+- name: Allow DNS from svr1-network to host dnscrypt-proxy
   community.general.ufw:
     rule: allow
     src: 172.21.0.0/16
-    port: 53
+    port: 5354
     proto: "{{ item }}"
-    comment: "Docker containers -> systemd-resolved stub on bridge gateway"
+    comment: "Docker containers (pi-hole) -> dnscrypt-proxy on bridge gateway"
   loop:
     - udp
     - tcp

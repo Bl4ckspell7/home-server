@@ -15,8 +15,8 @@ services:
       - "."
     ports:
       # Host Port : Container Port
-      - "192.168.178.117:53:53/tcp" # avoid port conflict with host DNS configuration
-      - "192.168.178.117:53:53/udp"
+      - "127.0.0.54:53:53/tcp"      # host itself (see /etc/resolv.conf)
+      - "127.0.0.54:53:53/udp"
       # Default HTTP Port
       # - "7080:80/tcp"
       # Default HTTPs Port. FTL will generate a self-signed certificate
@@ -36,9 +36,9 @@ services:
       FTLCONF_dns_listeningMode: "ALL"
       FTLCONF_dns_dnssec: "false"
       FTLCONF_dns_port: "53"
-      # use host systemd-resolved stub via svr1-network gateway -> encrypted DoT upstreams
+      # host dnscrypt-proxy on svr1-network bridge gateway -> encrypted DNSCrypt/DoH
       FTLCONF_dns_upstreams: |
-        172.21.0.1
+        172.21.0.1#5354
       FTLCONF_dns_domain: "lan"
       FTLCONF_dns_hosts: |
         172.21.255.254 pihole.lan
