@@ -39,6 +39,15 @@
     group: root
     mode: "0644"
 
+- name: Copy custom dnsmasq snippets
+  ansible.builtin.copy:
+    src: dnsmasq.d/
+    dest: /opt/stacks/pi-hole/dnsmasq.d/
+    owner: root
+    group: root
+    mode: "0644"
+    directory_mode: "0755"
+
 - name: Deploy Pi-hole stack
   community.docker.docker_compose_v2:
     project_src: /opt/stacks/pi-hole

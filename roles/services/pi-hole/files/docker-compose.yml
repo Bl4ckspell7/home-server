@@ -63,9 +63,13 @@ services:
         172.21.255.234 radicale.lan
         172.21.255.233 docs.lan
       FTLCONF_dhcp_active: "false"
+      # load custom dnsmasq snippets from /etc/dnsmasq.d
+      FTLCONF_misc_etc_dnsmasq_d: "true"
     volumes:
       # For persisting Pi-hole's databases and common configuration file
       - "pihole_data:/etc/pihole"
+      # custom dnsmasq snippets (e.g. no-negcache to prevent NXDOMAIN poisoning at boot)
+      - "./dnsmasq.d:/etc/dnsmasq.d:ro"
 
 volumes:
   pihole_data:
