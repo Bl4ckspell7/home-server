@@ -48,6 +48,7 @@
 
         - ddns-updater:
             icon: sh-ddns-updater.svg
+            href: https://ddns-updater.bl4ckspell.freeddns.org/
             description: Dynamic DNS Updater
             ping: ddns-updater.lan
             statusStyle: "basic"
