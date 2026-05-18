@@ -93,7 +93,7 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      ALLOW_EMAIL_PASSWORD_REGISTRATION: true # optional, default is true
+      ALLOW_EMAIL_PASSWORD_LOGIN: false
       APPLICATION_HOSTS: *app_hosts
       APPLICATION_PROTOCOL: http
       DATABASE_HOST: *database_host
