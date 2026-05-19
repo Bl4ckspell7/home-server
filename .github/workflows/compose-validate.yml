@@ -1,0 +1,38 @@
+name: compose-validate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "roles/services/**/docker-compose.yml"
+      - ".github/workflows/compose-validate.yml"
+  pull_request:
+    paths:
+      - "roles/services/**/docker-compose.yml"
+      - ".github/workflows/compose-validate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Validate compose files
+        run: |
+          set -e
+          fail=0
+          for f in roles/services/*/files/docker-compose.yml; do
+            dir=$(dirname "$f")
+            touch "$dir/.env"
+            echo "::group::Validate $f"
+            if ! docker compose -f "$f" --env-file "$dir/.env" config --quiet; then
+              echo "::error file=$f::compose config failed"
+              fail=1
+            fi
+            echo "::endgroup::"
+          done
+          exit $fail
