@@ -1,6 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", "docker:pinDigests"],
+  "enabledManagers": [
+    "docker-compose",
+    "dockerfile",
+    "bun",
+    "github-actions",
+    "custom.regex"
+  ],
   "minimumReleaseAge": "2 days",
   "dependencyDashboard": true,
   "customManagers": [
