@@ -8,6 +8,12 @@
     "github-actions",
     "custom.regex"
   ],
+  "docker-compose": {
+    "managerFilePatterns": [
+      "/(^|/)docker-compose\\.ya?ml$/",
+      "/(^|/)compose\\.ya?ml$/"
+    ]
+  },
   "minimumReleaseAge": "2 days",
   "dependencyDashboard": true,
   "customManagers": [
@@ -39,7 +45,7 @@
       "enabled": false
     },
     {
-      "matchPackageNames": ["jellyfin/jellyfin"],
+      "matchPackageNames": ["jellyfin/jellyfin", "fnsys/dockhand"],
       "versioning": "semver"
     }
   ]
