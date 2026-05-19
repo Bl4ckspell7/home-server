@@ -1,0 +1,35 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "docker:pinDigests"],
+  "minimumReleaseAge": "2 days",
+  "dependencyDashboard": true,
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/(^|/)docker-compose\\.ya?ml$/"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s*\\n.*?:\\s*&\\S+\\s+\\S+?:(?<currentValue>[^\\s@]+)(@(?<currentDigest>sha256:[a-f0-9]+))?"
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "postgres",
+        "postgis/postgis",
+        "ghcr.io/immich-app/postgres"
+      ],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "matchPackageNames": ["/^forgejo\\.bl4ckspell\\.freeddns\\.org\\//"],
+      "enabled": false
+    }
+  ]
+}

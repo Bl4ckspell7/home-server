@@ -1,6 +1,7 @@
 name: authentik
 
 x-variables:
+  # renovate: datasource=docker depName=ghcr.io/goauthentik/server
   authentik_image: &authentik_image ghcr.io/goauthentik/server:2026.2.3
 
 services:

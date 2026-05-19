@@ -13,3 +13,4 @@ Documentation for the home server setup, services, and configuration.
 - [Router](router.md) — router settings
 - [SSH](ssh.md) — SSH configuration
 - [Services](services/) — deployed services and their configuration
+- [Maintenance](maintenance.md) — Renovate, update workflow, major-PR checklist

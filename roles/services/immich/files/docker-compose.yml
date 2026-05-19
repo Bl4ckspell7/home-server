@@ -8,7 +8,9 @@
 # The compose file on main may not be compatible with the latest release.
 
 x-variables:
+  # renovate: datasource=docker depName=ghcr.io/immich-app/immich-server
   immich_image_server: &immich_image_server ghcr.io/immich-app/immich-server:v2.7.5
+  # renovate: datasource=docker depName=ghcr.io/immich-app/immich-machine-learning
   immich_image_ml: &immich_image_ml ghcr.io/immich-app/immich-machine-learning:v2.7.5
 
 name: immich
