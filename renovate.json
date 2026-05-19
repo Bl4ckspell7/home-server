@@ -37,6 +37,10 @@
     {
       "matchPackageNames": ["/^forgejo\\.bl4ckspell\\.freeddns\\.org\\//"],
       "enabled": false
+    },
+    {
+      "matchPackageNames": ["jellyfin/jellyfin"],
+      "versioning": "semver"
     }
   ]
 }
