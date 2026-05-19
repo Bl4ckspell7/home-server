@@ -26,10 +26,8 @@ jobs:
           set -e
           fail=0
           for f in roles/services/*/files/docker-compose.yml; do
-            dir=$(dirname "$f")
-            touch "$dir/.env"
             echo "::group::Validate $f"
-            if ! docker compose -f "$f" --env-file "$dir/.env" config --quiet; then
+            if ! docker compose -f "$f" config --no-interpolate --quiet; then
               echo "::error file=$f::compose config failed"
               fail=1
             fi
