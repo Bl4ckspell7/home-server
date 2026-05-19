@@ -63,7 +63,7 @@ services:
 
   immich-redis:
     container_name: immich-redis
-    image: docker.io/valkey/valkey:9@sha256:8436e10bc65c94886a91d4415b6a6dfa9cb5a306fb3b996e5bb67cd2b4854193
+    image: docker.io/valkey/valkey:9.0.4@sha256:8436e10bc65c94886a91d4415b6a6dfa9cb5a306fb3b996e5bb67cd2b4854193
     volumes:
       - redis_data:/data
     healthcheck:
