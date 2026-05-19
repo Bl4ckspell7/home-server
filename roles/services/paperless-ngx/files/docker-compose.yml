@@ -86,7 +86,7 @@ services:
       - "--chromium-allow-list=file:///tmp/.*"
   paperless-tika:
     container_name: paperless-tika
-    image: docker.io/apache/tika:latest
+    image: docker.io/apache/tika:3.3.0.0
     restart: unless-stopped
 
 volumes:
