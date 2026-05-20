@@ -43,6 +43,8 @@ services:
       LOG_LEVEL: info
       LOG_CALLER: short # hidden
       SHOUTRRR_ADDRESSES: ""
+    healthcheck:
+      disable: false
 
 networks:
   svr1-network:

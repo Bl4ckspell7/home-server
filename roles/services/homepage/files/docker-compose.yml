@@ -22,6 +22,8 @@ services:
       HOMEPAGE_ALLOWED_HOSTS: "192.168.178.117:3000,bl4ckspell.freeddns.org,homepage.bl4ckspell.freeddns.org"
       PUID: 1000 # optional, your user id
       PGID: 1000 # optional, your group id
+    healthcheck:
+      disable: false
 
 networks:
   svr1-network:

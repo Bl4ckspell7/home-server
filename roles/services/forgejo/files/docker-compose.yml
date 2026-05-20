@@ -31,6 +31,12 @@ services:
       - "2222"
     depends_on:
       - forgejo-postgres
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/api/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
 
   forgejo-postgres:
     image: postgres:18.4-alpine@sha256:96d56f7f57c6aacd1fcb908bc83b345ec5f83231ee486dd66a1baadce274db88
@@ -45,6 +51,12 @@ services:
       - forgejo
     volumes:
       - forgejo_pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
 
 volumes:
   forgejo_pgdata:

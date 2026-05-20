@@ -17,6 +17,11 @@ services:
       BIND: ":3000"
       TARGET: "http://caddy.lan:8080"
       COOKIE_DOMAIN: ".bl4ckspell.freeddns.org"
+    healthcheck:
+      test: ["CMD", "/ko-app/anubis", "--healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 networks:
   svr1-network:

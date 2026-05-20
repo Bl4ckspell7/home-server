@@ -59,6 +59,11 @@ services:
     restart: unless-stopped
     volumes:
       - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
   paperless-postgres:
     container_name: paperless-postgres
     image: docker.io/library/postgres:18.4@sha256:7aba8c66107ee218ddbaacb30eae46d774bf5e34ab77a917be819b4e227493c4
@@ -84,10 +89,20 @@ services:
       - "gotenberg"
       - "--chromium-disable-javascript=true"
       - "--chromium-allow-list=file:///tmp/.*"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
   paperless-tika:
     container_name: paperless-tika
     image: docker.io/apache/tika:3.3.0.0@sha256:2a565f1ea1290bdcb74a7d35957d16a989ed44ef98790dcdcc28121d728fa583
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/9998"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 volumes:
   data:

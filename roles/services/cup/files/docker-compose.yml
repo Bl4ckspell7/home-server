@@ -18,6 +18,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./cup.json:/config/cup.json
+    # no healthcheck: scratch image, no shell/wget/curl, no upstream HEALTHCHECK or --healthcheck subcommand
 
 networks:
   svr1-network:
