@@ -27,7 +27,7 @@ services:
     expose:
       - "2322"
     healthcheck:
-      test: ["NONE"]
+      disable: false
 
 volumes:
   photon_data:

@@ -70,6 +70,8 @@ services:
       - "pihole_data:/etc/pihole"
       # custom dnsmasq snippets (e.g. no-negcache to prevent NXDOMAIN poisoning at boot)
       - "./dnsmasq.d:/etc/dnsmasq.d:ro"
+    healthcheck:
+      disable: false
 
 volumes:
   pihole_data:

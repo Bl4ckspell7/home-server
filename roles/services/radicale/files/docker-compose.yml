@@ -17,6 +17,11 @@ services:
       - ./data:/var/lib/radicale
     expose:
       - "5232"
+    healthcheck:
+      test: ["CMD", "/app/bin/python", "-c", "import socket;s=socket.socket();s.settimeout(3);s.connect(('127.0.0.1',5232))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 networks:
   svr1-network:

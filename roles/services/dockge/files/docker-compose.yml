@@ -30,6 +30,8 @@ services:
       # Tell Dockge where is your stacks directory
       DOCKGE_STACKS_DIR: "/opt/stacks"
       DOCKGE_ENABLE_CONSOLE: false
+    healthcheck:
+      disable: false
 
 networks:
   svr1-network:
