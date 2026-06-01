@@ -16,6 +16,8 @@
   },
   "minimumReleaseAge": "2 days",
   "dependencyDashboard": true,
+  "prConcurrentLimit": 20,
+  "prHourlyLimit": 0,
   "customManagers": [
     {
       "customType": "regex",
@@ -33,9 +35,8 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": [
-        "postgres",
-        "postgis/postgis",
-        "ghcr.io/immich-app/postgres"
+        "/(^|/)postgres$/",
+        "postgis/postgis"
       ],
       "matchUpdateTypes": ["major"],
       "enabled": false
