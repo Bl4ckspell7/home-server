@@ -16,7 +16,7 @@
     mode: "0400"
 
 - name: Deploy Caddy
-  ansible.builtin.include_tasks: deploy_stack.yml
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: caddy
     compose_recreate: always

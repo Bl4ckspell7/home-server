@@ -17,7 +17,7 @@
     directory_mode: "0755"
 
 - name: Deploy Pi-hole
-  ansible.builtin.include_tasks: deploy_stack.yml
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: pi-hole
     service_secrets: true

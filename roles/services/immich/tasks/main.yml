@@ -4,7 +4,7 @@
     file: user.yml
 
 - name: Deploy Immich
-  ansible.builtin.include_tasks: deploy_stack.yml
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: immich
     service_secrets: true

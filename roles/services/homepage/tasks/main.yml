@@ -33,6 +33,6 @@
     mode: "0644"
 
 - name: Deploy Homepage
-  ansible.builtin.include_tasks: deploy_stack.yml
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: homepage

@@ -1,6 +1,6 @@
 ---
 - name: Deploy Linkwarden
-  ansible.builtin.include_tasks: deploy_stack.yml
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: linkwarden
     service_secrets: true

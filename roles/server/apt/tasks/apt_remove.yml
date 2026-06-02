@@ -30,6 +30,6 @@
       - yelp
 
 - name: Show apt remove output
-  ansible.builtin.include_tasks: view_logs.yml
+  ansible.builtin.include_tasks: ../../../../tasks/view_logs.yml
   vars:
     output: "{{ apt_output_remove }}"
