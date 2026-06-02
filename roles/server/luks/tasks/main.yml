@@ -12,7 +12,7 @@
 
     - name: Check if clevis is already bound
       ansible.builtin.command: clevis luks list -d {{ luks_disk }}
-      register: clevis_binding_check
+      register: luks_clevis_binding_check
       failed_when: false
       changed_when: false
 
@@ -21,20 +21,20 @@
         clevis luks bind -d {{ luks_disk }} tpm2 '{"pcr_bank":"sha256"}' <<< "{{ luks_key_data.content | b64decode }}"
       args:
         executable: /bin/bash
-      when: "'tpm2' not in clevis_binding_check.stdout"
-      register: clevis_bind_result
-      changed_when: "'Successfully bound' in clevis_bind_result.stdout"
+      when: "'tpm2' not in luks_clevis_binding_check.stdout"
+      register: luks_clevis_bind_result
+      changed_when: "'Successfully bound' in luks_clevis_bind_result.stdout"
       notify: Update initramfs
 
     - name: List clevis bindings on the LUKS device
       ansible.builtin.command: clevis luks list -d {{ luks_disk }}
-      register: clevis_list_output
+      register: luks_clevis_list_output
       changed_when: false
 
     - name: Show clevis bind result
       ansible.builtin.debug:
-        var: clevis_bind_result
+        var: luks_clevis_bind_result
 
     - name: Show clevis list output
       ansible.builtin.debug:
-        var: clevis_list_output.stdout
+        var: luks_clevis_list_output.stdout
