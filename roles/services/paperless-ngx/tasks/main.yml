@@ -1,57 +1,7 @@
 ---
-- name: Ensure paperless-ngx stack directories exist
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-  loop:
-    - /opt/stacks
-    - /opt/stacks/paperless-ngx
-
-- name: Decrypt secrets for Paperless-ngx
-  ansible.builtin.command:
-    cmd: sops decrypt {{ role_path }}/vars/secrets.yml
-  delegate_to: localhost
-  become: false
-  changed_when: false
-  no_log: true
-  register: paperless_secrets_raw
-
-- name: Load secrets for Paperless-ngx
-  ansible.builtin.set_fact:
-    "{{ item.key }}": "{{ item.value }}"
-  loop: "{{ paperless_secrets_raw.stdout | from_yaml | dict2items }}"
-  loop_control:
-    label: "{{ item.key }}"
-  no_log: true
-
-- name: Template paperless-ngx .env file
-  ansible.builtin.template:
-    src: paperless-ngx.env.j2
-    dest: /opt/stacks/paperless-ngx/.env
-    owner: root
-    group: root
-    mode: "0600"
-
-- name: Copy paperless-ngx docker-compose file
-  ansible.builtin.copy:
-    src: docker-compose.yml
-    dest: /opt/stacks/paperless-ngx/docker-compose.yml
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Start paperless-ngx stack
-  community.docker.docker_compose_v2:
-    project_src: /opt/stacks/paperless-ngx
-    state: present
-    files:
-      - docker-compose.yml
-    remove_orphans: true
-  register: paperless_result
-
-- name: Debug Docker Compose result for paperless-ngx
-  ansible.builtin.debug:
-    var: paperless_result
+- name: Deploy Paperless-ngx
+  ansible.builtin.include_tasks: deploy_stack.yml
+  vars:
+    service_name: paperless-ngx
+    service_secrets: true
+    env_template: paperless-ngx.env.j2

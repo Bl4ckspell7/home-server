@@ -3,6 +3,9 @@
   ansible.builtin.include_tasks:
     file: user.yml
 
-- name: Include Immich stack setup tasks
-  ansible.builtin.include_tasks:
-    file: stack_setup.yml
+- name: Deploy Immich
+  ansible.builtin.include_tasks: deploy_stack.yml
+  vars:
+    service_name: immich
+    service_secrets: true
+    env_template: immich.env.j2

@@ -1,28 +1,5 @@
-- name: Ensure uptime-kuma directory exists
-  ansible.builtin.file:
-    path: /opt/stacks/uptime-kuma
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-
-- name: Copy Uptime Kuma docker-compose file
-  ansible.builtin.copy:
-    src: docker-compose.yml
-    dest: /opt/stacks/uptime-kuma/docker-compose.yml
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Deploy Uptime Kuma stack
-  community.docker.docker_compose_v2:
-    project_src: /opt/stacks/uptime-kuma
-    state: present
-    files:
-      - docker-compose.yml
-    remove_orphans: true
-  register: uptime_kuma_result
-
-- name: Debug Uptime Kuma result
-  ansible.builtin.debug:
-    var: uptime_kuma_result
+---
+- name: Deploy Uptime Kuma
+  ansible.builtin.include_tasks: deploy_stack.yml
+  vars:
+    service_name: uptime-kuma

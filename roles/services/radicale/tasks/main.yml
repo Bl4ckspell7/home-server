@@ -3,6 +3,21 @@
   ansible.builtin.include_tasks:
     file: user.yml
 
-- name: Include Radicale stack setup tasks
-  ansible.builtin.include_tasks:
-    file: stack_setup.yml
+- name: Copy Radicale config file
+  ansible.builtin.copy:
+    src: config/config
+    dest: /opt/stacks/radicale/config/config
+    owner: radicale
+    group: radicale
+    mode: "0644"
+
+- name: Deploy Radicale
+  ansible.builtin.include_tasks: deploy_stack.yml
+  vars:
+    service_name: radicale
+    service_secrets: true
+    env_template: users.j2
+    env_dest: /opt/stacks/radicale/config/users
+    env_owner: radicale
+    env_group: radicale
+    env_mode: "0640"

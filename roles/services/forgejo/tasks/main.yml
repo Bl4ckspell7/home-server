@@ -3,6 +3,17 @@
   ansible.builtin.include_tasks:
     file: user.yml
 
-- name: Include Forgejo stack setup tasks
-  ansible.builtin.include_tasks:
-    file: stack_setup.yml
+- name: Copy Forgejo backup script
+  ansible.builtin.copy:
+    src: backup.sh
+    dest: /opt/stacks/forgejo/backup.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy Forgejo
+  ansible.builtin.include_tasks: deploy_stack.yml
+  vars:
+    service_name: forgejo
+    service_secrets: true
+    env_template: forgejo.env.j2
