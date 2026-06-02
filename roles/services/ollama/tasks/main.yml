@@ -1,28 +1,5 @@
-- name: Ensure ollama directory exists
-  ansible.builtin.file:
-    path: /opt/stacks/ollama
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-
-- name: Copy Ollama docker-compose file
-  ansible.builtin.copy:
-    src: docker-compose.yml
-    dest: /opt/stacks/ollama/docker-compose.yml
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Deploy Ollama stack
-  community.docker.docker_compose_v2:
-    project_src: /opt/stacks/ollama
-    state: present
-    files:
-      - docker-compose.yml
-    remove_orphans: true
-  register: pihole_result
-
-- name: Debug Ollama result
-  ansible.builtin.debug:
-    var: pihole_result
+---
+- name: Deploy Ollama
+  ansible.builtin.include_tasks: deploy_stack.yml
+  vars:
+    service_name: ollama

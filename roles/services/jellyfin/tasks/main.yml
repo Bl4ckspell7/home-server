@@ -1,3 +1,4 @@
+---
 - name: Deploy Jellyfin stack
 
   vars:
@@ -34,31 +35,7 @@
     - name: Include Jellyfin watcher setup
       ansible.builtin.import_tasks: jellyfin-watch.yml
 
-    - name: Ensure Jellyfin stack directory exists
-      ansible.builtin.file:
-        path: /opt/stacks/jellyfin
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
-
-    - name: Copy Jellyfin docker-compose file
-      ansible.builtin.copy:
-        src: docker-compose.yml
-        dest: /opt/stacks/jellyfin/docker-compose.yml
-        owner: root
-        group: root
-        mode: "0644"
-
-    - name: Deploy Jellyfin stack
-      community.docker.docker_compose_v2:
-        project_src: /opt/stacks/jellyfin
-        state: present
-        files:
-          - docker-compose.yml
-        remove_orphans: true
-      register: jellyfin_result
-
-    - name: Debug Jellyfin result
-      ansible.builtin.debug:
-        var: jellyfin_result
+    - name: Deploy Jellyfin
+      ansible.builtin.include_tasks: deploy_stack.yml
+      vars:
+        service_name: jellyfin

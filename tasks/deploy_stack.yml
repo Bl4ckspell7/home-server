@@ -1,0 +1,73 @@
+---
+# Shared deploy logic for every service stack under /opt/stacks/<service>.
+# Included per-role via ansible.builtin.include_tasks, which preserves the calling
+# role's role_path / files/ / templates/ search paths, so sops, copy and template
+# all resolve against the service role that includes this file.
+#
+# Vars:
+#   service_name     (required) stack name; dir becomes /opt/stacks/<service_name>
+#   service_secrets  (bool, default false) decrypt vars/secrets.yml and load as facts
+#   env_template     (optional) template file to render before deploy
+#   env_dest         (optional) render destination, default /opt/stacks/<service_name>/.env
+#   env_owner        (optional) default root
+#   env_group        (optional) default root
+#   env_mode         (optional) default "0600"
+#   compose_recreate (optional) docker_compose_v2 recreate policy, default auto
+
+- name: "Ensure stack directory exists for {{ service_name }}"
+  ansible.builtin.file:
+    path: "/opt/stacks/{{ service_name }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: "Decrypt secrets for {{ service_name }}"
+  ansible.builtin.command:
+    cmd: "sops decrypt {{ role_path }}/vars/secrets.yml"
+  delegate_to: localhost
+  become: false
+  changed_when: false
+  no_log: true
+  register: secrets_raw
+  when: service_secrets | default(false)
+
+- name: "Load secrets for {{ service_name }}"
+  ansible.builtin.set_fact:
+    "{{ item.key }}": "{{ item.value }}"
+  loop: "{{ secrets_raw.stdout | from_yaml | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  no_log: true
+  when: service_secrets | default(false)
+
+- name: "Render config template for {{ service_name }}"
+  ansible.builtin.template:
+    src: "{{ env_template }}"
+    dest: "{{ env_dest | default('/opt/stacks/' + service_name + '/.env') }}"
+    owner: "{{ env_owner | default('root') }}"
+    group: "{{ env_group | default('root') }}"
+    mode: "{{ env_mode | default('0600') }}"
+  when: env_template is defined
+
+- name: "Copy docker-compose file for {{ service_name }}"
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: "/opt/stacks/{{ service_name }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: "Deploy stack for {{ service_name }}"
+  community.docker.docker_compose_v2:
+    project_src: "/opt/stacks/{{ service_name }}"
+    state: present
+    files:
+      - docker-compose.yml
+    recreate: "{{ compose_recreate | default('auto') }}"
+    remove_orphans: true
+  register: compose_result
+
+- name: "Show deploy result for {{ service_name }}"
+  ansible.builtin.debug:
+    var: compose_result
