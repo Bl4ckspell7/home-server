@@ -15,6 +15,7 @@
     ]
   },
   "minimumReleaseAge": "2 days",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
   "dependencyDashboard": true,
   "prConcurrentLimit": 20,
   "prHourlyLimit": 0,
