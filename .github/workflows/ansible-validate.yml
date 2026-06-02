@@ -1,0 +1,59 @@
+name: ansible-validate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "roles/**"
+      - "tasks/**"
+      - "*.yml"
+      - "ansible.cfg"
+      - ".ansible-lint"
+      - ".github/workflows/ansible-validate.yml"
+  pull_request:
+    paths:
+      - "roles/**"
+      - "tasks/**"
+      - "*.yml"
+      - "ansible.cfg"
+      - ".ansible-lint"
+      - ".github/workflows/ansible-validate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      ANSIBLE_CONFIG: ${{ github.workspace }}/ansible.cfg
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          enable-cache: false
+
+      - name: Install Ansible tooling
+        run: |
+          uv tool install ansible-core
+          uv tool install ansible-lint
+          ansible-galaxy collection install community.docker community.general ansible.posix
+
+      - name: Run ansible-lint
+        run: ansible-lint server.yml services.yml
+
+      - name: Syntax-check playbooks
+        run: |
+          fail=0
+          for pb in server.yml services.yml; do
+            echo "::group::syntax-check $pb"
+            ansible-playbook -i inventory.yml "$pb" --syntax-check \
+              || { echo "::error file=$pb::syntax-check failed"; fail=1; }
+            echo "::endgroup::"
+          done
+          exit $fail
