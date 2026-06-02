@@ -40,7 +40,7 @@ jobs:
         run: |
           uv tool install ansible-core
           uv tool install ansible-lint
-          ansible-galaxy collection install community.docker
+          ansible-galaxy collection install community.docker community.general ansible.posix
 
       - name: Run ansible-lint
         run: ansible-lint server.yml services.yml
