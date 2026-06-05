@@ -1,0 +1,39 @@
+name: backrest
+services:
+  backrest:
+    container_name: backrest
+    image: garethgeorge/backrest:v1.13.0@sha256:9c9966b5c285ec791a6b06cb4545fa0247424d05442e12f9558b4322d9f8a15f
+    restart: unless-stopped
+    expose:
+      - "9898"
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.249
+    dns:
+      - 172.21.255.254
+    dns_search:
+      - "."
+    environment:
+      BACKREST_DATA: /data
+      BACKREST_CONFIG: /config/config.json
+      XDG_CACHE_HOME: /cache
+      BACKREST_PORT: 0.0.0.0:9898
+      TZ: Europe/Berlin
+    volumes:
+      - ./data:/data
+      - ./config:/config
+      - ./cache:/cache
+      - ./repos:/repos
+    healthcheck:
+      test: ["CMD", "curl", "--silent", "--fail", "http://127.0.0.1:9898/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  default:
+    driver: bridge
+  svr1-network:
+    external: true

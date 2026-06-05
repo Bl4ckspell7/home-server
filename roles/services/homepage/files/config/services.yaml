@@ -105,6 +105,13 @@
             statusStyle: "basic"
 
     - Tools:
+        - Backrest:
+            icon: sh-backrest.svg
+            href: https://backrest.bl4ckspell.freeddns.org/
+            description: Backup management (restic)
+            ping: backrest.lan
+            statusStyle: "basic"
+
         - Dawarich:
             icon: sh-dawarich.svg
             href: https://dawarich.bl4ckspell.freeddns.org/

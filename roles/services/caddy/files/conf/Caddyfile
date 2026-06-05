@@ -31,6 +31,7 @@
 # Protected by Anubis
 bl4ckspell.freeddns.org,
 authentik.bl4ckspell.freeddns.org,
+backrest.bl4ckspell.freeddns.org,
 cup.bl4ckspell.freeddns.org,
 dawarich.bl4ckspell.freeddns.org,
 ddns-updater.bl4ckspell.freeddns.org,
@@ -83,6 +84,13 @@ radicale.bl4ckspell.freeddns.org {
 			transport http {
 				tls_insecure_skip_verify
 			}
+		}
+	}
+
+	@backrest host backrest.bl4ckspell.freeddns.org
+	handle @backrest {
+		reverse_proxy http://backrest.lan:9898 {
+			header_up X-Forwarded-Proto https
 		}
 	}
 
