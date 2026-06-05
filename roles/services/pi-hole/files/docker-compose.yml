@@ -15,7 +15,7 @@ services:
       - "."
     ports:
       # Host Port : Container Port
-      - "127.0.0.54:53:53/tcp"      # host itself (see /etc/resolv.conf)
+      - "127.0.0.54:53:53/tcp" # host itself (see /etc/resolv.conf)
       - "127.0.0.54:53:53/udp"
       # Default HTTP Port
       # - "7080:80/tcp"
@@ -46,6 +46,7 @@ services:
         172.21.255.252 paperless.lan
         172.21.255.251 dockge.lan
         172.21.255.250 linkwarden.lan
+        172.21.255.249 backrest.lan
         172.21.255.248 kuma.lan
         172.21.255.247 ddns-updater.lan
         172.21.255.246 homepage.lan
