@@ -7,6 +7,9 @@
     - role: authentik
       tags: authentik
 
+    - role: backrest
+      tags: backrest
+
     - role: caddy
       tags: caddy
 

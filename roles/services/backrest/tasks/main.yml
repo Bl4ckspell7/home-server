@@ -1,0 +1,5 @@
+---
+- name: Deploy Backrest
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
+  vars:
+    service_name: backrest
