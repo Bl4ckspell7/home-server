@@ -5,7 +5,7 @@ RUN bun install --frozen-lockfile
 COPY . .
 RUN bun run build
 
-FROM docker.io/library/caddy:2.11.3-alpine@sha256:3739ea4f0c877259a693d932693cf8f3408e9a9497c004f031b0e830e93e1546
+FROM docker.io/library/caddy:2.11.4-alpine@sha256:4679412ccd2114dca9f3017e2c460f76c9d8eb9e1850e72fb9ecda672e05c629
 COPY docker/Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /app/build /srv
 EXPOSE 8349
