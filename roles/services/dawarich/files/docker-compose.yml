@@ -41,7 +41,7 @@ services:
 
   dawarich-postgres:
     container_name: dawarich-postgres
-    image: postgis/postgis:17-3.5-alpine@sha256:9607ead1f85e2386fc92cd25277a687e72c26c89a380af1218e830c00c5dcd78
+    image: postgis/postgis:17-3.5-alpine@sha256:c49b04b3a259ad13571903ad1de1f446c546c37d78b646fb8e2228f6c46f895c
     # image: imresamu/postgis:17-3.5-alpine # If you're on ARM architecture, use this image instead
     shm_size: 1G
     volumes:
