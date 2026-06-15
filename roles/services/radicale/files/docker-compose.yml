@@ -1,7 +1,7 @@
 name: radicale
 services:
   radicale:
-    image: ghcr.io/kozea/radicale:3.7.4@sha256:23fe7101fc0a629fcf336f5674bf0aae0e4f02092359dbcebd39e7d9a5a31ca8
+    image: ghcr.io/kozea/radicale:3.7.5@sha256:bad5238ac8425c1adf46fc8fc85dca0da4a817ee13e08cd7a68b1fd4997f7cfb
     container_name: radicale
     user: 903:903
     restart: unless-stopped
