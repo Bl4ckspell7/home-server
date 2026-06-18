@@ -47,7 +47,7 @@ services:
 
   linkwarden-meilisearch:
     container_name: linkwarden-meilisearch
-    image: getmeili/meilisearch:v1.45.2@sha256:271ee84030a77cfa8e60358138bb34260f69110795c2441437b44832fe865618
+    image: getmeili/meilisearch:v1.47.0@sha256:4931c0afd68b12d3db4a608268c6785bba26d3f3b43a228eff62ec38d5a47d8d
     restart: unless-stopped
     env_file:
       - .env
