@@ -2,7 +2,7 @@ name: photon
 services:
   photon:
     container_name: photon
-    image: rtuszik/photon-docker:2.2.0@sha256:9e0f006e6eb5854fa43c71fb491203ee87905315e265c184e9afcc57c7555367
+    image: rtuszik/photon-docker:2.3.0@sha256:827cedf9fa3337e657611d62ada669def75dff61c56b51ae55056155d1a9b236
     restart: unless-stopped
     environment:
       UPDATE_STRATEGY: PARALLEL
