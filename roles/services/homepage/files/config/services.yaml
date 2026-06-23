@@ -160,3 +160,10 @@
             description: Document management
             ping: paperless.lan
             statusStyle: "basic"
+
+        - Vaultwarden:
+            icon: sh-vaultwarden.svg
+            href: https://vaultwarden.bl4ckspell.freeddns.org/
+            description: Password manager
+            ping: vaultwarden.lan
+            statusStyle: "basic"
