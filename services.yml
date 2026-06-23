@@ -61,5 +61,8 @@
     - role: radicale
       tags: radicale
 
+    - role: vaultwarden
+      tags: vaultwarden
+
     - role: uptime-kuma
       tags: uptime-kuma

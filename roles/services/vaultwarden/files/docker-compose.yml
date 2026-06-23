@@ -1,0 +1,63 @@
+name: vaultwarden
+
+services:
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:1.36.0@sha256:d626d04934cd1192ad8ced1adb975099fca78cec33ab467d2d3c923cde7f3b0c
+    restart: unless-stopped
+    expose:
+      - "80"
+    networks:
+      default:
+      svr1-network:
+        ipv4_address: 172.21.255.232
+    dns:
+      - 172.21.255.254
+    dns_search:
+      - "."
+    environment:
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN:?admin token required}
+      DATABASE_URL: postgresql://vaultwarden:${VAULTWARDEN_DB_PASSWORD:?database password required}@vaultwarden-postgres:5432/vaultwarden
+      DOMAIN: https://vaultwarden.bl4ckspell.freeddns.org
+      SIGNUPS_ALLOWED: "false"
+    volumes:
+      - vaultwarden_data:/data
+    depends_on:
+      vaultwarden-postgres:
+        condition: service_healthy
+        restart: true
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  vaultwarden-postgres:
+    container_name: vaultwarden-postgres
+    image: postgres:18.4-alpine3.24@sha256:1b1689b20d16a014a3d195653381cf2caa75a41a92d93b255a9d6ea29fd353aa
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vaultwarden
+      POSTGRES_USER: vaultwarden
+      POSTGRES_PASSWORD: ${VAULTWARDEN_DB_PASSWORD:?database password required}
+    volumes:
+      - vaultwarden_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  vaultwarden_data:
+    name: vaultwarden_data
+  vaultwarden_pgdata:
+    name: vaultwarden_pgdata
+
+networks:
+  default:
+    driver: bridge
+  svr1-network:
+    external: true

@@ -1,0 +1,7 @@
+---
+- name: Deploy Vaultwarden
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
+  vars:
+    service_name: vaultwarden
+    service_secrets: true
+    env_template: vaultwarden.env.j2
