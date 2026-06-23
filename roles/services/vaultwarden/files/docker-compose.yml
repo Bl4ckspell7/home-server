@@ -42,7 +42,7 @@ services:
       POSTGRES_USER: vaultwarden
       POSTGRES_PASSWORD: ${VAULTWARDEN_DB_PASSWORD:?database password required}
     volumes:
-      - vaultwarden_pgdata:/var/lib/postgresql/data
+      - vaultwarden_pgdata:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
