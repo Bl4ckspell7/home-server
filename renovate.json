@@ -47,7 +47,11 @@
       "enabled": false
     },
     {
-      "matchPackageNames": ["jellyfin/jellyfin", "fnsys/dockhand"],
+      "matchPackageNames": [
+        "jellyfin/jellyfin",
+        "fnsys/dockhand",
+        "vaultwarden/server"
+      ],
       "versioning": "semver"
     }
   ]

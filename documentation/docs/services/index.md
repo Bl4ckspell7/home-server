@@ -41,6 +41,7 @@ Services behind Caddy use `expose` (no host port binding). Only services requiri
 | **Dockge**        | 5001          | 5001               |
 | **Radicale**      | 5232          | 5232               |
 | **Forgejo**       | 3000          | 3000               |
+| **Vaultwarden**   | -             | 80                 |
 | **Pi-hole**       | 7080          | 80                 |
 | **Pi-hole**       | 7443          | 443                |
 | **Paperless-ngx** | -             | 8000               |

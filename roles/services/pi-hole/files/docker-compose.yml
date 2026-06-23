@@ -63,6 +63,7 @@ services:
         172.21.255.235 forgejo.lan
         172.21.255.234 radicale.lan
         172.21.255.233 docs.lan
+        172.21.255.232 vaultwarden.lan
       FTLCONF_dhcp_active: "false"
       # load custom dnsmasq snippets from /etc/dnsmasq.d
       FTLCONF_misc_etc_dnsmasq_d: "true"

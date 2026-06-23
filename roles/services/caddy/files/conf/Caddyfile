@@ -46,7 +46,8 @@ kuma.bl4ckspell.freeddns.org,
 linkwarden.bl4ckspell.freeddns.org,
 paperless.bl4ckspell.freeddns.org,
 pihole.bl4ckspell.freeddns.org,
-radicale.bl4ckspell.freeddns.org {
+radicale.bl4ckspell.freeddns.org,
+vaultwarden.bl4ckspell.freeddns.org {
 	import error_page
 	reverse_proxy http://anubis.lan:3000 {
 		header_up X-Real-Ip {remote_host}
@@ -176,6 +177,13 @@ radicale.bl4ckspell.freeddns.org {
 	@radicale host radicale.bl4ckspell.freeddns.org
 	handle @radicale {
 		reverse_proxy http://radicale.lan:5232 {
+			header_up X-Forwarded-Proto https
+		}
+	}
+
+	@vaultwarden host vaultwarden.bl4ckspell.freeddns.org
+	handle @vaultwarden {
+		reverse_proxy http://vaultwarden.lan:80 {
 			header_up X-Forwarded-Proto https
 		}
 	}
