@@ -1,3 +1,4 @@
 .ansible/
 logs/*
 !logs/.gitkeep
+AGENTS.md
