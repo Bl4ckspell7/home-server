@@ -37,7 +37,7 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": [
         "/(^|/)postgres$/",
-        "postgis/postgis"
+        "docker.io/postgis/postgis"
       ],
       "matchUpdateTypes": ["major"],
       "enabled": false
@@ -48,9 +48,9 @@
     },
     {
       "matchPackageNames": [
-        "jellyfin/jellyfin",
-        "fnsys/dockhand",
-        "vaultwarden/server"
+        "docker.io/jellyfin/jellyfin",
+        "docker.io/fnsys/dockhand",
+        "docker.io/vaultwarden/server"
       ],
       "versioning": "semver"
     }
