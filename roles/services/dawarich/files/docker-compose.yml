@@ -9,9 +9,11 @@ x-variables:
   database_name: &database_name dawarich_development
   database_port: &database_port 5432
   database_username: &database_username postgres
+  pgid: &pgid 1000
   photon_api_host: &photon_api_host photon.lan:2322
   photon_api_use_https: &photon_api_use_https false
   prometheus_enabled: &prometheus_enabled "false"
+  puid: &puid 1000
   rails_env: &rails_env production
   rails_log_to_stdout: &rails_log_to_stdout true
   redis_url: &redis_url redis://dawarich-redis:6379
@@ -70,7 +72,6 @@ services:
   dawarich-app:
     container_name: dawarich-app
     image: *dawarich_image
-    user: root
     volumes:
       - dawarich_public:/var/app/public
       - dawarich_watched:/var/app/tmp/imports/watched
@@ -109,9 +110,11 @@ services:
       OIDC_ISSUER: "https://authentik.bl4ckspell.freeddns.org/application/o/dawarich/"
       OIDC_PROVIDER_NAME: "Authentik" # optional, default is OpenID Connect
       OIDC_REDIRECT_URI: "https://dawarich.bl4ckspell.freeddns.org/users/auth/openid_connect/callback"
+      PGID: *pgid
       PHOTON_API_HOST: *photon_api_host
       PHOTON_API_USE_HTTPS: *photon_api_use_https
       PROMETHEUS_EXPORTER_ENABLED: *prometheus_enabled
+      PUID: *puid
       RAILS_ENV: *rails_env
       RAILS_LOG_TO_STDOUT: *rails_log_to_stdout
       REDIS_URL: *redis_url
@@ -149,7 +152,6 @@ services:
   dawarich-sidekiq:
     container_name: dawarich-sidekiq
     image: *dawarich_image
-    user: root
     volumes:
       - dawarich_public:/var/app/public
       - dawarich_watched:/var/app/tmp/imports/watched
@@ -175,9 +177,11 @@ services:
       DATABASE_NAME: *database_name
       DATABASE_PORT: *database_port
       DATABASE_USERNAME: *database_username
+      PGID: *pgid
       PHOTON_API_HOST: *photon_api_host
       PHOTON_API_USE_HTTPS: *photon_api_use_https
       PROMETHEUS_EXPORTER_ENABLED: *prometheus_enabled
+      PUID: *puid
       RAILS_ENV: *rails_env
       RAILS_LOG_TO_STDOUT: *rails_log_to_stdout
       REDIS_URL: *redis_url
