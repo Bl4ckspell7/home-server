@@ -2,8 +2,8 @@ name: dawarich
 
 x-variables:
   # shared variables for dawarich services (app and sidekiq)
-  # renovate: datasource=docker depName=freikin/dawarich
-  dawarich_image: &dawarich_image freikin/dawarich:1.9.2@sha256:c8413c39fd17bc801d9823507ae5ac08cf4333c6de5cd110922dbca31d097372
+  # renovate: datasource=docker depName=docker.io/freikin/dawarich
+  dawarich_image: &dawarich_image docker.io/freikin/dawarich:1.9.2@sha256:c8413c39fd17bc801d9823507ae5ac08cf4333c6de5cd110922dbca31d097372
   app_hosts: &app_hosts localhost,dawarich.bl4ckspell.freeddns.org
   database_host: &database_host dawarich-postgres
   database_name: &database_name dawarich_development
@@ -21,7 +21,7 @@ x-variables:
 services:
   dawarich-redis:
     container_name: dawarich-redis
-    image: redis:7.4.9-alpine@sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99
+    image: docker.io/library/redis:7.4.9-alpine@sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99
     command: >
       redis-server
       --save 900 1
@@ -41,8 +41,8 @@ services:
 
   dawarich-postgres:
     container_name: dawarich-postgres
-    image: postgis/postgis:17-3.5-alpine@sha256:ec091d607c1cc2263e0811a0b1d25113ebbcb4e7e1390f84fe0394f9f7c12f68
-    # image: imresamu/postgis:17-3.5-alpine # If you're on ARM architecture, use this image instead
+    image: docker.io/postgis/postgis:17-3.5-alpine@sha256:ec091d607c1cc2263e0811a0b1d25113ebbcb4e7e1390f84fe0394f9f7c12f68
+    # image: docker.io/imresamu/postgis:17-3.5-alpine # If you're on ARM architecture, use this image instead
     shm_size: 1G
     volumes:
       - dawarich_db_data:/var/lib/postgresql/data

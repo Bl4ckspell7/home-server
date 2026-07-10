@@ -16,7 +16,7 @@ vaultwarden_admin_token: ""
 plaintext admin password/token:
 
 ```bash
-docker run --rm -it vaultwarden/server:1.36.0 /vaultwarden hash
+docker run --rm -it docker.io/vaultwarden/server:1.36.0 /vaultwarden hash
 ```
 
 The generated PHC string is stored in SOPS and rendered into `.env` as
