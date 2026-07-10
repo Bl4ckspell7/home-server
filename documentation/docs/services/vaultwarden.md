@@ -30,6 +30,21 @@ Bitwarden apps, browser extensions, CLI sync, or WebSocket notifications fail
 because of the challenge page, change the Caddy route to bypass Anubis for this
 service.
 
+Only the `/admin` panel is gated by Authentik forward auth. The web vault is
+zero-knowledge — the vault is encrypted client-side under the master password —
+so it keeps its native authentication, as do Bitwarden apps, browser extensions,
+CLI sync, and WebSocket notifications.
+
+Authentik is an additional layer on `/admin`, not a replacement: after the
+Authentik login you are still prompted for `VAULTWARDEN_ADMIN_TOKEN`.
+
+The Caddy route also gates `/outpost.goauthentik.io/*`, which is where
+`forward_auth` redirects unauthenticated browsers. Without it the login would
+redirect into Vaultwarden and 404.
+
+The Authentik provider/application/outpost assignment is managed by the
+`proxy-apps.yaml` blueprint rendered by the Authentik role.
+
 ## Storage and Backup
 
 Vaultwarden stores attachments, sends, icons, keys, and runtime config in the

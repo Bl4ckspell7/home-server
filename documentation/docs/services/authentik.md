@@ -33,7 +33,32 @@ Flows and Stages -> Flows:
 
 ## Forward auth (per-app)
 
-Gate a service that has no native auth (e.g. Cup) behind Authentik login. One-time UI setup per service:
+Gate a service behind Authentik login. Adding one takes two edits, no UI work:
+
+1. Append an entry to `authentik_proxy_apps` in
+   `roles/services/authentik/defaults/main.yml`:
+
+   ```yaml
+   - slug: myservice
+     name: My Service
+     description: What it does
+   ```
+
+   `host`, `group` and `icon` are derived from the slug and can be overridden
+   per entry.
+
+2. Import the `(authentik)` snippet in the service's Caddy route (see below).
+
+The role renders `templates/proxy-apps.yaml.j2` to
+`/opt/stacks/authentik/blueprints/proxy-apps.yaml` and restarts the worker.
+Authentik instantiates the blueprint, creating the proxy provider and
+application and attaching the provider to the embedded outpost.
+
+The outpost's provider list is replaced on every apply, so every forward-auth
+provider must come from that one template — do not add providers by hand or via
+a second blueprint, or the ones not listed will be detached.
+
+Manual UI setup, if you ever need it as a fallback:
 
 1. **Applications -> Providers -> Create**
    - Type: **Proxy Provider**
