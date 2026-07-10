@@ -181,6 +181,19 @@ vaultwarden.bl4ckspell.freeddns.org {
 		}
 	}
 
+	# /outpost.goauthentik.io/* must be gated too: forward_auth redirects there,
+	# and the authentik snippet only serves it inside the handle that imports it.
+	@vaultwarden_admin {
+		host vaultwarden.bl4ckspell.freeddns.org
+		path /admin /admin/* /outpost.goauthentik.io/*
+	}
+	handle @vaultwarden_admin {
+		import authentik
+		reverse_proxy http://vaultwarden.lan:80 {
+			header_up X-Forwarded-Proto https
+		}
+	}
+
 	@vaultwarden host vaultwarden.bl4ckspell.freeddns.org
 	handle @vaultwarden {
 		reverse_proxy http://vaultwarden.lan:80 {
