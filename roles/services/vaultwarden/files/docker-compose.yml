@@ -3,7 +3,7 @@ name: vaultwarden
 services:
   vaultwarden:
     container_name: vaultwarden
-    image: vaultwarden/server:1.36.0@sha256:d626d04934cd1192ad8ced1adb975099fca78cec33ab467d2d3c923cde7f3b0c
+    image: docker.io/vaultwarden/server:1.36.0@sha256:d626d04934cd1192ad8ced1adb975099fca78cec33ab467d2d3c923cde7f3b0c
     restart: unless-stopped
     expose:
       - "80"
@@ -35,7 +35,7 @@ services:
 
   vaultwarden-postgres:
     container_name: vaultwarden-postgres
-    image: postgres:18.4-alpine3.24@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15
+    image: docker.io/library/postgres:18.4-alpine3.24@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15
     restart: unless-stopped
     environment:
       POSTGRES_DB: vaultwarden

@@ -33,7 +33,7 @@ services:
 
   linkwarden-postgres:
     container_name: linkwarden-postgres
-    image: postgres:16-alpine@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777
+    image: docker.io/library/postgres:16.14-alpine@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777
     env_file: .env
     restart: unless-stopped
     volumes:
@@ -47,7 +47,7 @@ services:
 
   linkwarden-meilisearch:
     container_name: linkwarden-meilisearch
-    image: getmeili/meilisearch:v1.49.0@sha256:bdc7d7e7939911c40d88d6bcd01f9c72c81f7293135916d48bce241569f721bd
+    image: docker.io/getmeili/meilisearch:v1.49.0@sha256:bdc7d7e7939911c40d88d6bcd01f9c72c81f7293135916d48bce241569f721bd
     restart: unless-stopped
     env_file:
       - .env
