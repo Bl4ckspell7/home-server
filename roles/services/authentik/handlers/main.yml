@@ -1,0 +1,7 @@
+---
+- name: Restart Authentik worker
+  community.docker.docker_compose_v2:
+    project_src: /opt/stacks/authentik
+    services:
+      - authentik-worker
+    state: restarted

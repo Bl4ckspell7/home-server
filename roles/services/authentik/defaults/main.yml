@@ -1,0 +1,21 @@
+---
+authentik_domain: bl4ckspell.freeddns.org
+
+# Services gated behind Authentik forward auth. Each entry creates a proxy
+# provider and an application, and assigns the provider to the embedded outpost.
+# The matching Caddy route must import the `authentik` snippet.
+#
+# Optional per-entry keys:
+#   host   defaults to <slug>.<authentik_domain>
+#   group  defaults to Public
+#   icon   defaults to the selfhst icon matching <slug>
+authentik_proxy_apps:
+  - slug: cup
+    name: Cup
+    description: Container update monitor
+  - slug: ddns-updater
+    name: DDNS Updater
+    description: Dynamic DNS updater
+  - slug: vaultwarden
+    name: Vaultwarden
+    description: Password manager

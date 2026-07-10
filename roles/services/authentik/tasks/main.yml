@@ -1,4 +1,21 @@
 ---
+- name: Ensure Authentik blueprints directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/authentik/blueprints
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Render Authentik proxy app blueprint
+  ansible.builtin.template:
+    src: proxy-apps.yaml.j2
+    dest: /opt/stacks/authentik/blueprints/proxy-apps.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Authentik worker
+
 - name: Deploy Authentik
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:

@@ -13,6 +13,7 @@ services:
     volumes:
       - ./data:/data
       - ./custom-templates:/templates
+      - ./blueprints:/blueprints/custom:ro
     env_file:
       - .env
     expose:
@@ -51,6 +52,7 @@ services:
       - ./data:/data
       - ./certs:/certs
       - ./custom-templates:/templates
+      - ./blueprints:/blueprints/custom:ro
     env_file:
       - .env
     environment:
