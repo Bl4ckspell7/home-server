@@ -54,9 +54,10 @@ Services behind Caddy use `expose` (no host port binding). Only services requiri
 
 System users and groups created by Ansible for running services:
 
-| **Service**  | **User** | **UID** | **Group** | **GID** |
-| ------------ | -------- | ------- | --------- | ------- |
-| **Jellyfin** | jellyfin | 900     | jellyfin  | 900     |
-| **Immich**   | immich   | 901     | immich    | 901     |
-| **Forgejo**  | forgejo  | 902     | forgejo   | 902     |
-| **Radicale** | radicale | 903     | radicale  | 903     |
+| **Service**        | **User**       | **UID** | **Group**      | **GID** |
+| ------------------ | -------------- | ------- | -------------- | ------- |
+| **Jellyfin**       | jellyfin       | 900     | jellyfin       | 900     |
+| **Immich**         | immich         | 901     | immich         | 901     |
+| **Forgejo**        | forgejo        | 902     | forgejo        | 902     |
+| **Radicale**       | radicale       | 903     | radicale       | 903     |
+| **Forgejo Runner** | forgejo-runner | 904     | forgejo-runner | 904     |
