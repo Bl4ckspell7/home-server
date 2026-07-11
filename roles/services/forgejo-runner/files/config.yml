@@ -23,5 +23,5 @@ cache:
 container:
   # Job containers are created by the isolated dind daemon, never the host
   # Docker socket.
-  docker_host: tcp://dind:2375
+  docker_host: unix:///sock/docker.sock
   privileged: false

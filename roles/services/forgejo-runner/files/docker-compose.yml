@@ -14,11 +14,12 @@ services:
     user: 904:904
     restart: unless-stopped
     environment:
-      DOCKER_HOST: tcp://dind:2375
+      DOCKER_HOST: unix:///sock/docker.sock
     command: ["forgejo-runner", "daemon", "--config", "/config.yml"]
     volumes:
       - ./data:/data
       - ./config.yml:/config.yml:ro
+      - dind_sock:/sock
     networks:
       forgejo-runner:
       svr1-network:
@@ -37,12 +38,13 @@ services:
     # Required to run a nested Docker daemon; blast radius is this container,
     # not the host.
     privileged: true
-    environment:
-      # Empty -> entrypoint skips TLS cert generation and dockerd listens on
-      # the unix socket (used by the healthcheck) + tcp://0.0.0.0:2375.
-      DOCKER_TLS_CERTDIR: ""
+    # API only as unix socket on the shared volume — no network listener.
+    # --group=904 grants the non-root runner socket access (numeric gid, no
+    # named group needed inside the image).
+    command: ["--host=unix:///sock/docker.sock", "--group=904"]
     volumes:
       - dind_data:/var/lib/docker
+      - dind_sock:/sock
     networks:
       forgejo-runner:
       # Job containers NAT out through dind, so dind needs svr1-network +
@@ -53,7 +55,7 @@ services:
     dns_search:
       - "."
     healthcheck:
-      test: ["CMD", "docker", "info"]
+      test: ["CMD-SHELL", "DOCKER_HOST=unix:///sock/docker.sock docker info >/dev/null"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -62,6 +64,8 @@ services:
 volumes:
   dind_data:
     name: forgejo_runner_dind_data
+  dind_sock:
+    name: forgejo_runner_dind_sock
 
 networks:
   forgejo-runner:
