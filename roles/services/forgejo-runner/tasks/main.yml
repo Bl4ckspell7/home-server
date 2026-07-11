@@ -1,0 +1,153 @@
+---
+- name: Include Forgejo runner user setup tasks
+  ansible.builtin.include_tasks:
+    file: user.yml
+
+- name: Ensure stack directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/forgejo-runner
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+# The runner runs as the non-root forgejo-runner user and writes /data
+# (.runner, cache) — a root-owned dir fails registration with
+# ".runner: permission denied".
+- name: Ensure runner data directory is owned by the runner user
+  ansible.builtin.file:
+    path: /opt/stacks/forgejo-runner/data
+    state: directory
+    owner: forgejo-runner
+    group: forgejo-runner
+    mode: "0750"
+
+- name: Copy runner config
+  ansible.builtin.copy:
+    src: config.yml
+    dest: /opt/stacks/forgejo-runner/config.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+# deploy_stack.yml copies this again later (no-op); it must exist on the host
+# BEFORE the stack is up so registration can use `docker compose run`.
+- name: Copy docker-compose file for registration
+  ansible.builtin.copy:
+    src: docker-compose.yml
+    dest: /opt/stacks/forgejo-runner/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+# ── Runner registration (idempotent on the .runner file) ─────────────────────
+# An EMPTY/corrupt .runner counts as unregistered: the daemon crash-loops with
+# "0 server connections configured" otherwise.
+- name: Check whether the runner is already registered
+  ansible.builtin.stat:
+    path: /opt/stacks/forgejo-runner/data/.runner
+  register: runner_file
+
+- name: Decide whether the runner needs (re-)registration
+  ansible.builtin.set_fact:
+    runner_needs_registration: >-
+      {{ not runner_file.stat.exists
+         or (runner_file.stat.size | default(0)) == 0 }}
+
+# Retried: on a first-ever full play the forgejo stack came up moments ago and
+# may still be running DB migrations.
+- name: Generate a runner registration token
+  ansible.builtin.command:
+    cmd: docker exec forgejo forgejo actions generate-runner-token
+  when: runner_needs_registration
+  register: runner_token
+  changed_when: false
+  failed_when: false
+  retries: 5
+  delay: 10
+  until: runner_token.rc == 0
+  no_log: true
+
+- name: Fail if the token generation did not succeed
+  ansible.builtin.fail:
+    msg: >-
+      Could not generate a runner registration token
+      (docker exec forgejo forgejo actions generate-runner-token,
+      rc={{ runner_token.rc | default('n/a') }}).
+  when:
+    - runner_needs_registration
+    - (runner_token.rc | default(0)) != 0
+
+# forgejo-runner output goes to a log file so the token (in the argv, hence
+# no_log) never leaks while the real cause stays visible via the fail task
+# below. No --labels: the labels in config.yml override the registered ones at
+# every daemon start and are the source of truth. Retried: the one-off can
+# race Forgejo.
+- name: Register the Actions runner
+  ansible.builtin.shell:
+    cmd: >-
+      docker compose -f /opt/stacks/forgejo-runner/docker-compose.yml
+      run --rm --no-deps runner forgejo-runner register --no-interactive
+      --instance http://forgejo.lan:3000
+      --token {{ runner_token.stdout | trim }}
+      --name svr1-runner
+      > /opt/stacks/forgejo-runner/register.log 2>&1
+  when: runner_needs_registration
+  register: runner_registration
+  changed_when: runner_registration.rc == 0
+  failed_when: false
+  retries: 5
+  delay: 10
+  until: runner_registration.rc == 0
+  no_log: true
+
+- name: Read the registration log (forgejo-runner output — no token)
+  ansible.builtin.command:
+    cmd: cat /opt/stacks/forgejo-runner/register.log
+  when:
+    - runner_needs_registration
+    - (runner_registration.rc | default(0)) != 0
+  register: runner_register_log
+  changed_when: false
+  failed_when: false
+
+- name: Fail if the runner registration did not succeed
+  ansible.builtin.fail:
+    msg: |
+      Forgejo Actions runner registration FAILED — the runner daemon would
+      crash-loop with "0 server connections configured".
+      forgejo-runner said:
+      {{ runner_register_log.stdout | default('(no output — see /opt/stacks/forgejo-runner/register.log)') }}
+  when:
+    - runner_needs_registration
+    - (runner_registration.rc | default(0)) != 0
+
+- name: Deploy Forgejo runner
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
+  vars:
+    service_name: forgejo-runner
+
+# After a (re-)registration an already-existing daemon container still holds
+# the old (empty) state — restart it so it picks up the fresh .runner.
+- name: Restart the runner after a fresh registration
+  ansible.builtin.command:
+    cmd: docker restart forgejo-runner
+  when: runner_needs_registration
+  changed_when: true
+
+- name: Verify the runner registration file
+  ansible.builtin.stat:
+    path: /opt/stacks/forgejo-runner/data/.runner
+  register: runner_file_after
+  failed_when: >-
+    not runner_file_after.stat.exists
+    or (runner_file_after.stat.size | default(0)) == 0
+
+- name: Verify the runner daemon is running
+  ansible.builtin.command:
+    cmd: docker inspect --format={{ '{{' }}.State.Status{{ '}}' }} forgejo-runner
+  register: runner_state
+  retries: 6
+  delay: 5
+  until: runner_state.stdout | trim == 'running'
+  changed_when: false

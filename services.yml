@@ -34,6 +34,9 @@
     - role: forgejo
       tags: forgejo
 
+    - role: forgejo-runner
+      tags: forgejo-runner
+
     - role: homepage
       tags: homepage
 

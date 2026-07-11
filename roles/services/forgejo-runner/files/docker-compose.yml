@@ -1,0 +1,70 @@
+# Forgejo Actions runner.
+#
+# Job isolation: the runner does NOT touch the host Docker socket. A dedicated
+# Docker-in-Docker daemon (`dind`) runs the job containers, so a compromised
+# workflow only gets root INSIDE the isolated dind container, never on the host.
+#
+# The runner polls Forgejo at http://forgejo.lan:3000 (direct via svr1-network,
+# bypasses caddy/anubis). Nothing connects TO the runner — outbound only.
+name: forgejo-runner
+services:
+  runner:
+    image: data.forgejo.org/forgejo/runner:12.13.0@sha256:d85b420efea6f0137fe03f285b05df73e0c34cfbfc2c6a96d22cc52f38106d8c
+    container_name: forgejo-runner
+    user: 904:904
+    restart: unless-stopped
+    environment:
+      DOCKER_HOST: tcp://dind:2375
+    command: ["forgejo-runner", "daemon", "--config", "/config.yml"]
+    volumes:
+      - ./data:/data
+      - ./config.yml:/config.yml:ro
+    networks:
+      forgejo-runner:
+      svr1-network:
+    dns:
+      - 172.21.255.254
+    dns_search:
+      - "."
+    depends_on:
+      dind:
+        condition: service_healthy
+
+  dind:
+    image: docker.io/library/docker:29.6.1-dind@sha256:66d292e5c26bd33a6f6f61cacb880de2186339a524ecba1ce098dbbaceed6515
+    container_name: forgejo-runner-dind
+    restart: unless-stopped
+    # Required to run a nested Docker daemon; blast radius is this container,
+    # not the host.
+    privileged: true
+    environment:
+      # Empty -> entrypoint skips TLS cert generation and dockerd listens on
+      # the unix socket (used by the healthcheck) + tcp://0.0.0.0:2375.
+      DOCKER_TLS_CERTDIR: ""
+    volumes:
+      - dind_data:/var/lib/docker
+    networks:
+      forgejo-runner:
+      # Job containers NAT out through dind, so dind needs svr1-network +
+      # Pi-hole DNS for checkouts from forgejo.lan.
+      svr1-network:
+    dns:
+      - 172.21.255.254
+    dns_search:
+      - "."
+    healthcheck:
+      test: ["CMD", "docker", "info"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  dind_data:
+    name: forgejo_runner_dind_data
+
+networks:
+  forgejo-runner:
+    external: false
+  svr1-network:
+    external: true

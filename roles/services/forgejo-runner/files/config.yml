@@ -1,0 +1,27 @@
+# Forgejo Actions runner configuration.
+# Full reference:
+# https://code.forgejo.org/forgejo/runner/src/branch/main/internal/pkg/config/config.example.yaml
+#
+# Labels here are the source of truth — they override whatever was passed at
+# registration time (the register task only uses an unpinned label).
+log:
+  level: info
+
+runner:
+  # One concurrent job is plenty for this instance.
+  capacity: 1
+  timeout: 1h
+  labels:
+    # Default job image when a workflow does not set `container:` — needs
+    # node inside for JS actions like actions/checkout.
+    # renovate: datasource=docker depName=docker.io/library/node
+    - "docker:docker://docker.io/library/node:26.5.0-trixie@sha256:926d6cafec97f338577041890465522f70fe74aa6fe4b021a4fd7f87a5996b25"
+
+cache:
+  enabled: true
+
+container:
+  # Job containers are created by the isolated dind daemon, never the host
+  # Docker socket.
+  docker_host: tcp://dind:2375
+  privileged: false
