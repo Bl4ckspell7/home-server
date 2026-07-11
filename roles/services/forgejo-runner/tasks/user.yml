@@ -1,0 +1,19 @@
+---
+- name: Configure Forgejo runner service user
+  block:
+    - name: Create forgejo-runner group
+      ansible.builtin.group:
+        name: forgejo-runner
+        system: true
+        gid: 904
+        state: present
+
+    - name: Create forgejo-runner user
+      ansible.builtin.user:
+        name: forgejo-runner
+        system: true
+        uid: 904
+        group: forgejo-runner
+        create_home: false
+        shell: /usr/sbin/nologin
+        state: present

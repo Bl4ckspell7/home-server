@@ -26,6 +26,15 @@
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s*\\n.*?:\\s*&\\S+\\s+\\S+?:(?<currentValue>[^\\s@]+)(@(?<currentDigest>sha256:[a-f0-9]+))?"
       ]
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/roles/services/forgejo-runner/files/config\\.yml$/"
+      ],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s*\\n\\s*-\\s*\"docker:docker://[^:\"]+:(?<currentValue>[^\\s@\"]+)(@(?<currentDigest>sha256:[a-f0-9]+))?\""
+      ]
     }
   ],
   "packageRules": [
