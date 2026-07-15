@@ -14,7 +14,7 @@
       "/(^|/)compose\\.ya?ml$/"
     ]
   },
-  "minimumReleaseAge": "2 days",
+  "minimumReleaseAge": "5 days",
   "minimumReleaseAgeBehaviour": "timestamp-optional",
   "dependencyDashboard": true,
   "prConcurrentLimit": 20,
