@@ -53,8 +53,10 @@
       - inotify-tools
       - iputils-ping
       - libayatana-appindicator3-1
+      - libssl-dev
       - linux-headers-amd64
       - locales
+      - micro
       - net-tools
       - ninja-build
       - nmap
@@ -79,6 +81,7 @@
       - python3-venv
       - rdesktop
       - rsync
+      - rustup
       - s-tui
       - spice-vdagent
       - ssh
