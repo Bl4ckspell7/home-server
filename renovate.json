@@ -35,6 +35,13 @@
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s*\\n\\s*-\\s*\"docker:docker://[^:\"]+:(?<currentValue>[^\\s@\"]+)(@(?<currentDigest>sha256:[a-f0-9]+))?\""
       ]
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.github/workflows/renovate\\.yml$/"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s*\\n\\s*renovate-version:\\s*(?<currentValue>[^\\s@]+)(@(?<currentDigest>sha256:[a-f0-9]+))?"
+      ]
     }
   ],
   "packageRules": [
