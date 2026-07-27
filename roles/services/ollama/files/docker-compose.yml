@@ -2,7 +2,7 @@ name: ollama
 services:
   ollama:
     container_name: ollama
-    image: docker.io/ollama/ollama:0.31.2@sha256:509fdf54e23bd50d87af646cb51c0a7a203d6a83cc4d6695b3b08c5be1c62c0a
+    image: docker.io/ollama/ollama:0.32.2@sha256:c3886c198155aa7d45a29851100cc16f5d6ea6777d635ddd0597fe95874161af
     restart: unless-stopped
     expose:
       - "11434"
