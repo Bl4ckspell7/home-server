@@ -31,6 +31,7 @@ services:
       PAPERLESS_TIME_ZONE: "Europe/Berlin"
       PAPERLESS_OCR_LANGUAGE: "deu"
       PAPERLESS_REDIS: redis://paperless-redis:6379
+      PAPERLESS_DBENGINE: postgresql
       PAPERLESS_DBHOST: paperless-postgres
       PAPERLESS_TIKA_ENABLED: 1
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless-gotenberg:3000
