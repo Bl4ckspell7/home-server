@@ -1,0 +1,45 @@
+---
+- name: Decrypt WireGuard secrets
+  ansible.builtin.command:
+    cmd: "sops decrypt {{ role_path }}/vars/secrets.yml"
+  delegate_to: localhost
+  become: false
+  changed_when: false
+  no_log: true
+  register: wg_secrets_raw
+
+- name: Load WireGuard secrets
+  ansible.builtin.set_fact:
+    "{{ item.key }}": "{{ item.value }}"
+  loop: "{{ wg_secrets_raw.stdout | from_yaml | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  no_log: true
+
+- name: Enable IPv4 forwarding (WireGuard gateway)
+  # sysctl_set applies immediately (before wg0 starts below), and persists to the
+  # drop-in — avoids the deferred-handler window where forwarding would be off.
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    state: present
+    sysctl_set: true
+    reload: true
+    sysctl_file: /etc/sysctl.d/99-wireguard-forward.conf
+
+- name: Render WireGuard configuration
+  ansible.builtin.template:
+    src: wg0.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+  notify: Restart WireGuard
+
+- name: Enable and start WireGuard interface
+  ansible.builtin.systemd_service:
+    name: wg-quick@wg0
+    state: started
+    enabled: true
+    daemon_reload: true
