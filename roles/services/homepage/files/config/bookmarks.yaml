@@ -5,31 +5,31 @@
 - Connections:
     - Github:
         - abbr: GH
-          icon: sh-github-light.svg
+          icon: /icons/github-light.svg
           href: https://github.com/Bl4ckspell7
 
     - Steam:
         - abbr: ST
-          icon: sh-steam.svg
+          icon: /icons/steam.svg
           href: https://steamcommunity.com/id/Bl4ckspell/
 
     - YouTube:
         - abbr: YT
-          icon: sh-youtube.svg
+          icon: /icons/youtube.svg
           href: https://www.youtube.com/@bl4ckspell
 
 - Contact:
     - Email:
         - abbr: EM
-          icon: sh-proton-mail.svg
+          icon: /icons/proton-mail.svg
           href: mailto:bl4ckspell@proton.me
 
     - Matrix:
         - abbr: MT
-          icon: sh-matrix-light.svg
+          icon: /icons/matrix-light.svg
           href: https://matrix.to/#/@bl4ckspell:matrix.org
 
     - Mastodon:
         - abbr: MD
-          icon: sh-mastodon.svg
+          icon: /icons/mastodon.svg
           href: https://mastodon.social/@bl4ckspell

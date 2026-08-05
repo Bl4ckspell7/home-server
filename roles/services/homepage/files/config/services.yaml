@@ -5,19 +5,19 @@
 - Server:
     - Essential:
         - Anubis:
-            icon: sh-anubis.png
+            icon: /icons/anubis.png
             description: AI-powered bot protection
             ping: anubis.lan
             statusStyle: "basic"
 
         - Caddy:
-            icon: sh-caddy.svg
+            icon: /icons/caddy.svg
             description: Reverse-Proxy
             ping: caddy.lan
             statusStyle: "basic"
 
         - Pi-hole:
-            icon: sh-pi-hole.svg
+            icon: /icons/pi-hole.svg
             href: https://pihole.bl4ckspell.freeddns.org/admin/
             description: DNS Server & Filter
             ping: pihole.lan
@@ -25,7 +25,7 @@
 
     - Documentation:
         - Docs:
-            icon: sh-docusaurus.svg
+            icon: /icons/docusaurus.svg
             href: https://docs.bl4ckspell.freeddns.org/docs
             description: Home Server Documentation
             ping: docs.lan
@@ -33,35 +33,35 @@
 
     - Management & Monitoring:
         - Dockge:
-            icon: sh-dockge.svg
+            icon: /icons/dockge.svg
             href: https://dockge.bl4ckspell.freeddns.org/
             description: Docker Stacks Management
             ping: dockge.lan
             statusStyle: "basic"
 
         - Uptime-Kuma:
-            icon: sh-uptime-kuma.svg
+            icon: /icons/uptime-kuma.svg
             href: https://kuma.bl4ckspell.freeddns.org/
             description: Status
             ping: kuma.lan
             statusStyle: "basic"
 
         - ddns-updater:
-            icon: sh-ddns-updater.svg
+            icon: /icons/ddns-updater.svg
             href: https://ddns-updater.bl4ckspell.freeddns.org/
             description: Dynamic DNS Updater
             ping: ddns-updater.lan
             statusStyle: "basic"
 
         - Dockhand:
-            icon: sh-dockhand.png
+            icon: /icons/dockhand.png
             href: https://dockhand.bl4ckspell.freeddns.org/
             description: Docker Container Management
             ping: dockhand.lan
             statusStyle: "basic"
 
         - Cup:
-            icon: sh-cup-updates.svg
+            icon: /icons/cup-updates.svg
             href: https://cup.bl4ckspell.freeddns.org/
             description: Docker container updates made easy.
             ping: cup.lan
@@ -84,7 +84,7 @@
 
     - AI & Data:
         - Ollama:
-            icon: sh-ollama.svg
+            icon: /icons/ollama.svg
             description: Local AI models
             ping: ollama.lan
             statusStyle: "basic"
@@ -98,7 +98,7 @@
 - Services:
     - SSO:
         - Authentik:
-            icon: sh-authentik.svg
+            icon: /icons/authentik.svg
             href: https://authentik.bl4ckspell.freeddns.org/
             description: Login
             ping: authentik.lan
@@ -106,63 +106,63 @@
 
     - Tools:
         - Backrest:
-            icon: sh-backrest.svg
+            icon: /icons/backrest.svg
             href: https://backrest.bl4ckspell.freeddns.org/
             description: Backup management (restic)
             ping: backrest.lan
             statusStyle: "basic"
 
         - Dawarich:
-            icon: sh-dawarich.svg
+            icon: /icons/dawarich.svg
             href: https://dawarich.bl4ckspell.freeddns.org/
             description: Location History Tracker
             ping: dawarich.lan
             statusStyle: "basic"
 
         - Radicale:
-            icon: sh-radicale.svg
+            icon: /icons/radicale.svg
             href: https://radicale.bl4ckspell.freeddns.org/
             description: CalDAV/CardDAV server
             ping: radicale.lan
             statusStyle: "basic"
 
         - Forgejo:
-            icon: sh-forgejo.svg
+            icon: /icons/forgejo.svg
             href: https://forgejo.bl4ckspell.freeddns.org/
             description: Self-hosted Git forge
             ping: forgejo.lan
             statusStyle: "basic"
 
         - Immich:
-            icon: sh-immich.svg
+            icon: /icons/immich.svg
             href: https://immich.bl4ckspell.freeddns.org/
             description: High performance self-hosted photo and video management solution.
             ping: immich.lan
             statusStyle: "basic"
 
         - Jellyfin:
-            icon: sh-jellyfin.svg
+            icon: /icons/jellyfin.svg
             href: https://jellyfin.bl4ckspell.freeddns.org/
             description: The Free Software Media System
             ping: jellyfin.lan
             statusStyle: "basic"
 
         - Linkwarden:
-            icon: sh-linkwarden.svg
+            icon: /icons/linkwarden.svg
             href: https://linkwarden.bl4ckspell.freeddns.org/
             description: Collect, read, annotate, and preserve your webpages.
             ping: linkwarden.lan
             statusStyle: "basic"
 
         - Paperless:
-            icon: sh-paperless-ngx.svg
+            icon: /icons/paperless-ngx.svg
             href: https://paperless.bl4ckspell.freeddns.org/
             description: Document management
             ping: paperless.lan
             statusStyle: "basic"
 
         - Vaultwarden:
-            icon: sh-vaultwarden.svg
+            icon: /icons/vaultwarden.svg
             href: https://vaultwarden.bl4ckspell.freeddns.org/
             description: Password manager
             ping: vaultwarden.lan
