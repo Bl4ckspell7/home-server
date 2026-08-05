@@ -3,6 +3,10 @@
 	# at this VPS). No per-subdomain list needed — the ask guard below restricts
 	# issuance to our own domain suffix.
 	email bl4ckspell@proton.me
+	# Browsers send no SNI for a bare IP -> treat those handshakes as the IP so
+	# Caddy serves the IP cert instead of falling through to on-demand (which
+	# would 403 on the empty domain and abort the handshake).
+	default_sni {{ ansible_facts['default_ipv4']['address'] }}
 	on_demand_tls {
 		ask http://127.0.0.1:9000/check
 	}
