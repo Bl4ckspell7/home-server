@@ -1,0 +1,23 @@
+---
+# Deploys a static "be right back" page to /srv/landing, which caddy-vps serves
+# via handle_errors whenever the home upstream is unreachable.
+#
+# v1 ships a hand-written static site (files/site/). To swap in a Svelte build
+# later: build with adapter-static on the control host and drop the output into
+# files/site/ (no Node needed on the VPS) — this copy task stays the same.
+- name: Ensure landing directory exists
+  ansible.builtin.file:
+    path: /srv/landing
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy landing site
+  ansible.builtin.copy:
+    src: site/
+    dest: /srv/landing/
+    owner: root
+    group: root
+    mode: "0644"
+    directory_mode: "0755"
