@@ -1,0 +1,60 @@
+{
+	# Public Let's Encrypt certs, issued on-demand per hostname (once DNS points
+	# at this VPS). No per-subdomain list needed — the ask guard below restricts
+	# issuance to our own domain suffix.
+	email bl4ckspell@proton.me
+	on_demand_tls {
+		ask http://127.0.0.1:9000/check
+	}
+}
+
+# Internal guard for on-demand TLS: only allow certs for *.bl4ckspell.freeddns.org
+# (and the apex). Caddy calls this with ?domain=<sni> before issuing.
+:9000 {
+	@ok `{http.request.uri.query.domain}.endsWith(".bl4ckspell.freeddns.org") || {http.request.uri.query.domain} == "bl4ckspell.freeddns.org"`
+	handle @ok {
+		respond 200
+	}
+	respond 403
+}
+
+# Direct HTTPS to the VPS IP: publicly-trusted short-lived (6-day) cert from
+# Let's Encrypt for the IP itself (IP certs are only issued via the shortlived
+# profile). Validated over TLS-ALPN/HTTP on 443/80 — works even before DNS flips.
+{{ ansible_facts['default_ipv4']['address'] }} {
+	tls {
+		issuer acme {
+			profile shortlived
+		}
+	}
+	root * /srv/landing
+	file_server
+}
+
+# Front-door: terminate public TLS here (on-demand), proxy to the home entrypoint
+# over the WireGuard tunnel (10.10.0.2). Host header is preserved so the home
+# Caddy/Anubis chain routes each subdomain exactly as before. Landing page is
+# served on any upstream failure (home offline / tunnel down).
+*.bl4ckspell.freeddns.org, bl4ckspell.freeddns.org {
+	tls {
+		on_demand
+	}
+	reverse_proxy https://10.10.0.2 {
+		header_up Host {host}
+		transport http {
+			tls_server_name {host}
+			tls_insecure_skip_verify
+		}
+	}
+	handle_errors {
+		root * /srv/landing
+		file_server
+	}
+}
+
+# Catch-all for direct-IP hits / unknown hosts (and the Phase-A localhost test):
+# always serve the landing page over plain HTTP.
+http:// {
+	root * /srv/landing
+	file_server
+}

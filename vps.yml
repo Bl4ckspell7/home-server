@@ -1,0 +1,17 @@
+- name: Configure IONOS VPS front-door
+  hosts: vps
+  roles:
+    - role: ssh
+      tags: ssh
+
+    - role: apt-vps
+      tags: apt
+
+    - role: wireguard-vps
+      tags: wireguard
+
+    - role: landing
+      tags: landing
+
+    - role: caddy-vps
+      tags: caddy

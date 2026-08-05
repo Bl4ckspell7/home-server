@@ -1,0 +1,24 @@
+---
+- name: Install APT packages
+  become: true
+  register: apt_output_install
+  ansible.builtin.apt:
+    autoremove: true
+    state: present
+    update_cache: true
+    name:
+      - ca-certificates
+      - curl
+      - fastfetch
+      - iputils-ping
+      - nftables
+      - podman
+      - rsync
+      - vnstat
+      - wireguard
+      - wireguard-tools
+
+- name: Show apt install output
+  ansible.builtin.include_tasks: ../../../../tasks/view_logs.yml
+  vars:
+    output: "{{ apt_output_install }}"

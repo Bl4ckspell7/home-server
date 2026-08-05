@@ -14,12 +14,23 @@
     mode: "0755"
 
 - name: Copy custom SSH configuration # verify: $ sshd -T
+  # 00- prefix so this sorts before cloud-init's 50-cloud-init.conf: sshd uses
+  # the first value seen per keyword, and drop-ins load in lexical order.
   ansible.builtin.copy:
     src: files/sshd.conf
-    dest: /etc/ssh/sshd_config.d/sshd.conf
+    dest: /etc/ssh/sshd_config.d/00-hardening.conf
     owner: root
     group: root
     mode: "0644"
+  notify: Restart SSH
+
+- name: Remove legacy and cloud-init SSH drop-ins
+  ansible.builtin.file:
+    path: "/etc/ssh/sshd_config.d/{{ item }}"
+    state: absent
+  loop:
+    - sshd.conf
+    - 50-cloud-init.conf
   notify: Restart SSH
 
 - name: Add specified SSH keys to root

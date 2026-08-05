@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+[Interface]
+Address = 10.10.0.1/24
+ListenPort = 51820
+PrivateKey = {{ wg_vps_private_key }}
+
+# NAT masquerade for the tunnel subnet -> lets home route its egress through the
+# VPS (gateway-ready; harmless until home sets AllowedIPs = 0.0.0.0/0).
+PostUp = nft add table ip wg_nat
+PostUp = nft add chain ip wg_nat postrouting { type nat hook postrouting priority 100 \; }
+PostUp = nft add rule ip wg_nat postrouting ip saddr 10.10.0.0/24 oifname != "wg0" masquerade
+PostDown = nft delete table ip wg_nat 2>/dev/null || true
+
+[Peer]
+# home server (dials out; no Endpoint on this side)
+PublicKey = {{ wg_home_public_key }}
+PresharedKey = {{ wg_preshared_key }}
+AllowedIPs = 10.10.0.2/32

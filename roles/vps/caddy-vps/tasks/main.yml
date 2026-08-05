@@ -1,0 +1,32 @@
+---
+- name: Ensure Caddy config directory exists
+  ansible.builtin.file:
+    path: /opt/caddy
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Render Caddyfile
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: /opt/caddy/Caddyfile
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Caddy
+
+- name: Copy Caddy Quadlet unit
+  ansible.builtin.copy:
+    src: caddy.container
+    dest: /etc/containers/systemd/caddy.container
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Caddy
+
+- name: Start Caddy (Quadlet-generated service)
+  ansible.builtin.systemd_service:
+    name: caddy.service
+    state: started
+    daemon_reload: true
