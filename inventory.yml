@@ -9,3 +9,15 @@ svr:
   hosts:
     svr1:
       ansible_host: 192.168.178.117
+
+vps:
+  vars:
+    ansible_connection: ssh
+    ansible_port: 22
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_ssh_pipelining: true
+    ansible_ssh_private_key_file: "~/.ssh/ssh_bl4ckspell@proton.me"
+    ansible_user: root
+  hosts:
+    ionos-vps:
+      ansible_host: ionos-vps # resolves via ~/.ssh/config (keeps the IP out of git)
