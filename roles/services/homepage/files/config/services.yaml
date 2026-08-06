@@ -46,13 +46,6 @@
             ping: kuma.lan
             statusStyle: "basic"
 
-        - ddns-updater:
-            icon: /icons/ddns-updater.svg
-            href: https://ddns-updater.bl4ckspell.freeddns.org/
-            description: Dynamic DNS Updater
-            ping: ddns-updater.lan
-            statusStyle: "basic"
-
         - Dockhand:
             icon: /icons/dockhand.png
             href: https://dockhand.bl4ckspell.freeddns.org/
