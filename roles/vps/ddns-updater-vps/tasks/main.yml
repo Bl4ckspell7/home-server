@@ -1,0 +1,42 @@
+---
+- name: Ensure ddns-updater data directory exists
+  ansible.builtin.file:
+    path: /opt/ddns-updater/data
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+
+- name: Decrypt ddns-updater config
+  ansible.builtin.command:
+    cmd: "sops decrypt {{ role_path }}/files/data/config.json"
+  delegate_to: localhost
+  become: false
+  changed_when: false
+  no_log: true
+  register: ddns_config_raw
+
+- name: Copy ddns-updater config file
+  ansible.builtin.copy:
+    content: "{{ ddns_config_raw.stdout }}"
+    dest: /opt/ddns-updater/data/config.json
+    owner: "1000"
+    group: "1000"
+    mode: "0600"
+  no_log: true
+  notify: Restart ddns-updater
+
+- name: Copy ddns-updater Quadlet unit
+  ansible.builtin.copy:
+    src: ddns-updater.container
+    dest: /etc/containers/systemd/ddns-updater.container
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart ddns-updater
+
+- name: Start ddns-updater (Quadlet-generated service)
+  ansible.builtin.systemd_service:
+    name: ddns-updater.service
+    state: started
+    daemon_reload: true
