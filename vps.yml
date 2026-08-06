@@ -7,6 +7,9 @@
     - role: apt-vps
       tags: apt
 
+    - role: shell-vps
+      tags: shell
+
     - role: wireguard-vps
       tags: wireguard
 

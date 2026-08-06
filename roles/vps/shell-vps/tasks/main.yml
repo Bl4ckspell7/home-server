@@ -1,0 +1,33 @@
+---
+- name: Ensure /var/tmp exists (disk-backed temp for large builds)
+  ansible.builtin.file:
+    path: /var/tmp
+    state: directory
+    owner: root
+    group: root
+    mode: "1777"
+
+- name: Redirect TMPDIR off the RAM-backed /tmp to disk
+  # /tmp is a small tmpfs; cargo/build temp files overflow it. /var/tmp lives on
+  # the root filesystem and is meant for large, longer-lived temp files.
+  ansible.builtin.copy:
+    dest: /etc/profile.d/tmpdir.sh
+    content: |
+      export TMPDIR=/var/tmp
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Put cargo-installed binaries on PATH
+  # Debian's rustup package doesn't create ~/.cargo/env, so add the bin dir
+  # directly (guarded against duplicates on re-login).
+  ansible.builtin.copy:
+    dest: /etc/profile.d/cargo.sh
+    content: |
+      case ":${PATH}:" in
+          *:"$HOME/.cargo/bin":*) ;;
+          *) export PATH="$HOME/.cargo/bin:$PATH" ;;
+      esac
+    owner: root
+    group: root
+    mode: "0644"
