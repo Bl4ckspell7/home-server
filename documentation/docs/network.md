@@ -84,6 +84,18 @@ FTLCONF_dns_hosts: |
 **Container IP:** `172.21.255.238`  
 **Ports:** `443/tcp`, `443/udp` (host-bound), `8080` (exposed internally for Anubis backend routing)
 
-Handles reverse proxy and automatic SSL termination (via Let's Encrypt) for services. External traffic hits Caddy on port 443, which routes through Anubis for PoW protection, then to the backend service via `.lan` DNS.
+Reverse proxy for all services. Home Caddy no longer faces the internet directly — it sits behind the [VPS front-door](./services/vps.md) and is reached only over the WireGuard tunnel. It terminates TLS with a **self-signed internal cert** (`tls internal`); public Let's Encrypt certs are issued on the VPS instead, since home accepts no inbound WAN traffic and can't answer ACME challenges.
 
-Example: `https://immich.bl4ckspell.freeddns.org` → Caddy (:443) → Anubis → Caddy (:8080) → `http://immich.lan:2283`
+External traffic flow:
+
+```
+internet
+  → VPS Caddy (:443, Let's Encrypt)
+  → WireGuard (10.10.0.1 → 10.10.0.2)
+  → home Caddy (:443, tls internal)
+  → Anubis (PoW protection)
+  → home Caddy (:8080)
+  → http://immich.lan:2283
+```
+
+The FritzBox has **no port-forwards** — the residential IP is off DNS entirely, and public DNS resolves to the VPS. See [VPS front-door](./services/vps.md) for the tunnel + landing-page setup.
