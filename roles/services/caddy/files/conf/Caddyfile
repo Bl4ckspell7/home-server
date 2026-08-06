@@ -48,6 +48,10 @@ pihole.bl4ckspell.freeddns.org,
 radicale.bl4ckspell.freeddns.org,
 vaultwarden.bl4ckspell.freeddns.org {
 	import error_page
+	# Self-signed cert: this listener is only reached via the VPS front-door over
+	# WireGuard (which proxies with tls_insecure_skip_verify). No public ACME —
+	# home can't validate challenges anymore, they land on the VPS.
+	tls internal
 	reverse_proxy http://anubis.lan:3000 {
 		header_up X-Real-Ip {remote_host}
 		header_up X-Http-Version {http.request.proto}

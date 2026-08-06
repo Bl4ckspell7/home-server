@@ -34,7 +34,6 @@ Services behind Caddy use `expose` (no host port binding). Only services requiri
 | **Homepage**      | -             | 3000               |
 | **Uptime Kuma**   | -             | 3001               |
 | **Dawarich**      | -             | 3000               |
-| **ddns-updater**  | -             | 8000               |
 | **Docusaurus**    | -             | 8349               |
 | **Dockhand**      | -             | 3000               |
 | **Linkwarden**    | -             | 3000               |

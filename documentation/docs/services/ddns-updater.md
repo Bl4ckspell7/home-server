@@ -1,9 +1,9 @@
 # ddns-updater
 
-Port: `:8000` (exposed, no host binding)
-
 - https://github.com/qdm12/ddns-updater
 
-Fill `data/config.json` with correct data and encrypt with `sops encrypt --in-place data/config.json`.
+Runs on the **VPS** (`roles/vps/ddns-updater-vps`, podman Quadlet), not at home. It detects the VPS public IP and keeps the `bl4ckspell.freeddns.org` A record (provider `dynu`) pointed at it — this is what points the domain at the front-door. See [VPS front-door](./vps.md).
 
-Public route protected by Anubis + Authentik forward auth (no native auth). See [Authentik forward auth setup](./authentik.md#forward-auth-per-app).
+Web UI disabled (`SERVER_ENABLED=false`); no public route.
+
+Config lives in `roles/vps/ddns-updater-vps/files/data/config.json` — edit, then `sops encrypt --in-place` it.
