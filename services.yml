@@ -19,9 +19,6 @@
     - role: dawarich
       tags: dawarich
 
-    - role: ddns-updater
-      tags: ddns-updater
-
     - role: docusaurus
       tags: docusaurus
 
