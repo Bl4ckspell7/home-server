@@ -42,5 +42,8 @@
     - role: dns
       tags: dns
 
+    - role: wireguard
+      tags: wireguard
+
     - role: docker
       tags: docker

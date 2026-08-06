@@ -1,0 +1,12 @@
+{{ ansible_managed | comment }}
+[Interface]
+Address = 10.10.0.2/24
+PrivateKey = {{ wg_home_private_key }}
+
+[Peer]
+# IONOS VPS front-door (home dials out; inbound-only, default route untouched)
+PublicKey = {{ wg_vps_public_key }}
+PresharedKey = {{ wg_preshared_key }}
+Endpoint = {{ wg_vps_endpoint }}
+AllowedIPs = 10.10.0.1/32
+PersistentKeepalive = 25
