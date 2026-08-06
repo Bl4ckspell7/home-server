@@ -7,13 +7,18 @@
     state: present
     update_cache: true
     name:
+      - build-essential
       - ca-certificates
       - curl
       - fastfetch
+      - gdu
       - iputils-ping
+      - libssl-dev
       - nftables
+      - pkg-config
       - podman
       - rsync
+      - rustup
       - vnstat
       - wireguard
       - wireguard-tools
