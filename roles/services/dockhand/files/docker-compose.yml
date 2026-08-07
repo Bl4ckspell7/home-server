@@ -4,7 +4,7 @@ services:
     container_name: dockhand
     image: docker.io/fnsys/dockhand:v1.0.40@sha256:29d4183d8aef2cc7fbc50750fa11434ec331e044647288ae47fe15260e68a44c
     restart: unless-stopped
-    user: "1000:1000"
+    user: "905:905"
     group_add:
       - "990" # Docker group GID for socket access
     expose:

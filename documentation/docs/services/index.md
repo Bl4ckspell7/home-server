@@ -60,3 +60,4 @@ System users and groups created by Ansible for running services:
 | **Forgejo**        | forgejo        | 902     | forgejo        | 902     |
 | **Radicale**       | radicale       | 903     | radicale       | 903     |
 | **Forgejo Runner** | forgejo-runner | 904     | forgejo-runner | 904     |
+| **Dockhand**       | dockhand       | 905     | dockhand       | 905     |
