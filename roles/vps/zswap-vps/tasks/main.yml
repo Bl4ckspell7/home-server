@@ -1,0 +1,67 @@
+---
+# --- Swapfile (backing store; zswap is inert without one) ---
+- name: Create swapfile
+  ansible.builtin.command:
+    cmd: "fallocate -l {{ zswap_swap_size }} /swapfile"
+    creates: /swapfile
+
+- name: Secure swapfile permissions
+  ansible.builtin.file:
+    path: /swapfile
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Check swapfile signature
+  ansible.builtin.command: blkid -o value -s TYPE /swapfile
+  register: zswap_sig
+  changed_when: false
+  failed_when: false
+
+- name: Format swapfile
+  ansible.builtin.command:
+    cmd: mkswap /swapfile
+  when: zswap_sig.stdout != "swap"
+  changed_when: true
+
+- name: Add swapfile to fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: '^\s*/swapfile\s'
+    line: "/swapfile none swap sw 0 0"
+    state: present
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: List active swaps
+  ansible.builtin.command: swapon --noheadings --show=NAME
+  register: zswap_active
+  changed_when: false
+
+- name: Activate swapfile
+  ansible.builtin.command: swapon /swapfile
+  when: "'/swapfile' not in zswap_active.stdout"
+  changed_when: true
+
+# --- zswap (compressed RAM cache in front of swap; applied on next reboot) ---
+- name: Ensure GRUB drop-in directory exists
+  ansible.builtin.file:
+    path: /etc/default/grub.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Enable zswap via GRUB drop-in
+  # Append to the existing cmdline rather than rewriting GRUB_CMDLINE_LINUX_DEFAULT,
+  # so IONOS console=/serial params are preserved (grub-mkconfig sources
+  # /etc/default/grub then /etc/default/grub.d/*.cfg).
+  ansible.builtin.copy:
+    dest: /etc/default/grub.d/zswap.cfg
+    content: |
+      GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT zswap.enabled=1 zswap.compressor=zstd zswap.zpool=zsmalloc zswap.max_pool_percent=25"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Update grub

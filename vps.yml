@@ -10,6 +10,9 @@
     - role: shell-vps
       tags: shell
 
+    - role: zswap-vps
+      tags: zswap
+
     - role: wireguard-vps
       tags: wireguard
 
