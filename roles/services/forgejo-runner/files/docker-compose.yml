@@ -32,7 +32,7 @@ services:
         condition: service_healthy
 
   dind:
-    image: docker.io/library/docker:29.7.0-dind@sha256:084e385b0c9b7ab35d5a46dfedd033721448c000dbec71adcf13da8a9e71baa8
+    image: docker.io/library/docker:29.7.2-dind@sha256:12e683a161823b2a839aeea999b9d960e6e1f9a97b1679ad6b441982e2d9cf07
     container_name: forgejo-runner-dind
     restart: unless-stopped
     # Required to run a nested Docker daemon; blast radius is this container,
