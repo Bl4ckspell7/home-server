@@ -19,7 +19,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
     environment:
       # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
-      HOMEPAGE_ALLOWED_HOSTS: "192.168.178.117:3000,bl4ckspell.freeddns.org,homepage.bl4ckspell.freeddns.org"
+      HOMEPAGE_ALLOWED_HOSTS: "192.168.178.117:3000,${BASE_DOMAIN:?base domain required},homepage.${BASE_DOMAIN:?base domain required}"
       PUID: 1000 # optional, your user id
       PGID: 1000 # optional, your group id
     healthcheck:

@@ -18,7 +18,7 @@
 
         - Pi-hole:
             icon: /icons/pi-hole.svg
-            href: https://pihole.bl4ckspell.freeddns.org/admin/
+            href: https://pihole.bl4ckspell.de/admin/
             description: DNS Server & Filter
             ping: pihole.lan
             statusStyle: "basic"
@@ -26,7 +26,7 @@
     - Documentation:
         - Docs:
             icon: /icons/docusaurus.svg
-            href: https://docs.bl4ckspell.freeddns.org/docs
+            href: https://docs.bl4ckspell.de/docs
             description: Home Server Documentation
             ping: docs.lan
             statusStyle: "basic"
@@ -34,28 +34,28 @@
     - Management & Monitoring:
         - Dockge:
             icon: /icons/dockge.svg
-            href: https://dockge.bl4ckspell.freeddns.org/
+            href: https://dockge.bl4ckspell.de/
             description: Docker Stacks Management
             ping: dockge.lan
             statusStyle: "basic"
 
         - Uptime-Kuma:
             icon: /icons/uptime-kuma.svg
-            href: https://kuma.bl4ckspell.freeddns.org/
+            href: https://kuma.bl4ckspell.de/
             description: Status
             ping: kuma.lan
             statusStyle: "basic"
 
         - Dockhand:
             icon: /icons/dockhand.png
-            href: https://dockhand.bl4ckspell.freeddns.org/
+            href: https://dockhand.bl4ckspell.de/
             description: Docker Container Management
             ping: dockhand.lan
             statusStyle: "basic"
 
         - Cup:
             icon: /icons/cup-updates.svg
-            href: https://cup.bl4ckspell.freeddns.org/
+            href: https://cup.bl4ckspell.de/
             description: Docker container updates made easy.
             ping: cup.lan
             statusStyle: "basic"
@@ -92,7 +92,7 @@
     - SSO:
         - Authentik:
             icon: /icons/authentik.svg
-            href: https://authentik.bl4ckspell.freeddns.org/
+            href: https://authentik.bl4ckspell.de/
             description: Login
             ping: authentik.lan
             statusStyle: "basic"
@@ -100,63 +100,63 @@
     - Tools:
         - Backrest:
             icon: /icons/backrest.svg
-            href: https://backrest.bl4ckspell.freeddns.org/
+            href: https://backrest.bl4ckspell.de/
             description: Backup management (restic)
             ping: backrest.lan
             statusStyle: "basic"
 
         - Dawarich:
             icon: /icons/dawarich.svg
-            href: https://dawarich.bl4ckspell.freeddns.org/
+            href: https://dawarich.bl4ckspell.de/
             description: Location History Tracker
             ping: dawarich.lan
             statusStyle: "basic"
 
         - Radicale:
             icon: /icons/radicale.svg
-            href: https://radicale.bl4ckspell.freeddns.org/
+            href: https://radicale.bl4ckspell.de/
             description: CalDAV/CardDAV server
             ping: radicale.lan
             statusStyle: "basic"
 
         - Forgejo:
             icon: /icons/forgejo.svg
-            href: https://forgejo.bl4ckspell.freeddns.org/
+            href: https://forgejo.bl4ckspell.de/
             description: Self-hosted Git forge
             ping: forgejo.lan
             statusStyle: "basic"
 
         - Immich:
             icon: /icons/immich.svg
-            href: https://immich.bl4ckspell.freeddns.org/
+            href: https://immich.bl4ckspell.de/
             description: High performance self-hosted photo and video management solution.
             ping: immich.lan
             statusStyle: "basic"
 
         - Jellyfin:
             icon: /icons/jellyfin.svg
-            href: https://jellyfin.bl4ckspell.freeddns.org/
+            href: https://jellyfin.bl4ckspell.de/
             description: The Free Software Media System
             ping: jellyfin.lan
             statusStyle: "basic"
 
         - Linkwarden:
             icon: /icons/linkwarden.svg
-            href: https://linkwarden.bl4ckspell.freeddns.org/
+            href: https://linkwarden.bl4ckspell.de/
             description: Collect, read, annotate, and preserve your webpages.
             ping: linkwarden.lan
             statusStyle: "basic"
 
         - Paperless:
             icon: /icons/paperless-ngx.svg
-            href: https://paperless.bl4ckspell.freeddns.org/
+            href: https://paperless.bl4ckspell.de/
             description: Document management
             ping: paperless.lan
             statusStyle: "basic"
 
         - Vaultwarden:
             icon: /icons/vaultwarden.svg
-            href: https://vaultwarden.bl4ckspell.freeddns.org/
+            href: https://vaultwarden.bl4ckspell.de/
             description: Password manager
             ping: vaultwarden.lan
             statusStyle: "basic"

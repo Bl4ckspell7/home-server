@@ -24,7 +24,7 @@ rm /opt/stacks/forgejo-runner/data/.runner
 
 then rerun the playbook (`--tags forgejo-runner`).
 
-Registered runners: `https://forgejo.bl4ckspell.freeddns.org/admin/actions/runners`
+Registered runners: `https://forgejo.bl4ckspell.de/admin/actions/runners`
 
 ## Using Actions in a repository
 

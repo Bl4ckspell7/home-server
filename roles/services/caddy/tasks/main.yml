@@ -19,4 +19,5 @@
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: caddy
+    env_template: caddy.env.j2
     compose_recreate: always

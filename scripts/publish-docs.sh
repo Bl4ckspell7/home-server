@@ -44,8 +44,8 @@ if [[ -n "$(git status --porcelain)" ]]; then
 fi
 
 compose_file="roles/services/docusaurus/files/docker-compose.yml"
-image="forgejo.bl4ckspell.freeddns.org/bl4ckspell/home-server-docs"
-registry="forgejo.bl4ckspell.freeddns.org"
+image="forgejo.bl4ckspell.de/bl4ckspell/home-server-docs"
+registry="forgejo.bl4ckspell.de"
 
 current_version="$(
   python3 - "${compose_file}" "${image}" <<'PY'

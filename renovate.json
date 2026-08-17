@@ -6,6 +6,7 @@
     "dockerfile",
     "bun",
     "github-actions",
+    "terraform",
     "custom.regex"
   ],
   "docker-compose": {
@@ -71,7 +72,7 @@
       "enabled": false
     },
     {
-      "matchPackageNames": ["/^forgejo\\.bl4ckspell\\.freeddns\\.org\\//"],
+      "matchPackageNames": ["/^forgejo\\.bl4ckspell\\.de\\//"],
       "enabled": false
     },
     {

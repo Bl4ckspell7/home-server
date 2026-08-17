@@ -4,7 +4,7 @@ x-variables:
   # shared variables for dawarich services (app and sidekiq)
   # renovate: datasource=docker depName=docker.io/freikin/dawarich
   dawarich_image: &dawarich_image docker.io/freikin/dawarich:1.11.0@sha256:4e3c55c4cd572373624e75c9e02075ff436c83a3ea952595ae0d4ffc4c7ae52b
-  app_hosts: &app_hosts localhost,dawarich.bl4ckspell.freeddns.org
+  app_hosts: &app_hosts localhost,dawarich.${BASE_DOMAIN:?base domain required}
   database_host: &database_host dawarich-postgres
   database_name: &database_name dawarich_development
   database_port: &database_port 5432
@@ -107,9 +107,9 @@ services:
       OIDC_AUTO_REGISTER: false # optional, default is false
       OIDC_CLIENT_ID: ${AUTHENTIK_CLIENT_ID}
       OIDC_CLIENT_SECRET: ${AUTHENTIK_CLIENT_SECRET}
-      OIDC_ISSUER: "https://authentik.bl4ckspell.freeddns.org/application/o/dawarich/"
+      OIDC_ISSUER: "https://authentik.${BASE_DOMAIN:?base domain required}/application/o/dawarich/"
       OIDC_PROVIDER_NAME: "Authentik" # optional, default is OpenID Connect
-      OIDC_REDIRECT_URI: "https://dawarich.bl4ckspell.freeddns.org/users/auth/openid_connect/callback"
+      OIDC_REDIRECT_URI: "https://dawarich.${BASE_DOMAIN:?base domain required}/users/auth/openid_connect/callback"
       PGID: *pgid
       PHOTON_API_HOST: *photon_api_host
       PHOTON_API_USE_HTTPS: *photon_api_use_https

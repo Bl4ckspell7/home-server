@@ -12,10 +12,10 @@
 	}
 }
 
-# Internal guard for on-demand TLS: only allow certs for *.bl4ckspell.freeddns.org
+# Internal guard for on-demand TLS: only allow certs for *.{{ base_domain }}
 # (and the apex). Caddy calls this with ?domain=<sni> before issuing.
 :9000 {
-	@ok `{http.request.uri.query.domain}.endsWith(".bl4ckspell.freeddns.org") || {http.request.uri.query.domain} == "bl4ckspell.freeddns.org"`
+	@ok `{http.request.uri.query.domain}.endsWith(".{{ base_domain }}") || {http.request.uri.query.domain} == "{{ base_domain }}"`
 	handle @ok {
 		respond 200
 	}
@@ -39,7 +39,7 @@
 # over the WireGuard tunnel (10.10.0.2). Host header is preserved so the home
 # Caddy/Anubis chain routes each subdomain exactly as before. Landing page is
 # served on any upstream failure (home offline / tunnel down).
-*.bl4ckspell.freeddns.org, bl4ckspell.freeddns.org {
+*.{{ base_domain }}, {{ base_domain }} {
 	tls {
 		on_demand
 	}

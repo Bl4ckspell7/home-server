@@ -3,3 +3,4 @@
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: anubis
+    env_template: anubis.env.j2

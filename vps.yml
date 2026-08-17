@@ -21,6 +21,3 @@
 
     - role: caddy-vps
       tags: caddy
-
-    - role: ddns-updater-vps
-      tags: ddns-updater
