@@ -7,6 +7,30 @@
     group: root
     mode: "0755"
 
+- name: Ensure Caddy log directory exists
+  # Bind-mounted into the container; fail2ban parses access.log from the host.
+  ansible.builtin.file:
+    path: /var/log/caddy
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Ensure Caddy access log file exists
+  # fail2ban refuses to start a jail whose logpath is missing, and Caddy only
+  # creates this file on its first request after restart — which happens in a
+  # handler at the end of the play, long after fail2ban-vps has been configured.
+  # Pre-creating it breaks that ordering dependency; Caddy just appends.
+  # touch + preserve timestamps keeps the task idempotent.
+  ansible.builtin.file:
+    path: /var/log/caddy/access.log
+    state: touch
+    owner: root
+    group: root
+    mode: "0640"
+    access_time: preserve
+    modification_time: preserve
+
 - name: Render Caddyfile
   ansible.builtin.template:
     src: Caddyfile.j2
