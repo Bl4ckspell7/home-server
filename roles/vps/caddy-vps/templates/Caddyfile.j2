@@ -12,6 +12,25 @@
 	}
 }
 
+# Request-level logging. Caddy logs nothing per-request by default, so without
+# this the VPS keeps no record of who hit it — and fail2ban's caddy-* jails have
+# nothing to parse. `remote_ip` is the true client: this is the internet edge and
+# declares no trusted_proxies. Caddy rolls these files itself, so no logrotate.
+(access_log) {
+	log {
+		output file /var/log/caddy/access.log {
+			roll_size 20MiB
+			roll_keep 5
+		}
+		# iso8601, not Caddy's default epoch float: fail2ban's caddy-* filters
+		# key their datepattern off this, and it keeps the log readable by hand.
+		# The VPS is Etc/UTC, so these line up with fail2ban's local-time parsing.
+		format json {
+			time_format iso8601
+		}
+	}
+}
+
 # Internal guard for on-demand TLS: only allow certs for *.{{ base_domain }}
 # (and the apex). Caddy calls this with ?domain=<sni> before issuing.
 :9000 {
@@ -40,6 +59,7 @@
 # Caddy/Anubis chain routes each subdomain exactly as before. Landing page is
 # served on any upstream failure (home offline / tunnel down).
 *.{{ base_domain }}, {{ base_domain }} {
+	import access_log
 	tls {
 		on_demand
 	}
@@ -66,6 +86,7 @@
 # Catch-all for direct-IP hits / unknown hosts (and the Phase-A localhost test):
 # always serve the landing page over plain HTTP.
 http:// {
+	import access_log
 	root * /srv/landing
 	file_server
 }

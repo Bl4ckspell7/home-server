@@ -10,6 +10,7 @@ PublishPort=443:443/tcp
 PublishPort=443:443/udp
 Volume=/opt/caddy/Caddyfile:/etc/caddy/Caddyfile:ro,Z
 Volume=/srv/landing:/srv/landing:ro,Z
+Volume=/var/log/caddy:/var/log/caddy:Z
 Volume=caddy-data:/data
 Volume=caddy-config:/config
 

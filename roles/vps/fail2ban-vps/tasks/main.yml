@@ -1,0 +1,39 @@
+---
+# Filters first: jail.local references them by name, and the config test below
+# fails if a jail names a filter that does not exist yet.
+- name: Deploy fail2ban filters
+  ansible.builtin.copy:
+    src: "filter.d/{{ item }}"
+    dest: "/etc/fail2ban/filter.d/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - caddy-probe.conf
+    - caddy-rate.conf
+  notify: Restart fail2ban
+
+- name: Render fail2ban jail configuration
+  # No `validate:` here — fail2ban-client -t takes a config DIRECTORY, not a
+  # single file, so it cannot check the temp file Ansible would hand it.
+  ansible.builtin.template:
+    src: jail.local.j2
+    dest: /etc/fail2ban/jail.local
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart fail2ban
+
+- name: Validate fail2ban configuration
+  # Runs against the freshly written /etc/fail2ban, so a bad regex or an unknown
+  # filter fails the play here rather than leaving the service dead after restart.
+  ansible.builtin.command:
+    cmd: fail2ban-client -t
+  changed_when: false
+
+- name: Ensure fail2ban is enabled and running
+  ansible.builtin.systemd_service:
+    name: fail2ban
+    state: started
+    enabled: true
+    daemon_reload: true
