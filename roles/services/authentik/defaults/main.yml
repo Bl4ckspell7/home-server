@@ -1,21 +1,129 @@
 ---
 authentik_domain: "{{ base_domain }}"
 
-# Services gated behind Authentik forward auth. Each entry creates a proxy
-# provider and an application, and assigns the provider to the embedded outpost.
-# The matching Caddy route must import the `authentik` snippet.
+# Grant types must be stated explicitly. A provider created by a blueprint that
+# omits them gets an EMPTY set, not Authentik's usual default, and every
+# authorization request then fails with "invalid_request | The request is
+# otherwise malformed" before the login page is even reached.
 #
-# Optional per-entry keys:
-#   host   defaults to <slug>.<authentik_domain>
-#   group  defaults to Public
-#   icon   defaults to the selfhst icon matching <slug>
+# These are the values Authentik itself assigns to a new provider of each kind,
+# restored verbatim from the pre-blueprint database dump. Trimming the OIDC list
+# to authorization_code + refresh_token would be tighter (implicit, password and
+# hybrid are legacy) but is a behaviour change — worth doing separately, once
+# every consumer is confirmed working.
+authentik_oidc_grant_types:
+  - authorization_code
+  - hybrid
+  - implicit
+  - client_credentials
+  - password
+  - "urn:ietf:params:oauth:grant-type:device_code"
+  - refresh_token
+authentik_proxy_grant_types:
+  - authorization_code
+  - client_credentials
+  - password
+
+# Every Authentik application and provider is declared here and rendered into a
+# single blueprint (templates/apps.yaml.j2). Nothing is created in the UI — the
+# blueprint is the source of truth, so a domain change or a rebuild reproduces
+# the whole catalog.
+#
+# Optional per-entry keys (all three lists):
+#   host         defaults to <slug>.<authentik_domain>
+#   launch_path  appended to the launch URL (e.g. /admin/)
+#   group        defaults to Public
+#   icon         defaults to application-icons/<slug>.svg — a committed asset in
+#                files/application-icons/, copied to Authentik's media dir by the
+#                role. Never a CDN URL: tiles are fetched client-side, so a remote
+#                icon renders intermittently and leaks a request per tile.
+#                Override only where the filename differs from the slug.
+
+# OIDC consumers. Credentials live in vars/secrets.yml as
+# oidc_<slug>_client_id / oidc_<slug>_client_secret (dashes become underscores)
+# and reach the containers as AUTHENTIK_OIDC_<SLUG>_CLIENT_ID / _CLIENT_SECRET
+# for the blueprint's !Env lookups. They are set explicitly rather than
+# generated, so recreating a provider keeps the credentials each consuming app
+# already has configured — dockhand and immich in particular hold theirs only in
+# their own runtime config, nowhere in this repo.
+authentik_oidc_apps:
+  - slug: dawarich
+    name: Dawarich
+    description: Location history tracker
+    redirect_uris:
+      - "https://dawarich.{{ authentik_domain }}/users/auth/openid_connect/callback"
+
+  - slug: dockhand
+    name: Dockhand
+    description: Docker management UI
+    icon: application-icons/dockhand.png
+    redirect_uris:
+      - "https://dockhand.{{ authentik_domain }}/api/auth/oidc/callback"
+
+  - slug: immich
+    name: Immich
+    description: Photo and video library
+    redirect_uris:
+      # Mobile app deep link — not a web URL, deliberately not domain-derived.
+      - "app.immich:///oauth-callback"
+      - "https://immich.{{ authentik_domain }}/auth/login"
+      - "https://immich.{{ authentik_domain }}/user-settings"
+
+  - slug: linkwarden
+    name: Linkwarden
+    description: Bookmark manager
+    redirect_uris:
+      - "https://linkwarden.{{ authentik_domain }}/api/v1/auth/callback/authentik"
+
+  - slug: paperless-ngx
+    name: Paperless-ngx
+    description: Document management
+    host: "paperless.{{ authentik_domain }}"
+    redirect_uris:
+      - "https://paperless.{{ authentik_domain }}/accounts/oidc/authentik/login/callback/"
+
+# Forward-auth consumers. A provider here does not by itself protect anything —
+# the matching Caddy route must import the `authentik` snippet.
 authentik_proxy_apps:
   - slug: cup
     name: Cup
     description: Container update monitor
-  - slug: ddns-updater
-    name: DDNS Updater
-    description: Dynamic DNS updater
+    icon: application-icons/cup-updates.svg
   - slug: vaultwarden
     name: Vaultwarden
     description: Password manager
+
+# Launcher tiles only: no provider, just a link on the Authentik dashboard.
+authentik_link_apps:
+  - slug: dockge
+    name: Dockge
+    description: Compose stack manager
+  - slug: pi-hole
+    name: Pi-hole
+    description: DNS ad blocking
+    host: "pihole.{{ authentik_domain }}"
+    launch_path: /admin/
+  - slug: uptime-kuma
+    name: Uptime Kuma
+    description: Service monitoring
+    host: "kuma.{{ authentik_domain }}"
+
+# Objects the blueprint deletes. Removing a blueprint file deletes NOTHING in
+# Authentik — it only stops managing those objects — so obsolete entries need an
+# explicit state: absent, and these lists must stay here until the blueprint has
+# run at least once.
+#
+# The oauth2 providers below are the UI-created ones replaced by the entries
+# above; the applications are repointed earlier in the same blueprint, so the
+# delete cannot orphan anything. ddns-updater is gone entirely: that service was
+# removed when DNS moved to Terraform.
+authentik_removed_apps:
+  - ddns-updater
+authentik_removed_oauth2_providers:
+  - Provider for Dawarich
+  - Provider for Dockhand
+  - Provider for Immich
+  - Provider for Linkwarden
+  - Provider for Paperless-ngx
+authentik_removed_proxy_providers:
+  - ddns-updater
