@@ -14,8 +14,8 @@ Icon files live in `roles/services/homepage/files/icons/` and are deployed to `/
 Refresh them (or pull in new ones after editing the list inside the script):
 
 ```bash
-scripts/fetch-homepage-icons.sh          # latest from selfhst/icons@main
-scripts/fetch-homepage-icons.sh <sha>    # pin to a commit
+scripts/fetch-icons.sh          # latest from selfhst/icons@main
+scripts/fetch-icons.sh <sha>    # pin to a commit
 ```
 
 Sourced from https://github.com/selfhst/icons. `photon.png` is a custom icon with no upstream entry — the script leaves it untouched.
