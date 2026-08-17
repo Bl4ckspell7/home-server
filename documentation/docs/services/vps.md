@@ -8,6 +8,7 @@ Managed by the `vps` inventory group via `vps.yml` (roles under `roles/vps/`):
 - `wireguard-vps` — native `wg0` (`10.10.0.1/24`) + `ip_forward` + NAT masquerade
 - `caddy-vps` — podman Quadlet front-door, on-demand TLS, landing fallback
 - `landing` — static "be right back" page → `/srv/landing`
+- [`fail2ban-vps`](./fail2ban.md) — bans SSH brute-force and HTTP scanners at the edge
 - reuses [`ssh`](../ssh.md) from `roles/server`
 
 The A record is a static Terraform-managed record — see [DNS](../dns.md). There is
