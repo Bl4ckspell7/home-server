@@ -65,7 +65,7 @@ Manual UI setup, if you ever need it as a fallback:
    - Name: `<service>`
    - Authorization flow: `default-provider-authorization-implicit-consent`
    - Mode: **Forward auth (single application)**
-   - External host: `https://<service>.bl4ckspell.freeddns.org`
+   - External host: `https://<service>.bl4ckspell.de`
 2. **Applications -> Applications -> Create**
    - Name: `<Service>`
    - Slug: `<service>`
@@ -76,7 +76,7 @@ Manual UI setup, if you ever need it as a fallback:
 Caddyfile side: import the `(authentik)` snippet inside the service's `handle` block in the internal `:8080` listener. Example:
 
 ```caddyfile
-@service host service.bl4ckspell.freeddns.org
+@service host service.bl4ckspell.de
 handle @service {
     import authentik
     reverse_proxy http://service.lan:PORT {

@@ -37,7 +37,7 @@ Every update sits 2 days before a PR appears (`minimumReleaseAge`).
 - **Major**: queued on the [Dependency Dashboard](https://github.com/Bl4ckspell7/home-server/issues?q=is%3Aissue+%22Dependency+Dashboard%22).
   Click approve → PR opens → use checklist below.
 - **DB majors** (postgres, mariadb, mysql): disabled. Bump manually with a real upgrade plan.
-- **Private registry** (`forgejo.bl4ckspell.freeddns.org`): disabled. Bump tag manually after pushing a new image.
+- **Private registry** (`forgejo.bl4ckspell.de`): disabled. Bump tag manually after pushing a new image.
 
 ## Major PR checklist
 

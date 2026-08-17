@@ -11,7 +11,7 @@ const config: Config = {
     v4: true,
   },
 
-  url: "https://docs.bl4ckspell.freeddns.org",
+  url: "https://docs.bl4ckspell.de",
   baseUrl: "/",
 
   onBrokenLinks: "throw",

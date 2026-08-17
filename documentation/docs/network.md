@@ -1,6 +1,7 @@
 # Network Configuration
 
-DNS and reverse proxy setup for the homeserver.
+Internal DNS and reverse proxy setup for the homeserver. The public zone for
+`bl4ckspell.de` is managed separately with Terraform — see [DNS](./dns.md).
 
 ## DNS Flow
 
