@@ -21,3 +21,6 @@
 
     - role: caddy-vps
       tags: caddy
+
+    - role: fail2ban-vps
+      tags: fail2ban

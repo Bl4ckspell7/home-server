@@ -1,0 +1,77 @@
+{{ ansible_managed | comment }}
+[DEFAULT]
+# Caddy is a podman container with published ports, so netavark DNATs its traffic
+# in `nat hook prerouting` and it then traverses FORWARD -- never INPUT. The stock
+# nftables action hooks input, which would fill the set and report bans while
+# blocking nothing. Hooking prerouting at raw priority (-300), ahead of dstnat
+# (-100), catches every inbound packet before the routing decision, so this one
+# chain covers both the container ports and host services like SSH.
+#
+# type=multiport, NOT allports: a ban then covers only the jail's own ports. An
+# HTTP-derived false positive must never be able to drop SSH — otherwise a bad
+# guess at a rate threshold locks us out of the box that holds the unban command,
+# leaving only the IONOS console to recover. Port matching is correct at this
+# hook: we run at priority -300, ahead of netavark's dstnat (-100), so the packet
+# still carries its original destination port.
+banaction = nftables[type=multiport, chain_hook=prerouting, chain_priority=-300, blocktype=drop]
+
+# Never ban the tunnel itself: 10.10.0.1 is the VPS end of the WireGuard link and
+# 10.10.0.2 is home. Banning either would sever the front door.
+ignoreip = 127.0.0.1/8 ::1 10.10.0.0/24
+
+# Conservative and escalating: a first offence costs an hour, a persistent
+# offender works its way up to a week. Errs toward letting a scanner retry rather
+# than locking out a real user who shares an exit IP.
+bantime = 1h
+bantime.increment = true
+bantime.factor = 2
+bantime.maxtime = 1w
+findtime = 10m
+maxretry = 5
+
+[sshd]
+enabled = true
+backend = systemd
+# 132 auth failures in 24h before this jail existed. Key-only auth, so a handful
+# of failures is already anomalous.
+maxretry = 4
+findtime = 10m
+
+[caddy-probe]
+enabled = true
+port = http,https
+filter = caddy-probe
+logpath = /var/log/caddy/access.log
+# Nothing legitimate ever requests /.git/config or /.env, so two strikes is
+# generous. Long findtime catches slow, patient scanners.
+maxretry = 2
+findtime = 1h
+
+[caddy-rate]
+# Flood control: the only thing here that limits sheer request volume. Anubis
+# challenges but never stops repetition, so without this a scanner can hammer the
+# front door indefinitely.
+#
+# Sized deliberately loose. Every device at home reaches these services through
+# the public domain, so at this hop the whole household is ONE source IP: an
+# Immich bulk upload plus a media-heavy page load can legitimately burst hundreds
+# of requests a minute. 1200/min (20 r/s sustained) sits well above that while
+# still catching genuine floods.
+#
+# Blast radius is bounded on purpose:
+#   - multiport (see DEFAULT) => only 80/443, SSH always survives
+#   - short, FIXED bantime, no escalation => a false positive costs 10 minutes,
+#     not a week; the global bantime.increment must not apply to a heuristic
+# Worst case is 10 minutes without web access from home, fixable instantly with
+#   fail2ban-client set caddy-rate unbanip <IP>
+#
+# Tighten once there is real data:
+#   jq -r '.request.remote_ip' /var/log/caddy/access.log | sort | uniq -c | sort -rn | head
+enabled = true
+port = http,https
+filter = caddy-rate
+logpath = /var/log/caddy/access.log
+maxretry = 1200
+findtime = 1m
+bantime = 10m
+bantime.increment = false
