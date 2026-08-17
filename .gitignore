@@ -2,3 +2,12 @@
 logs/*
 !logs/.gitkeep
 AGENTS.md
+
+# Terraform — only the sops-encrypted state (terraform.tfstate.enc.json) and the
+# provider lock file are ever committed. Plaintext state contains the VPS IP and
+# must never be tracked; scripts/tf-dns.sh shreds it after every run.
+terraform/**/.terraform/
+terraform/**/terraform.tfstate
+terraform/**/terraform.tfstate.backup
+terraform/**/*.tfplan
+terraform/**/secrets.dec.yml
