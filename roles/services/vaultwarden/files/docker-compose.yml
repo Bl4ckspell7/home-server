@@ -18,7 +18,7 @@ services:
     environment:
       ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN:?admin token required}
       DATABASE_URL: postgresql://vaultwarden:${VAULTWARDEN_DB_PASSWORD:?database password required}@vaultwarden-postgres:5432/vaultwarden
-      DOMAIN: https://vaultwarden.bl4ckspell.freeddns.org
+      DOMAIN: https://vaultwarden.${BASE_DOMAIN:?base domain required}
       SIGNUPS_ALLOWED: "false"
     volumes:
       - vaultwarden_data:/data

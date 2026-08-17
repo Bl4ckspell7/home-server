@@ -9,6 +9,11 @@ services:
       - "443:443/udp"
     expose:
       - "8080"
+    environment:
+      # Caddy expands {$BASE_DOMAIN} in the Caddyfile from its own process
+      # environment, so unlike the other services this one needs the value inside
+      # the container, not just at compose-parse time.
+      BASE_DOMAIN: ${BASE_DOMAIN:?base domain required}
     networks:
       svr1-network:
         ipv4_address: 172.21.255.238

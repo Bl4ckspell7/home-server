@@ -29,24 +29,24 @@
 }
 
 # Protected by Anubis
-bl4ckspell.freeddns.org,
-authentik.bl4ckspell.freeddns.org,
-backrest.bl4ckspell.freeddns.org,
-cup.bl4ckspell.freeddns.org,
-dawarich.bl4ckspell.freeddns.org,
-docs.bl4ckspell.freeddns.org,
-dockge.bl4ckspell.freeddns.org,
-dockhand.bl4ckspell.freeddns.org,
-forgejo.bl4ckspell.freeddns.org,
-homepage.bl4ckspell.freeddns.org,
-immich.bl4ckspell.freeddns.org,
-jellyfin.bl4ckspell.freeddns.org,
-kuma.bl4ckspell.freeddns.org,
-linkwarden.bl4ckspell.freeddns.org,
-paperless.bl4ckspell.freeddns.org,
-pihole.bl4ckspell.freeddns.org,
-radicale.bl4ckspell.freeddns.org,
-vaultwarden.bl4ckspell.freeddns.org {
+{$BASE_DOMAIN},
+authentik.{$BASE_DOMAIN},
+backrest.{$BASE_DOMAIN},
+cup.{$BASE_DOMAIN},
+dawarich.{$BASE_DOMAIN},
+docs.{$BASE_DOMAIN},
+dockge.{$BASE_DOMAIN},
+dockhand.{$BASE_DOMAIN},
+forgejo.{$BASE_DOMAIN},
+homepage.{$BASE_DOMAIN},
+immich.{$BASE_DOMAIN},
+jellyfin.{$BASE_DOMAIN},
+kuma.{$BASE_DOMAIN},
+linkwarden.{$BASE_DOMAIN},
+paperless.{$BASE_DOMAIN},
+pihole.{$BASE_DOMAIN},
+radicale.{$BASE_DOMAIN},
+vaultwarden.{$BASE_DOMAIN} {
 	import error_page
 	# Self-signed cert: this listener is only reached via the VPS front-door over
 	# WireGuard (which proxies with tls_insecure_skip_verify). No public ACME —
@@ -60,28 +60,28 @@ vaultwarden.bl4ckspell.freeddns.org {
 
 # Internal listener for Anubis backend routing
 :8080 {
-	@root host bl4ckspell.freeddns.org
+	@root host {$BASE_DOMAIN}
 	handle @root {
 		reverse_proxy http://homepage.lan:3000 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@forgejo host forgejo.bl4ckspell.freeddns.org
+	@forgejo host forgejo.{$BASE_DOMAIN}
 	handle @forgejo {
 		reverse_proxy http://forgejo.lan:3000 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@homepage host homepage.bl4ckspell.freeddns.org
+	@homepage host homepage.{$BASE_DOMAIN}
 	handle @homepage {
 		reverse_proxy http://homepage.lan:3000 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@authentik host authentik.bl4ckspell.freeddns.org
+	@authentik host authentik.{$BASE_DOMAIN}
 	handle @authentik {
 		reverse_proxy https://authentik.lan:9443 {
 			header_up X-Forwarded-Proto https
@@ -91,14 +91,14 @@ vaultwarden.bl4ckspell.freeddns.org {
 		}
 	}
 
-	@backrest host backrest.bl4ckspell.freeddns.org
+	@backrest host backrest.{$BASE_DOMAIN}
 	handle @backrest {
 		reverse_proxy http://backrest.lan:9898 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@cup host cup.bl4ckspell.freeddns.org
+	@cup host cup.{$BASE_DOMAIN}
 	handle @cup {
 		import authentik
 		reverse_proxy http://cup.lan:8000 {
@@ -106,70 +106,70 @@ vaultwarden.bl4ckspell.freeddns.org {
 		}
 	}
 
-	@dawarich host dawarich.bl4ckspell.freeddns.org
+	@dawarich host dawarich.{$BASE_DOMAIN}
 	handle @dawarich {
 		reverse_proxy http://dawarich.lan:3000 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@docs host docs.bl4ckspell.freeddns.org
+	@docs host docs.{$BASE_DOMAIN}
 	handle @docs {
 		reverse_proxy http://docs.lan:8349 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@dockhand host dockhand.bl4ckspell.freeddns.org
+	@dockhand host dockhand.{$BASE_DOMAIN}
 	handle @dockhand {
 		reverse_proxy http://dockhand.lan:3000 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@dockge host dockge.bl4ckspell.freeddns.org
+	@dockge host dockge.{$BASE_DOMAIN}
 	handle @dockge {
 		reverse_proxy http://dockge.lan:5001 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@immich host immich.bl4ckspell.freeddns.org
+	@immich host immich.{$BASE_DOMAIN}
 	handle @immich {
 		reverse_proxy http://immich.lan:2283 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@jellyfin host jellyfin.bl4ckspell.freeddns.org
+	@jellyfin host jellyfin.{$BASE_DOMAIN}
 	handle @jellyfin {
 		reverse_proxy http://jellyfin.lan:8096 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@kuma host kuma.bl4ckspell.freeddns.org
+	@kuma host kuma.{$BASE_DOMAIN}
 	handle @kuma {
 		reverse_proxy http://kuma.lan:3001 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@linkwarden host linkwarden.bl4ckspell.freeddns.org
+	@linkwarden host linkwarden.{$BASE_DOMAIN}
 	handle @linkwarden {
 		reverse_proxy http://linkwarden.lan:3000 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@paperless host paperless.bl4ckspell.freeddns.org
+	@paperless host paperless.{$BASE_DOMAIN}
 	handle @paperless {
 		reverse_proxy http://paperless.lan:8000 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@radicale host radicale.bl4ckspell.freeddns.org
+	@radicale host radicale.{$BASE_DOMAIN}
 	handle @radicale {
 		reverse_proxy http://radicale.lan:5232 {
 			header_up X-Forwarded-Proto https
@@ -179,7 +179,7 @@ vaultwarden.bl4ckspell.freeddns.org {
 	# /outpost.goauthentik.io/* must be gated too: forward_auth redirects there,
 	# and the authentik snippet only serves it inside the handle that imports it.
 	@vaultwarden_admin {
-		host vaultwarden.bl4ckspell.freeddns.org
+		host vaultwarden.{$BASE_DOMAIN}
 		path /admin /admin/* /outpost.goauthentik.io/*
 	}
 	handle @vaultwarden_admin {
@@ -189,14 +189,14 @@ vaultwarden.bl4ckspell.freeddns.org {
 		}
 	}
 
-	@vaultwarden host vaultwarden.bl4ckspell.freeddns.org
+	@vaultwarden host vaultwarden.{$BASE_DOMAIN}
 	handle @vaultwarden {
 		reverse_proxy http://vaultwarden.lan:80 {
 			header_up X-Forwarded-Proto https
 		}
 	}
 
-	@pihole host pihole.bl4ckspell.freeddns.org
+	@pihole host pihole.{$BASE_DOMAIN}
 	handle @pihole {
 		reverse_proxy https://pihole.lan:443 {
 			header_up X-Forwarded-Proto https

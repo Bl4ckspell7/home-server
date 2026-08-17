@@ -16,7 +16,7 @@ services:
     environment:
       BIND: ":3000"
       TARGET: "http://caddy.lan:8080"
-      COOKIE_DOMAIN: ".bl4ckspell.freeddns.org"
+      COOKIE_DOMAIN: ".${BASE_DOMAIN:?base domain required}"
     healthcheck:
       test: ["CMD", "/ko-app/anubis", "--healthcheck"]
       interval: 30s

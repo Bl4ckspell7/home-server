@@ -1,5 +1,5 @@
 ---
-authentik_domain: bl4ckspell.freeddns.org
+authentik_domain: "{{ base_domain }}"
 
 # Services gated behind Authentik forward auth. Each entry creates a proxy
 # provider and an application, and assigns the provider to the embedded outpost.
