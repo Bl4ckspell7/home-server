@@ -8,8 +8,10 @@ Managed by the `vps` inventory group via `vps.yml` (roles under `roles/vps/`):
 - `wireguard-vps` — native `wg0` (`10.10.0.1/24`) + `ip_forward` + NAT masquerade
 - `caddy-vps` — podman Quadlet front-door, on-demand TLS, landing fallback
 - `landing` — static "be right back" page → `/srv/landing`
-- `ddns-updater-vps` — podman Quadlet; keeps the domain A record on the VPS IP
 - reuses [`ssh`](../ssh.md) from `roles/server`
+
+The A record is a static Terraform-managed record — see [DNS](../dns.md). There is
+no DDNS client: the VPS IP does not change.
 
 The **home side** connects as an inbound-only WireGuard peer (`10.10.0.2/24`, `AllowedIPs=10.10.0.1/32`, keepalive) via `roles/server/wireguard` — default route untouched. Home Caddy sits behind this tunnel and serves a self-signed cert (`tls internal`); the VPS proxies to it with `tls_insecure_skip_verify`. See [Network](../network.md).
 
