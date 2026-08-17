@@ -31,9 +31,23 @@
     access_time: preserve
     modification_time: preserve
 
-- name: Render Caddyfile
-  ansible.builtin.template:
-    src: Caddyfile.j2
+- name: Write Caddy environment file
+  # The Caddyfile is a static file using Caddy's own {$VAR} substitution, so the
+  # two values that vary per host arrive as container env instead of Jinja. The
+  # IP comes from facts and is never committed, matching the DNS/Terraform setup.
+  ansible.builtin.copy:
+    content: |
+      BASE_DOMAIN={{ base_domain }}
+      VPS_IP={{ ansible_facts['default_ipv4']['address'] }}
+    dest: /etc/caddy-vps.env
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Caddy
+
+- name: Copy Caddyfile
+  ansible.builtin.copy:
+    src: Caddyfile
     dest: /opt/caddy/Caddyfile
     owner: root
     group: root

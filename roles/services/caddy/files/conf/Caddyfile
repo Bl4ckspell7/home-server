@@ -37,25 +37,34 @@
 	}
 }
 
-# Protected by Anubis
-{$BASE_DOMAIN},
-authentik.{$BASE_DOMAIN},
-backrest.{$BASE_DOMAIN},
-cup.{$BASE_DOMAIN},
-dawarich.{$BASE_DOMAIN},
-docs.{$BASE_DOMAIN},
-dockge.{$BASE_DOMAIN},
-dockhand.{$BASE_DOMAIN},
-forgejo.{$BASE_DOMAIN},
-homepage.{$BASE_DOMAIN},
-immich.{$BASE_DOMAIN},
-jellyfin.{$BASE_DOMAIN},
-kuma.{$BASE_DOMAIN},
-linkwarden.{$BASE_DOMAIN},
-paperless.{$BASE_DOMAIN},
-pihole.{$BASE_DOMAIN},
-radicale.{$BASE_DOMAIN},
-vaultwarden.{$BASE_DOMAIN} {
+# Backend snippets. {args[0]} is the upstream host:port -- Caddy substitutes import
+# arguments textually, so one line per service is enough below.
+(proxy) {
+	reverse_proxy http://{args[0]} {
+		header_up X-Forwarded-Proto https
+	}
+}
+
+# Backends serving their own self-signed cert.
+(proxy_tls) {
+	reverse_proxy https://{args[0]} {
+		header_up X-Forwarded-Proto https
+		transport http {
+			tls_insecure_skip_verify
+		}
+	}
+}
+
+# Gated behind Authentik SSO.
+(proxy_auth) {
+	import authentik
+	import proxy {args[0]}
+}
+
+# Public entrypoint, protected by Anubis. Wildcard: the VPS front-door already
+# restricts which names get a certificate, and unmatched names fall through to the
+# 404 at the bottom of this file -- so adding a service never touches this block.
+*.{$BASE_DOMAIN}, {$BASE_DOMAIN} {
 	import error_page
 	# Self-signed cert: this listener is only reached via the VPS front-door over
 	# WireGuard (which proxies with tls_insecure_skip_verify). No public ACME —
@@ -70,151 +79,110 @@ vaultwarden.{$BASE_DOMAIN} {
 	}
 }
 
-# Internal listener for Anubis backend routing
-:8080 {
-	@root host {$BASE_DOMAIN}
-	handle @root {
-		reverse_proxy http://homepage.lan:3000 {
-			header_up X-Forwarded-Proto https
-		}
-	}
+# ── Internal listener: Anubis proxies here, and these blocks route by Host ──────
+# Caddy sorts host-matched sites ahead of the host-less catch-all, so order within
+# this file does not matter.
 
-	@forgejo host forgejo.{$BASE_DOMAIN}
-	handle @forgejo {
-		reverse_proxy http://forgejo.lan:3000 {
-			header_up X-Forwarded-Proto https
-		}
-	}
+http://{$BASE_DOMAIN}:8080 {
+	import proxy homepage.lan:3000
+}
+http://homepage.{$BASE_DOMAIN}:8080 {
+	import proxy homepage.lan:3000
+}
+http://backrest.{$BASE_DOMAIN}:8080 {
+	import proxy backrest.lan:9898
+}
+http://dawarich.{$BASE_DOMAIN}:8080 {
+	import proxy dawarich.lan:3000
+}
+http://docs.{$BASE_DOMAIN}:8080 {
+	import proxy docs.lan:8349
+}
+http://dockge.{$BASE_DOMAIN}:8080 {
+	import proxy dockge.lan:5001
+}
+http://dockhand.{$BASE_DOMAIN}:8080 {
+	import proxy dockhand.lan:3000
+}
+http://forgejo.{$BASE_DOMAIN}:8080 {
+	import proxy forgejo.lan:3000
+}
+http://immich.{$BASE_DOMAIN}:8080 {
+	import proxy immich.lan:2283
+}
+http://jellyfin.{$BASE_DOMAIN}:8080 {
+	import proxy jellyfin.lan:8096
+}
+http://kuma.{$BASE_DOMAIN}:8080 {
+	import proxy kuma.lan:3001
+}
+http://linkwarden.{$BASE_DOMAIN}:8080 {
+	import proxy linkwarden.lan:3000
+}
+http://paperless.{$BASE_DOMAIN}:8080 {
+	import proxy paperless.lan:8000
+}
+http://radicale.{$BASE_DOMAIN}:8080 {
+	import proxy radicale.lan:5232
+}
 
-	@homepage host homepage.{$BASE_DOMAIN}
-	handle @homepage {
-		reverse_proxy http://homepage.lan:3000 {
-			header_up X-Forwarded-Proto https
-		}
-	}
+http://authentik.{$BASE_DOMAIN}:8080 {
+	import proxy_tls authentik.lan:9443
+}
+http://pihole.{$BASE_DOMAIN}:8080 {
+	import proxy_tls pihole.lan:443
+}
 
-	@authentik host authentik.{$BASE_DOMAIN}
-	handle @authentik {
-		reverse_proxy https://authentik.lan:9443 {
-			header_up X-Forwarded-Proto https
-			transport http {
-				tls_insecure_skip_verify
-			}
-		}
-	}
+http://cup.{$BASE_DOMAIN}:8080 {
+	import proxy_auth cup.lan:8000
+}
 
-	@backrest host backrest.{$BASE_DOMAIN}
-	handle @backrest {
-		reverse_proxy http://backrest.lan:9898 {
-			header_up X-Forwarded-Proto https
-		}
+# Vaultwarden is deliberately not a one-liner: only /admin is gated, the rest of
+# the vault stays open. /outpost.goauthentik.io/* must be gated too — forward_auth
+# redirects there, and the authentik snippet only serves it inside the handle that
+# imports it.
+http://vaultwarden.{$BASE_DOMAIN}:8080 {
+	@admin path /admin /admin/* /outpost.goauthentik.io/*
+	handle @admin {
+		import proxy_auth vaultwarden.lan:80
 	}
+	handle {
+		import proxy vaultwarden.lan:80
+	}
+}
 
-	@cup host cup.{$BASE_DOMAIN}
-	handle @cup {
-		import authentik
-		reverse_proxy http://cup.lan:8000 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@dawarich host dawarich.{$BASE_DOMAIN}
-	handle @dawarich {
-		reverse_proxy http://dawarich.lan:3000 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@docs host docs.{$BASE_DOMAIN}
-	handle @docs {
-		reverse_proxy http://docs.lan:8349 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@dockhand host dockhand.{$BASE_DOMAIN}
-	handle @dockhand {
-		reverse_proxy http://dockhand.lan:3000 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@dockge host dockge.{$BASE_DOMAIN}
-	handle @dockge {
-		reverse_proxy http://dockge.lan:5001 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@immich host immich.{$BASE_DOMAIN}
-	handle @immich {
-		reverse_proxy http://immich.lan:2283 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@jellyfin host jellyfin.{$BASE_DOMAIN}
-	handle @jellyfin {
-		reverse_proxy http://jellyfin.lan:8096 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@kuma host kuma.{$BASE_DOMAIN}
-	handle @kuma {
-		reverse_proxy http://kuma.lan:3001 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@linkwarden host linkwarden.{$BASE_DOMAIN}
-	handle @linkwarden {
-		reverse_proxy http://linkwarden.lan:3000 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@paperless host paperless.{$BASE_DOMAIN}
-	handle @paperless {
-		reverse_proxy http://paperless.lan:8000 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@radicale host radicale.{$BASE_DOMAIN}
-	handle @radicale {
-		reverse_proxy http://radicale.lan:5232 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	# /outpost.goauthentik.io/* must be gated too: forward_auth redirects there,
-	# and the authentik snippet only serves it inside the handle that imports it.
-	@vaultwarden_admin {
-		host vaultwarden.{$BASE_DOMAIN}
-		path /admin /admin/* /outpost.goauthentik.io/*
-	}
-	handle @vaultwarden_admin {
-		import authentik
-		reverse_proxy http://vaultwarden.lan:80 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@vaultwarden host vaultwarden.{$BASE_DOMAIN}
-	handle @vaultwarden {
-		reverse_proxy http://vaultwarden.lan:80 {
-			header_up X-Forwarded-Proto https
-		}
-	}
-
-	@pihole host pihole.{$BASE_DOMAIN}
-	handle @pihole {
-		reverse_proxy https://pihole.lan:443 {
-			header_up X-Forwarded-Proto https
-			transport http {
-				tls_insecure_skip_verify
-			}
-		}
+# Catch-all for names the wildcard accepted but that map to no service. Note bots
+# never reach this: Anubis challenges them first. This is for humans who mistype.
+http://:8080 {
+	handle {
+		# respond defaults to text/plain, which makes browsers show the markup
+		# as source rather than rendering it.
+		header Content-Type "text/html; charset=utf-8"
+		respond <<HTML
+			<!doctype html>
+			<html lang="en">
+			<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<title>404 — no such service</title>
+			<style>
+			:root { color-scheme: dark light }
+			body { margin:0; min-height:100vh; display:grid; place-items:center;
+			       font:16px/1.6 system-ui, sans-serif; background:#14161a; color:#e6e8eb }
+			main { text-align:center; padding:2rem }
+			h1 { font-size:4rem; margin:0; letter-spacing:-.03em }
+			p { color:#9aa3ad; margin:.5rem 0 1.5rem }
+			code { background:#20242b; padding:.15em .4em; border-radius:4px; color:#e6e8eb }
+			a { color:#7aa2f7; text-decoration:none }
+			a:hover { text-decoration:underline }
+			</style>
+			</head>
+			<body><main>
+			<h1>404</h1>
+			<p>No service is published at <code>{host}</code>.</p>
+			<p><a href="https://{$BASE_DOMAIN}/">Go to the dashboard</a></p>
+			</main></body>
+			</html>
+			HTML 404
 	}
 }
