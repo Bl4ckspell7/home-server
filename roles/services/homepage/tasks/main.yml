@@ -36,3 +36,4 @@
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: homepage
+    env_template: homepage.env.j2
