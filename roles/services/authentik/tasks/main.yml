@@ -7,13 +7,48 @@
     group: root
     mode: "0755"
 
-- name: Render Authentik proxy app blueprint
+- name: Ensure Authentik media directories exist
+  ansible.builtin.file:
+    path: "/opt/stacks/authentik/{{ item }}"
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+  loop:
+    - data/media
+    - data/media/public
+    - data/media/public/application-icons
+
+- name: Copy application icons to Authentik media
+  # App-dashboard tiles are fetched client-side, so a CDN icon renders
+  # intermittently and leaks a request per tile. Authentik serves these from
+  # data/media/public/, and the blueprint references them as the bare subpath
+  # `application-icons/<file>` — no leading slash, no `public/` prefix.
+  ansible.builtin.copy:
+    src: application-icons/
+    dest: /opt/stacks/authentik/data/media/public/application-icons/
+    owner: "1000"
+    group: "1000"
+    mode: "0644"
+
+- name: Render Authentik application blueprint
+  # No secrets are needed here: credentials are referenced with !Env and resolved
+  # by the container from .env, which deploy_stack renders below.
   ansible.builtin.template:
-    src: proxy-apps.yaml.j2
-    dest: /opt/stacks/authentik/blueprints/proxy-apps.yaml
+    src: apps.yaml.j2
+    dest: /opt/stacks/authentik/blueprints/apps.yaml
     owner: root
     group: root
     mode: "0644"
+  notify: Restart Authentik worker
+
+- name: Remove superseded proxy-apps blueprint
+  # Replaced by apps.yaml. Deleting the file does NOT remove anything it created
+  # in Authentik — that is what the tombstone entries in apps.yaml are for — but
+  # leaving it would keep re-creating the objects it still declares.
+  ansible.builtin.file:
+    path: /opt/stacks/authentik/blueprints/proxy-apps.yaml
+    state: absent
   notify: Restart Authentik worker
 
 - name: Deploy Authentik
