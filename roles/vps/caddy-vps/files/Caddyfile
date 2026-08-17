@@ -6,7 +6,7 @@
 	# Browsers send no SNI for a bare IP -> treat those handshakes as the IP so
 	# Caddy serves the IP cert instead of falling through to on-demand (which
 	# would 403 on the empty domain and abort the handshake).
-	default_sni {{ ansible_facts['default_ipv4']['address'] }}
+	default_sni {$VPS_IP}
 	on_demand_tls {
 		ask http://127.0.0.1:9000/check
 	}
@@ -31,10 +31,10 @@
 	}
 }
 
-# Internal guard for on-demand TLS: only allow certs for *.{{ base_domain }}
+# Internal guard for on-demand TLS: only allow certs for *.{$BASE_DOMAIN}
 # (and the apex). Caddy calls this with ?domain=<sni> before issuing.
 :9000 {
-	@ok `{http.request.uri.query.domain}.endsWith(".{{ base_domain }}") || {http.request.uri.query.domain} == "{{ base_domain }}"`
+	@ok `{http.request.uri.query.domain}.endsWith(".{$BASE_DOMAIN}") || {http.request.uri.query.domain} == "{$BASE_DOMAIN}"`
 	handle @ok {
 		respond 200
 	}
@@ -44,7 +44,7 @@
 # Direct HTTPS to the VPS IP: publicly-trusted short-lived (6-day) cert from
 # Let's Encrypt for the IP itself (IP certs are only issued via the shortlived
 # profile). Validated over TLS-ALPN/HTTP on 443/80 — works even before DNS flips.
-{{ ansible_facts['default_ipv4']['address'] }} {
+{$VPS_IP} {
 	tls {
 		issuer acme {
 			profile shortlived
@@ -58,7 +58,7 @@
 # over the WireGuard tunnel (10.10.0.2). Host header is preserved so the home
 # Caddy/Anubis chain routes each subdomain exactly as before. Landing page is
 # served on any upstream failure (home offline / tunnel down).
-*.{{ base_domain }}, {{ base_domain }} {
+*.{$BASE_DOMAIN}, {$BASE_DOMAIN} {
 	import access_log
 	tls {
 		on_demand

@@ -5,6 +5,9 @@ Wants=network-online.target
 
 [Container]
 Image=docker.io/library/caddy:2.11.4@sha256:af5fdcd76f2db5e4e974ee92f96ee8c0fc3edb55bd4ba5032547cbf3f65e486d
+# BASE_DOMAIN + VPS_IP for the {$VAR} placeholders in the Caddyfile. Written by
+# Ansible (roles/vps/caddy-vps) so the VPS IP never lands in git.
+EnvironmentFile=/etc/caddy-vps.env
 PublishPort=80:80
 PublishPort=443:443/tcp
 PublishPort=443:443/udp
