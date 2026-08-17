@@ -45,6 +45,13 @@
 	}
 	reverse_proxy https://10.10.0.2 {
 		header_up Host {host}
+		# This is the internet edge, so {remote_host} is the only trustworthy
+		# source for the client address. Setting the headers here REPLACES any
+		# client-supplied value -- Caddy's default is to append to an inbound
+		# X-Forwarded-For, which would let anyone forge the address that Anubis
+		# rate-limits on and that the backends write to their audit logs.
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Real-Ip {remote_host}
 		transport http {
 			tls_server_name {host}
 			tls_insecure_skip_verify

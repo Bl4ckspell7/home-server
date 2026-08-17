@@ -1,6 +1,15 @@
 {
 	# Enable automatic HTTPS
 	email bl4ckspell@proton.me # Replace with your email for Let's Encrypt
+
+	# Everything from the internet arrives over the WireGuard tunnel, so without
+	# this every request looks like it came from 10.10.0.1 and {client_ip} is just
+	# an alias for {remote_host}. Trusting only the VPS end of the tunnel lets
+	# {client_ip} resolve from the X-Forwarded-For the VPS stamps, and nothing
+	# else can influence it. LAN-direct hits keep their own remote_host.
+	servers {
+		trusted_proxies static 10.10.0.1/32
+	}
 }
 
 (error_page) {
@@ -53,7 +62,10 @@ vaultwarden.{$BASE_DOMAIN} {
 	# home can't validate challenges anymore, they land on the VPS.
 	tls internal
 	reverse_proxy http://anubis.lan:3000 {
-		header_up X-Real-Ip {remote_host}
+		# {client_ip}, not {remote_host}: at this hop remote_host is the tunnel.
+		# Anubis reads X-Real-Ip, and passes it through to the :8080 listener and
+		# on to the backends, so this one line fixes the whole chain.
+		header_up X-Real-Ip {client_ip}
 		header_up X-Http-Version {http.request.proto}
 	}
 }
