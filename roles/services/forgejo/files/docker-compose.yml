@@ -13,6 +13,13 @@ services:
       FORGEJO__database__NAME: forgejo
       FORGEJO__database__USER: forgejo
       FORGEJO__database__PASSWD: ${FORGEJO_DB_PASSWORD}
+      # Written into $GITEA_APP_INI (/var/lib/gitea/custom/conf/app.ini) by the
+      # image's environment-to-ini entrypoint on every start. ROOT_URL is what the
+      # container registry builds its WWW-Authenticate token realm from, so a stale
+      # value here breaks `podman login`/pull even though the packages are fine.
+      FORGEJO__server__ROOT_URL: https://forgejo.${BASE_DOMAIN:?base domain required}/
+      FORGEJO__server__DOMAIN: forgejo.${BASE_DOMAIN:?base domain required}
+      FORGEJO__server__SSH_DOMAIN: forgejo.${BASE_DOMAIN:?base domain required}
     restart: unless-stopped
     networks:
       forgejo:
