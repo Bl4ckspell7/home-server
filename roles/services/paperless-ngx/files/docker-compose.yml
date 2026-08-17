@@ -5,7 +5,7 @@ services:
     image: ghcr.io/paperless-ngx/paperless-ngx:3.0.5@sha256:65a4cabf0169ea7fbd90ab7bb28ba3f8b5909613635acda1a03ad606f34b456b
     restart: unless-stopped
     depends_on:
-      - paperless-redis
+      - paperless-valkey
       - paperless-postgres
       - paperless-gotenberg
       - paperless-tika
@@ -30,7 +30,7 @@ services:
       PAPERLESS_URL: "https://paperless.bl4ckspell.freeddns.org"
       PAPERLESS_TIME_ZONE: "Europe/Berlin"
       PAPERLESS_OCR_LANGUAGE: "deu"
-      PAPERLESS_REDIS: redis://paperless-redis:6379
+      PAPERLESS_REDIS: redis://paperless-valkey:6379
       PAPERLESS_DBENGINE: postgresql
       PAPERLESS_DBHOST: paperless-postgres
       PAPERLESS_TIKA_ENABLED: 1
@@ -54,14 +54,14 @@ services:
                 "OAUTH_PKCE_ENABLED": "True"
             }
         }
-  paperless-redis:
-    container_name: paperless-redis
-    image: docker.io/library/redis:8.8.0@sha256:0b13f549ab871acafaa84b673c4e29bd7dce8d12526aaafe3b4ea3366c322daf
+  paperless-valkey:
+    container_name: paperless-valkey
+    image: docker.io/valkey/valkey:9.1.1-alpine@sha256:ee91f7a174ac4d6a6b0685b3a60e321f0a9dbbb691f9b0e285be2ba1d1be8328
     restart: unless-stopped
     volumes:
-      - redisdata:/data
+      - valkeydata:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "valkey-cli", "ping"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -106,7 +106,7 @@ volumes:
   data:
   media:
   pgdata:
-  redisdata:
+  valkeydata:
 
 networks:
   default:
