@@ -42,6 +42,17 @@
     mode: "0644"
   notify: Restart Authentik worker
 
+- name: Copy Authentik brand blueprint
+  # Own file, not part of apps.yaml: a failing entry rolls back its whole
+  # blueprint, and apps.yaml owns the entire application catalog.
+  ansible.builtin.copy:
+    src: brand.yaml
+    dest: /opt/stacks/authentik/blueprints/brand.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Authentik worker
+
 - name: Remove superseded proxy-apps blueprint
   # Replaced by apps.yaml. Deleting the file does NOT remove anything it created
   # in Authentik — that is what the tombstone entries in apps.yaml are for — but

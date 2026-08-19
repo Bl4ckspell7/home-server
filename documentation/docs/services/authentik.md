@@ -31,6 +31,21 @@ Flows and Stages -> Flows:
 - Not configured action: -> Force..
 - Configuration stages: -> `default-authenticator-webauthn-setup` & `default-authenticator-totp-setup`
 
+## User switching
+
+Several accounts can stay signed in in one browser, switchable from the account
+menu (Authentik 2026.8+). Off by default — the brand field `flow_user_switch` is
+the only knob. `files/brand.yaml` points it at `default-authentication-flow`, so
+a switch is a full re-auth; set that attr to `null` to disable it again (dropping
+the entry only stops managing the field).
+
+Verify after a deploy — the `default = t` row is the brand serving requests, and
+an empty slug means the `!Find` resolved to null:
+
+```bash
+ssh server 'docker exec authentik-postgresql psql -U authentik -d authentik -c "select b.domain, b.\"default\", f.slug from authentik_brands_brand b left join authentik_flows_flow f on f.flow_uuid=b.flow_user_switch_id;"'
+```
+
 ## Forward auth (per-app)
 
 Gate a service behind Authentik login. Adding one takes two edits, no UI work:
@@ -49,8 +64,8 @@ Gate a service behind Authentik login. Adding one takes two edits, no UI work:
 
 2. Import the `(authentik)` snippet in the service's Caddy route (see below).
 
-The role renders `templates/proxy-apps.yaml.j2` to
-`/opt/stacks/authentik/blueprints/proxy-apps.yaml` and restarts the worker.
+The role renders `templates/apps.yaml.j2` to
+`/opt/stacks/authentik/blueprints/apps.yaml` and restarts the worker.
 Authentik instantiates the blueprint, creating the proxy provider and
 application and attaching the provider to the embedded outpost.
 
