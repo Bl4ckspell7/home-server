@@ -1,0 +1,45 @@
+---
+# Managed by Ansible — roles/services/authentik/files/brand.yaml. Edits made on
+# the server are overwritten by the next deploy.
+#
+# Enables user switching (Authentik 2026.8+). flow_user_switch is the only knob:
+# empty means the account-menu switcher stays hidden. Any authentication flow
+# works; the stock login flow is reused, so a switch is a full re-auth.
+#
+# Own file, not part of apps.yaml, deliberately: Authentik rolls back a WHOLE
+# blueprint when one entry fails, and apps.yaml owns the entire application and
+# provider catalog — a brand problem must not take that down with it.
+version: 1
+metadata:
+  name: home-server-brand
+  labels:
+    blueprints.goauthentik.io/instantiate: "true"
+entries:
+  # Run the stock flow blueprint first. Blueprint files are discovered with
+  # rglob and applied as independent async tasks, so on a FIRST boot this file
+  # can run before default-authentication-flow exists. !Find would then resolve
+  # to null, the entry would still apply "successfully", and nothing would ever
+  # retry — Authentik re-applies a file only when its hash changes.
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Authentication flow
+      required: false
+
+  # Identified by `default`, not by `domain`: the default brand is the one
+  # serving every request here, and its domain can be renamed in the UI. A
+  # domain identifier would then match nothing and `state: present` would CREATE
+  # a second, inert brand. A miss on `default` cannot go quiet — Brand needs a
+  # domain, so the create attempt fails visibly in the blueprint status instead.
+  #
+  # Only flow_user_switch is declared and the importer patches partially, so
+  # branding and the other flows keep whatever the brand already has. Set it to
+  # `null` to disable switching again: deleting the entry merely stops managing
+  # the field, it does not clear it.
+  - model: authentik_brands.brand
+    identifiers:
+      default: true
+    state: present
+    attrs:
+      flow_user_switch:
+        !Find [authentik_flows.flow, [slug, default-authentication-flow]]

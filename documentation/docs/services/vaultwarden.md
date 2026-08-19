@@ -43,7 +43,7 @@ The Caddy route also gates `/outpost.goauthentik.io/*`, which is where
 redirect into Vaultwarden and 404.
 
 The Authentik provider/application/outpost assignment is managed by the
-`proxy-apps.yaml` blueprint rendered by the Authentik role.
+`apps.yaml` blueprint rendered by the Authentik role.
 
 ## Storage and Backup
 
