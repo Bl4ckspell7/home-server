@@ -1,6 +1,6 @@
 # Forgejo
 
-Ports: `3000:3000`, SSH: `2222` (exposed internally only, no router port forward)
+Port: HTTP `3000` (internal only). The web UI offers HTTPS cloning only; SSH is disabled.
 
 - https://forgejo.org/docs/latest/
 - https://codeberg.org/forgejo/forgejo

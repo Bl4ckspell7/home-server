@@ -19,7 +19,8 @@ services:
       # value here breaks `podman login`/pull even though the packages are fine.
       FORGEJO__server__ROOT_URL: https://forgejo.${BASE_DOMAIN:?base domain required}/
       FORGEJO__server__DOMAIN: forgejo.${BASE_DOMAIN:?base domain required}
-      FORGEJO__server__SSH_DOMAIN: forgejo.${BASE_DOMAIN:?base domain required}
+      FORGEJO__server__DISABLE_SSH: "true"
+      FORGEJO__server__START_SSH_SERVER: "false"
     restart: unless-stopped
     networks:
       forgejo:
@@ -35,7 +36,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
     expose:
       - "3000"
-      - "2222"
     depends_on:
       - forgejo-postgres
     healthcheck:
