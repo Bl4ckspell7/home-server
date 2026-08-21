@@ -16,7 +16,6 @@ services:
     volumes:
       - ./config:/app/config # Make sure your local config directory exists
       - ./icons:/app/public/icons
-      - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
     environment:
       # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
       HOMEPAGE_ALLOWED_HOSTS: "192.168.178.117:3000,${BASE_DOMAIN:?base domain required},homepage.${BASE_DOMAIN:?base domain required}"
