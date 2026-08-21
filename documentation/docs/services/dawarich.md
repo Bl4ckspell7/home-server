@@ -5,7 +5,8 @@ Port: `:3000` (exposed, no host binding)
 - https://dawarich.app/docs/intro
 - https://github.com/Freika/dawarich
 
-Default credentials: `demo@dawarich.app` `password`
+Email/password login and registration are disabled. Authentik OIDC is the only
+interactive login method, with automatic registration for authorized users.
 
 `secrets.yml`:
 

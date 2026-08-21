@@ -95,7 +95,8 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      ALLOW_EMAIL_PASSWORD_LOGIN: false
+      ALLOW_EMAIL_PASSWORD_LOGIN: "false"
+      ALLOW_EMAIL_PASSWORD_REGISTRATION: "false"
       APPLICATION_HOSTS: *app_hosts
       APPLICATION_PROTOCOL: http
       DATABASE_HOST: *database_host
@@ -104,7 +105,7 @@ services:
       DATABASE_USERNAME: *database_username
       DISABLE_TELEMETRY: true
       DISTANCE_UNIT: "km"
-      OIDC_AUTO_REGISTER: false # optional, default is false
+      OIDC_AUTO_REGISTER: "true"
       OIDC_CLIENT_ID: ${AUTHENTIK_CLIENT_ID}
       OIDC_CLIENT_SECRET: ${AUTHENTIK_CLIENT_SECRET}
       OIDC_ISSUER: "https://authentik.${BASE_DOMAIN:?base domain required}/application/o/dawarich/"
