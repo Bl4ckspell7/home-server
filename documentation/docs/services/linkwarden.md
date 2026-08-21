@@ -11,10 +11,13 @@ Port: `:3000` (exposed, no host binding)
 linkwarden_nextauth_secret: ""
 linkwarden_postgres_password: ""
 linkwarden_meili_master_key: ""
-linkwarden_authentik_issuer: ""
 linkwarden_authentik_client_id: ""
 linkwarden_authentik_client_secret: ""
 ```
+
+The Authentik issuer is derived from `BASE_DOMAIN` in `docker-compose.yml`.
+Public registration and username/password login are disabled; users authorized
+by Authentik can still be provisioned on their first SSO login.
 
 ## Upgrading Meilisearch
 
