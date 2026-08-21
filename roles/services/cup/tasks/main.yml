@@ -1,8 +1,0 @@
----
-- name: Deploy Cup
-  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
-  vars:
-    service_name: cup
-    service_secrets: true
-    env_template: cup.json.j2
-    env_dest: /opt/stacks/cup/cup.json

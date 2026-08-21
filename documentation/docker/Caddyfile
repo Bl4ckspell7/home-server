@@ -6,5 +6,8 @@
 :8349 {
 	root * /srv
 	file_server
-	try_files {path} /404.html
+	handle_errors {
+		rewrite * /404.html
+		file_server
+	}
 }

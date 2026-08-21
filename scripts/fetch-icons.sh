@@ -51,7 +51,6 @@ homepage_icons=(
     authentik.svg
     backrest.svg
     caddy.svg
-    cup-updates.svg
     dawarich.svg
     ddns-updater.svg
     dockge.svg
@@ -79,7 +78,6 @@ homepage_icons=(
 # Authentik serves these from data/media/public/application-icons/ and the
 # blueprint references them as the bare subpath `application-icons/<file>`.
 authentik_icons=(
-    cup-updates.svg
     dawarich.svg
     dockge.svg
     dockhand.png

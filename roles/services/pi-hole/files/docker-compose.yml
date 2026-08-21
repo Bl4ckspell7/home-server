@@ -53,7 +53,6 @@ services:
         172.21.255.245 photon.lan
         172.21.255.244 dawarich.lan
         172.21.255.243 immich.lan
-        172.21.255.242 cup.lan
         172.21.255.241 ollama.lan
         172.21.255.240 jellyfin.lan
         172.21.255.239 dawarich-sidekiq.lan

@@ -2,7 +2,7 @@
 # Public domain every service is published under. Consumed by:
 #   - .env files rendered by tasks/deploy_stack.yml (as BASE_DOMAIN), which the
 #     compose files and the home Caddyfile interpolate
-#   - templates rendered directly (caddy-vps Caddyfile, linkwarden, cup, authentik)
+#   - templates rendered directly (caddy-vps Caddyfile, linkwarden, authentik)
 #
 # The DNS zone itself is managed separately in terraform/dns — changing this alone
 # does not create records.

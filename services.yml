@@ -13,9 +13,6 @@
     - role: caddy
       tags: caddy
 
-    - role: cup
-      tags: cup
-
     - role: dawarich
       tags: dawarich
 

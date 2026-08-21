@@ -85,10 +85,6 @@ authentik_oidc_apps:
 # Forward-auth consumers. A provider here does not by itself protect anything —
 # the matching Caddy route must import the `authentik` snippet.
 authentik_proxy_apps:
-  - slug: cup
-    name: Cup
-    description: Container update monitor
-    icon: application-icons/cup-updates.svg
   - slug: vaultwarden
     name: Vaultwarden
     description: Password manager

@@ -53,28 +53,6 @@
             ping: dockhand.lan
             statusStyle: "basic"
 
-        - Cup:
-            icon: /icons/cup-updates.svg
-            href: https://cup.bl4ckspell.de/
-            description: Docker container updates made easy.
-            ping: cup.lan
-            statusStyle: "basic"
-            widget:
-              type: customapi
-              url: http://cup.lan:8000/api/v3/json
-              refreshInterval: 10000
-              method: GET
-              mappings:
-                - field: metrics.monitored_images
-                  label: Monitored images
-                  format: number
-                - field: metrics.up_to_date
-                  label: Up to date
-                  format: number
-                - field: metrics.updates_available
-                  label: Available updates
-                  format: number
-
     - AI & Data:
         - Ollama:
             icon: /icons/ollama.svg

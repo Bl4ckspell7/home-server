@@ -133,10 +133,6 @@ http://pihole.{$BASE_DOMAIN}:8080 {
 	import proxy_tls pihole.lan:443
 }
 
-http://cup.{$BASE_DOMAIN}:8080 {
-	import proxy_auth cup.lan:8000
-}
-
 # Vaultwarden is deliberately not a one-liner: only /admin is gated, the rest of
 # the vault stays open. /outpost.goauthentik.io/* must be gated too — forward_auth
 # redirects there, and the authentik snippet only serves it inside the handle that

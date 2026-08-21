@@ -44,7 +44,6 @@ Services behind Caddy use `expose` (no host port binding). Only services requiri
 | **Pi-hole**       | 7080          | 80                 |
 | **Pi-hole**       | 7443          | 443                |
 | **Paperless-ngx** | -             | 8000               |
-| **Cup**           | 8010          | 8000               |
 | **Jellyfin**      | -             | 8096               |
 | **Authentik**     | -             | 9443               |
 | **Ollama**        | -             | 11434              |

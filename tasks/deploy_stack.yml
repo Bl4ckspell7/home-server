@@ -28,6 +28,7 @@
   delegate_to: localhost
   become: false
   changed_when: false
+  check_mode: false
   no_log: true
   register: secrets_raw
   when: service_secrets | default(false)
