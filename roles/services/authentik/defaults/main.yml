@@ -1,6 +1,17 @@
 ---
 authentik_domain: "{{ base_domain }}"
 
+# Bind-mounted directories the containers write to. Both run as the dedicated
+# authentik user, and the image entrypoint only fixes permissions when
+# it starts as root — which it no longer does — so Ansible owns them instead.
+authentik_writable_dirs:
+  - path: /opt/stacks/authentik/data
+    mode: "0750"
+  - path: /opt/stacks/authentik/certs
+    mode: "0750"
+  - path: /opt/stacks/authentik/custom-templates
+    mode: "0755"
+
 # Grant types must be stated explicitly. A provider created by a blueprint that
 # omits them gets an EMPTY set, not Authentik's usual default, and every
 # authorization request then fails with "invalid_request | The request is
@@ -123,3 +134,5 @@ authentik_removed_oauth2_providers:
   - Provider for Paperless-ngx
 authentik_removed_proxy_providers:
   - ddns-updater
+authentik_removed_docker_service_connections:
+  - Local Docker connection

@@ -43,6 +43,13 @@ entries:
     identifiers:
       name: {{ name | to_json }}
 {% endfor %}
+{% for name in authentik_removed_docker_service_connections %}
+  # Deleting the connection also clears the outpost's nullable foreign key.
+  - model: authentik_outposts.dockerserviceconnection
+    state: absent
+    identifiers:
+      name: {{ name | to_json }}
+{% endfor %}
 
   # ── OIDC providers + applications ─────────────────────────────────────────
 {% for app in authentik_oidc_apps %}
@@ -173,4 +180,3 @@ entries:
         authentik_host_insecure: false
         log_level: info
         object_naming_template: ak-outpost-%(name)s
-
