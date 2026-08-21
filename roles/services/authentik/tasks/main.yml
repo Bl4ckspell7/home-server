@@ -1,4 +1,44 @@
 ---
+- name: Configure Authentik service user
+  ansible.builtin.include_tasks: user.yml
+
+- name: Ensure stack directory exists
+  # Must precede the writable dirs below: ansible.builtin.file applies the
+  # task's owner/mode to every intermediate directory it creates, so on a fresh
+  # host /opt/stacks itself would become authentik:authentik 0750.
+  ansible.builtin.file:
+    path: /opt/stacks/authentik
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Ensure Authentik writable directories exist
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: authentik
+    group: authentik
+    mode: "{{ item.mode }}"
+  loop: "{{ authentik_writable_dirs }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Find Authentik data not owned by the authentik user
+  # Migrates the pre-906 trees, which were owned by UID 1000 — a real login
+  # account on this host, not a service user. rc 1 means a path does not exist
+  # yet, which is the normal state of a check-mode run on a fresh host.
+  ansible.builtin.command: find {{ authentik_writable_dirs | map(attribute='path') | join(' ') }} ! -user authentik -print -quit
+  register: authentik_stale_owner
+  changed_when: false
+  check_mode: false
+  failed_when: authentik_stale_owner.rc not in [0, 1]
+
+- name: Migrate Authentik data ownership to the authentik user
+  ansible.builtin.command: chown -R authentik:authentik {{ authentik_writable_dirs | map(attribute='path') | join(' ') }}
+  when: authentik_stale_owner.stdout | length > 0
+  changed_when: true
+
 - name: Ensure Authentik blueprints directory exists
   ansible.builtin.file:
     path: /opt/stacks/authentik/blueprints
@@ -11,8 +51,8 @@
   ansible.builtin.file:
     path: "/opt/stacks/authentik/{{ item }}"
     state: directory
-    owner: "1000"
-    group: "1000"
+    owner: authentik
+    group: authentik
     mode: "0755"
   loop:
     - data/media
@@ -27,8 +67,8 @@
   ansible.builtin.copy:
     src: application-icons/
     dest: /opt/stacks/authentik/data/media/public/application-icons/
-    owner: "1000"
-    group: "1000"
+    owner: authentik
+    group: authentik
     mode: "0644"
 
 - name: Render Authentik application blueprint

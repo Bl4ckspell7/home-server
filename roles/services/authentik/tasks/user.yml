@@ -1,0 +1,19 @@
+---
+- name: Configure Authentik service user
+  block:
+    - name: Create authentik group
+      ansible.builtin.group:
+        name: authentik
+        system: true
+        gid: 906
+        state: present
+
+    - name: Create authentik user
+      ansible.builtin.user:
+        name: authentik
+        system: true
+        uid: 906
+        group: authentik
+        create_home: false
+        shell: /usr/sbin/nologin
+        state: present

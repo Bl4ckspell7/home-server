@@ -10,6 +10,7 @@ services:
     image: *authentik_image
     restart: unless-stopped
     command: server
+    user: "906:906"
     volumes:
       - ./data:/data
       - ./custom-templates:/templates
@@ -40,15 +41,8 @@ services:
     image: *authentik_image
     restart: unless-stopped
     command: worker
-    # `user: root` and the docker socket volume are optional.
-    # See more for the docker socket integration here:
-    # https://goauthentik.io/docs/outposts/integrations/docker
-    # Removing `user: root` also prevents the worker from fixing the permissions
-    # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
-    # (1000:1000 by default)
-    user: root
+    user: "906:906"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/data
       - ./certs:/certs
       - ./custom-templates:/templates

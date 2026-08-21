@@ -5,6 +5,14 @@ Port: `:9443` (exposed, no host binding)
 - https://goauthentik.io/
 - https://github.com/goauthentik/authentik
 
+## Service user
+
+Both `authentik-server` and `authentik-worker` run as the dedicated
+`authentik` system user (906:906) — no root, no docker socket. The image
+entrypoint only fixes permissions when it starts as root, so the bind-mounted
+`data/`, `certs/` and `custom-templates/` under `/opt/stacks/authentik` must
+stay owned by `authentik`; the role enforces that on every run.
+
 ## Setup
 
 `secrets.yml`:
