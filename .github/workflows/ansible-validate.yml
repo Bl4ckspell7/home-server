@@ -45,12 +45,12 @@ jobs:
           ansible-galaxy collection install community.docker community.general ansible.posix
 
       - name: Run ansible-lint
-        run: ansible-lint server.yml services.yml
+        run: ansible-lint server.yml services.yml vps.yml
 
       - name: Syntax-check playbooks
         run: |
           fail=0
-          for pb in server.yml services.yml; do
+          for pb in server.yml services.yml vps.yml; do
             echo "::group::syntax-check $pb"
             ansible-playbook -i inventory.yml "$pb" --syntax-check \
               || { echo "::error file=$pb::syntax-check failed"; fail=1; }
