@@ -1,6 +1,9 @@
 ---
 - name: Configure Authentik service user
-  ansible.builtin.include_tasks: user.yml
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: authentik
+    service_uid: 906
 
 - name: Ensure stack directory exists
   # Must precede the writable dirs below: ansible.builtin.file applies the

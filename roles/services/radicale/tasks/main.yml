@@ -1,7 +1,12 @@
 ---
-- name: Include Radicale user setup tasks
-  ansible.builtin.include_tasks:
-    file: user.yml
+- name: Configure Radicale service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: radicale
+    service_uid: 903
+    service_dirs:
+      - /opt/stacks/radicale/data
+      - /opt/stacks/radicale/config
 
 - name: Copy Radicale config file
   ansible.builtin.copy:

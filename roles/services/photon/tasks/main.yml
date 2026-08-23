@@ -3,7 +3,10 @@
 # file); this exists so the UID has a name on the host, as with the other 90x
 # service users.
 - name: Configure Photon service user
-  ansible.builtin.include_tasks: user.yml
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: photon
+    service_uid: 907
 
 - name: Deploy Photon
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml

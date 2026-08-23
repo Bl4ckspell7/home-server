@@ -1,0 +1,66 @@
+---
+# Shared service-user logic for every stack that runs as a dedicated 90x user.
+# Included per-role via ansible.builtin.include_tasks, like tasks/deploy_stack.yml.
+# Runs before the deploy include so the UID exists on the host before any bind
+# mount is touched.
+#
+# Vars:
+#   service_name      (required) user + group name, e.g. immich
+#   service_uid       (required) uid, also used as the gid
+#   service_dirs      (optional) dirs to create owned by the service user
+#   service_dirs_mode (optional) mode for those dirs, default "0755"
+#   service_dirs_require_mount
+#                     (optional) path that must be a mount point before any
+#                     service_dirs are created — set it for dirs that live on a
+#                     data disk, see the guard below. Empty or unset disables
+#                     the guard.
+
+- name: "Create group {{ service_name }}"
+  ansible.builtin.group:
+    name: "{{ service_name }}"
+    system: true
+    gid: "{{ service_uid }}"
+    state: present
+
+- name: "Create user {{ service_name }}"
+  ansible.builtin.user:
+    name: "{{ service_name }}"
+    system: true
+    uid: "{{ service_uid }}"
+    group: "{{ service_name }}"
+    create_home: false
+    shell: /usr/sbin/nologin
+    state: present
+
+# ansible.builtin.file applies the task's owner/group/mode to every intermediate
+# directory it has to create. Without this guard, running a role while its data
+# disk is unmounted silently creates the mount point on the root filesystem —
+# owned by the service user — which masks the real mount and sends the data to
+# the wrong disk.
+- name: "Check the required data-disk mount point for {{ service_name }}"
+  ansible.builtin.command:
+    cmd: "mountpoint -q {{ service_dirs_require_mount }}"
+  register: service_mount_check
+  changed_when: false
+  check_mode: false
+  failed_when: false
+  when: service_dirs_require_mount | default('') | length > 0
+
+- name: "Fail if the data disk is not mounted for {{ service_name }}"
+  ansible.builtin.fail:
+    msg: >-
+      {{ service_dirs_require_mount }} is not a mount point — refusing to create
+      the {{ service_name }} data directories, which would shadow the mount and
+      write to the root filesystem. Mount the disk, then re-run.
+  when:
+    - service_dirs_require_mount | default('') | length > 0
+    - service_mount_check.rc | default(0) != 0
+
+- name: "Ensure data directories exist for {{ service_name }}"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ service_name }}"
+    group: "{{ service_name }}"
+    mode: "{{ service_dirs_mode | default('0755') }}"
+  loop: "{{ service_dirs | default([]) }}"

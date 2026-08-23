@@ -1,0 +1,11 @@
+---
+# Media roots owned by the jellyfin service user (900). Consumed by the
+# service_user include in tasks/main.yml, by jellyfin-set-permissions.sh.j2 and by
+# jellyfin-watch.sh.j2.
+jellyfin_media_paths:
+  - /mnt/wd_red_pro_20tb/jellyfin
+
+# Data disk jellyfin_media_paths live on. tasks/service_user.yml refuses to
+# create the media dirs unless this is mounted. Clear it when pointing
+# jellyfin_media_paths at the root filesystem.
+jellyfin_media_mount: "/mnt/wd_red_pro_20tb"

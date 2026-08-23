@@ -1,41 +1,16 @@
 ---
-- name: Deploy Jellyfin stack
-
+- name: Configure Jellyfin service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
   vars:
-    jellyfin_media_paths:
-      - /mnt/wd_red_pro_20tb/jellyfin
+    service_name: jellyfin
+    service_uid: 900
+    service_dirs: "{{ jellyfin_media_paths }}"
+    service_dirs_require_mount: "{{ jellyfin_media_mount }}"
 
-  block:
-    - name: Create jellyfin group
-      ansible.builtin.group:
-        name: jellyfin
-        system: true
-        gid: 900
-        state: present
+- name: Include Jellyfin watcher setup
+  ansible.builtin.import_tasks: jellyfin-watch.yml
 
-    - name: Create jellyfin user
-      ansible.builtin.user:
-        name: jellyfin
-        system: true
-        uid: 900
-        group: jellyfin
-        create_home: false
-        shell: /usr/sbin/nologin
-        state: present
-
-    - name: Create media directories
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-        owner: jellyfin
-        group: jellyfin
-        mode: "0755"
-      loop: "{{ jellyfin_media_paths }}"
-
-    - name: Include Jellyfin watcher setup
-      ansible.builtin.import_tasks: jellyfin-watch.yml
-
-    - name: Deploy Jellyfin
-      ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
-      vars:
-        service_name: jellyfin
+- name: Deploy Jellyfin
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
+  vars:
+    service_name: jellyfin

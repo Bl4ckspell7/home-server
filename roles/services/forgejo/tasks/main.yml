@@ -1,7 +1,12 @@
 ---
-- name: Include Forgejo user setup tasks
-  ansible.builtin.include_tasks:
-    file: user.yml
+- name: Configure Forgejo service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: forgejo
+    service_uid: 902
+    service_dirs:
+      - /opt/stacks/forgejo/forgejo
+      - /opt/stacks/forgejo/conf
 
 - name: Copy Forgejo backup script
   ansible.builtin.copy:
