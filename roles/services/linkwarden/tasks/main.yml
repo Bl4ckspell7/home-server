@@ -1,4 +1,23 @@
 ---
+- name: Ensure stack directory exists
+  # Must precede the data dir below: ansible.builtin.file applies the task's
+  # owner/mode to every intermediate directory it creates, so on a fresh host
+  # /opt/stacks itself would become linkwarden:linkwarden.
+  ansible.builtin.file:
+    path: /opt/stacks/linkwarden
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Configure Linkwarden service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: linkwarden
+    service_uid: 908
+    service_dirs:
+      - /opt/stacks/linkwarden/data
+
 - name: Deploy Linkwarden
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:

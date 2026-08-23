@@ -4,6 +4,7 @@ services:
     container_name: linkwarden
     image: ghcr.io/linkwarden/linkwarden:v2.16.1@sha256:6902e62a6d68e1906045310dbf9b2df7f3d784a7b2e9d0f02c23666023791634
     restart: unless-stopped
+    user: "908:908"
     expose:
       - "3000"
     networks:

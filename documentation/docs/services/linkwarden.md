@@ -19,6 +19,17 @@ The Authentik issuer is derived from `BASE_DOMAIN` in `docker-compose.yml`.
 Public registration and username/password login are disabled; users authorized
 by Authentik can still be provisioned on their first SSO login.
 
+## Service user
+
+Linkwarden runs as the `linkwarden` system user (908:908) via `user:`, which
+the image supports since
+[v2.16.1](https://github.com/linkwarden/linkwarden/releases/tag/v2.16.1)
+([non-root guide](https://docs.linkwarden.app/self-hosting/non-root)).
+
+Only the app container gets it — postgres and meilisearch stay on their image
+defaults, as in the other multi-container stacks. Upstream sets `user:` on all
+three.
+
 ## Upgrading Meilisearch
 
 Meilisearch refuses to start when the on-disk database version differs from the engine version. After a Renovate tag bump that crosses a DB format change, the container exits on start:
