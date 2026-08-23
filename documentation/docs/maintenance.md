@@ -27,6 +27,54 @@ Before merging a Renovate PR, re-run validate manually: Repo → **Actions** →
 
 If this manual step becomes tedious, switch to a classic PAT with `repo` + `workflow` scopes stored as `RENOVATE_TOKEN`, then change the workflow's `token:` value.
 
+## Host OS updates (unattended-upgrades)
+
+Both hosts patch themselves. `roles/server/unattended-upgrades` installs
+`unattended-upgrades` + `needrestart` and is wired into `server.yml` and
+`vps.yml` with different reboot policies.
+
+Two update tracks, opposite priorities: Renovate patches **containers** with a
+2-day soak, unattended-upgrades patches the **host OS** with no soak.
+
+### What installs automatically
+
+Debian security origins only:
+
+```
+origin=Debian,codename=${distro_codename}-security,label=Debian-Security
+```
+
+`needrestart` runs in automatic mode (`$nrconf{restart} = 'a'`), so daemons
+linking against a patched library are restarted in place. Container runtimes are
+excluded from that (`docker`/`containerd` on svr1, `caddy` on the VPS):
+container processes use libraries from their image, not from the host, so
+restarting them patches nothing.
+
+### Reboot policy
+
+| Host | Upgrade window                   | Reboot                                                                                                                                                                                                                                                      |
+| ---- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| svr1 | 04:00, with catch-up after boot | No scheduled reboot. The nightly power-off applies the new kernel. `unattended-reboot.timer` fires at 05:00 **only if the host is still running** (`Persistent=false`, no catch-up) — the vacation case. 5-minute wall warning, `sudo shutdown -c` cancels. |
+| VPS  | 02:30                            | `Automatic-Reboot` at 03:00, users or not.                                                                                                                                                                                                                  |
+
+Only kernel upgrades request a reboot: the marker `/run/reboot-required` is
+written by `/etc/kernel/postinst.d/unattended-upgrades`. Everything else is
+covered by the needrestart daemon restart.
+
+### Checking
+
+```bash
+systemctl list-timers apt-daily.timer apt-daily-upgrade.timer unattended-reboot.timer
+sudo unattended-upgrade --dry-run --debug | tail -30
+journalctl -u apt-daily-upgrade.service --since -7d
+cat /run/reboot-required.pkgs 2>/dev/null   # why a reboot is pending
+sudo needrestart -b -r l                    # what still needs a restart
+```
+
+The Ansible role runs the dry-run and the needrestart parse check itself, so a
+config that fails to parse fails the play rather than silently skipping the next
+upgrade run.
+
 ## Updates (Renovate)
 
 Renovate opens PRs for Docker image updates daily (04:00 UTC).

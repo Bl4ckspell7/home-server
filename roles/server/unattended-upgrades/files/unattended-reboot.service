@@ -1,0 +1,12 @@
+# Managed by Ansible (roles/server/unattended-upgrades).
+[Unit]
+Description=Reboot if a pending security upgrade requires it
+# Written by /etc/kernel/postinst.d/unattended-upgrades, from the
+# unattended-upgrades package itself — so in practice: kernel upgrades.
+ConditionPathExists=/run/reboot-required
+
+[Service]
+Type=oneshot
+# Schedules and returns. The five minutes are for a console user: a wall message
+# is broadcast and `shutdown -c` cancels it.
+ExecStart=/usr/sbin/shutdown -r +5 "Rebooting to apply pending security updates"

@@ -4,6 +4,18 @@
     - role: apt
       tags: apt
 
+    - role: unattended-upgrades
+      tags: unattended-upgrades
+      vars:
+        # No scheduled reboot: the evening power-off applies the new kernel. The
+        # timer covers longer continuous runs, so the upgrade window sits just
+        # before it.
+        uu_automatic_reboot: false
+        uu_reboot_timer: true
+        uu_apt_daily_oncalendar: "*-*-* 03:30"
+        uu_apt_daily_upgrade_oncalendar: "*-*-* 04:00"
+        uu_apt_daily_upgrade_delay: "20m"
+
     - role: bash
       tags: bash
 

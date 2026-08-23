@@ -1,0 +1,15 @@
+# Managed by Ansible (roles/server/unattended-upgrades).
+# Perl snippet: needrestart evals every conf.d/*.conf and dies on a parse error.
+
+# (a)utomatic. The Debian default 'i' degrades to list-only when run
+# non-interactively from unattended-upgrades, leaving patched libraries unused.
+$nrconf{restart} = 'a';
+
+# Hint to stderr instead of prompting; rebooting is the reboot policy's job.
+$nrconf{kernelhints} = -1;
+
+{% for unit in uu_needrestart_skip_units %}
+$nrconf{override_rc}{qr(^{{ unit | regex_escape }}$)} = 0;
+{% endfor %}
+
+1;

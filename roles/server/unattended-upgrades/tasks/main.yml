@@ -1,0 +1,142 @@
+---
+- name: Configure automatic security updates
+  become: true
+  block:
+    - name: Install unattended-upgrades and needrestart
+      register: unattended_apt_output
+      ansible.builtin.apt:
+        state: present
+        update_cache: true
+        name:
+          - needrestart
+          - unattended-upgrades
+
+    - name: Enable the periodic APT jobs
+      ansible.builtin.copy:
+        src: 20auto-upgrades
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Configure unattended-upgrades origins and reboot policy
+      ansible.builtin.template:
+        src: 52-unattended-upgrades-local.j2
+        dest: /etc/apt/apt.conf.d/52-unattended-upgrades-local
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure the needrestart drop-in directory exists
+      ansible.builtin.file:
+        path: /etc/needrestart/conf.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Configure needrestart to restart daemons automatically
+      ansible.builtin.template:
+        src: 50-needrestart-local.conf.j2
+        dest: /etc/needrestart/conf.d/50-local.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure the APT timer drop-in directories exist
+      ansible.builtin.file:
+        path: "/etc/systemd/system/{{ item }}.timer.d"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop:
+        - apt-daily
+        - apt-daily-upgrade
+
+    - name: Set the APT download window
+      ansible.builtin.template:
+        src: apt-daily-override.conf.j2
+        dest: /etc/systemd/system/apt-daily.timer.d/override.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Set the APT upgrade window
+      ansible.builtin.template:
+        src: apt-daily-upgrade-override.conf.j2
+        dest: /etc/systemd/system/apt-daily-upgrade.timer.d/override.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Enable the APT timers
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+        daemon_reload: true
+      loop:
+        - apt-daily.timer
+        - apt-daily-upgrade.timer
+
+    - name: Install the conditional reboot unit
+      when: uu_reboot_timer
+      ansible.builtin.copy:
+        src: unattended-reboot.service
+        dest: /etc/systemd/system/unattended-reboot.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install the conditional reboot timer
+      when: uu_reboot_timer
+      ansible.builtin.template:
+        src: unattended-reboot.timer.j2
+        dest: /etc/systemd/system/unattended-reboot.timer
+        owner: root
+        group: root
+        mode: "0644"
+
+    # Skipped in check mode: the unit file has not been written there, so
+    # systemd would report it as missing.
+    - name: Enable the conditional reboot timer
+      when: uu_reboot_timer and not ansible_check_mode
+      ansible.builtin.systemd_service:
+        name: unattended-reboot.timer
+        state: started
+        enabled: true
+        daemon_reload: true
+
+    # Read-only. Catches a parse error that would otherwise only surface as a
+    # silently skipped upgrade run.
+    - name: Validate the unattended-upgrades configuration
+      when: not ansible_check_mode
+      register: unattended_dry_run
+      changed_when: false
+      ansible.builtin.command:
+        cmd: unattended-upgrade --dry-run --debug
+
+    - name: Validate the needrestart configuration
+      when: not ansible_check_mode
+      register: unattended_needrestart_check
+      changed_when: false
+      ansible.builtin.command:
+        cmd: needrestart -b -r l
+
+- name: Show apt install output
+  ansible.builtin.include_tasks: ../../../../tasks/view_logs.yml
+  vars:
+    output: "{{ unattended_apt_output }}"
+
+- name: Show unattended-upgrades dry-run output
+  when: not ansible_check_mode
+  ansible.builtin.include_tasks: ../../../../tasks/view_logs.yml
+  vars:
+    output: "{{ unattended_dry_run }}"
+
+- name: Show needrestart check output
+  when: not ansible_check_mode
+  ansible.builtin.include_tasks: ../../../../tasks/view_logs.yml
+  vars:
+    output: "{{ unattended_needrestart_check }}"

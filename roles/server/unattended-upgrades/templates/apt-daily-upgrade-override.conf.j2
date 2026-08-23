@@ -1,0 +1,5 @@
+# Managed by Ansible (roles/server/unattended-upgrades).
+[Timer]
+OnCalendar=
+OnCalendar={{ uu_apt_daily_upgrade_oncalendar }}
+RandomizedDelaySec={{ uu_apt_daily_upgrade_delay }}

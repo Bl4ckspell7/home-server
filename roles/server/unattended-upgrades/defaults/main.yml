@@ -1,0 +1,23 @@
+---
+# Native unattended-upgrades reboot: for a host that is always on with no
+# console user.
+uu_automatic_reboot: false
+uu_reboot_time: "03:00"
+
+# Conditional reboot timer: fires only if the host happens to be running at
+# uu_reboot_timer_time (Persistent=false, no catch-up).
+uu_reboot_timer: false
+uu_reboot_timer_time: "05:00"
+
+# APT maintenance windows. Hosts that reboot automatically move these earlier so
+# the reboot follows shortly after the upgrade.
+uu_apt_daily_oncalendar: "*-*-* 06:00"
+uu_apt_daily_delay: "15m"
+uu_apt_daily_upgrade_oncalendar: "*-*-* 06:30"
+uu_apt_daily_upgrade_delay: "30m"
+
+# Units needrestart must not restart itself. Container processes link against
+# libraries from their image, so restarting the runtime patches nothing.
+uu_needrestart_skip_units:
+  - docker.service
+  - containerd.service

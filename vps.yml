@@ -7,6 +7,19 @@
     - role: apt-vps
       tags: apt
 
+    - role: unattended-upgrades
+      tags: unattended-upgrades
+      vars:
+        uu_automatic_reboot: true
+        uu_reboot_time: "03:00"
+        # Stock window is 06:00, which would leave the reboot scheduled 21
+        # hours out.
+        uu_apt_daily_oncalendar: "*-*-* 02:00"
+        uu_apt_daily_upgrade_oncalendar: "*-*-* 02:30"
+        uu_apt_daily_upgrade_delay: "10m"
+        uu_needrestart_skip_units:
+          - caddy.service
+
     - role: shell-vps
       tags: shell
 
