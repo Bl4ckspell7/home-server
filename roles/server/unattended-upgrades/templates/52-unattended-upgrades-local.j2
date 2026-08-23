@@ -1,0 +1,24 @@
+// Managed by Ansible (roles/server/unattended-upgrades).
+//
+// Own file rather than the shipped 50unattended-upgrades, which is a conffile
+// and would prompt on every unattended-upgrades upgrade.
+
+// #clear is required: apt.conf lists append, so without it the stock
+// non-security "codename=${distro_codename},label=Debian" entry stays active.
+// Docker, Mozilla and Steam are deliberately absent — an automatic docker-ce
+// upgrade would restart the daemon and bounce every container.
+#clear Unattended-Upgrade::Origins-Pattern;
+Unattended-Upgrade::Origins-Pattern {
+    "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+};
+
+Unattended-Upgrade::Automatic-Reboot "{{ uu_automatic_reboot | ternary('true', 'false') }}";
+{% if uu_automatic_reboot %}
+Unattended-Upgrade::Automatic-Reboot-Time "{{ uu_reboot_time }}";
+Unattended-Upgrade::Automatic-Reboot-WithUsers "true";
+{% endif %}
+
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+Unattended-Upgrade::MinimalSteps "true";
+Unattended-Upgrade::SyslogEnable "true";

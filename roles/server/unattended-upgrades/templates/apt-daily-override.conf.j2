@@ -1,0 +1,6 @@
+# Managed by Ansible (roles/server/unattended-upgrades).
+[Timer]
+# Empty OnCalendar= first: values otherwise add to the stock schedule.
+OnCalendar=
+OnCalendar={{ uu_apt_daily_oncalendar }}
+RandomizedDelaySec={{ uu_apt_daily_delay }}

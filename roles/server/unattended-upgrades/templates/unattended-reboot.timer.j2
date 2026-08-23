@@ -1,0 +1,13 @@
+# Managed by Ansible (roles/server/unattended-upgrades).
+[Unit]
+Description=Check for a pending security-update reboot
+
+[Timer]
+OnCalendar={{ uu_reboot_timer_time }}
+RandomizedDelaySec=10m
+# No catch-up: a host that was off at {{ uu_reboot_timer_time }} must not reboot after being
+# powered on. This fires only when the machine is running at that hour.
+Persistent=false
+
+[Install]
+WantedBy=timers.target
