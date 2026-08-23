@@ -1,7 +1,19 @@
 ---
-- name: Include Immich user setup tasks
-  ansible.builtin.include_tasks:
-    file: user.yml
+- name: Configure Immich service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: immich
+    service_uid: 901
+    service_dirs_mode: "0700"
+    service_dirs_require_mount: "{{ immich_media_mount }}"
+    service_dirs:
+      - "{{ immich_upload_location }}"
+      - "{{ immich_upload_location }}/backups"
+      - "{{ immich_upload_location }}/encoded-video"
+      - "{{ immich_upload_location }}/library"
+      - "{{ immich_upload_location }}/profile"
+      - "{{ immich_upload_location }}/thumbs"
+      - "{{ immich_upload_location }}/upload"
 
 - name: Deploy Immich
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml

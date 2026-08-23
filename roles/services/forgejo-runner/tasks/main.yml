@@ -1,7 +1,9 @@
 ---
-- name: Include Forgejo runner user setup tasks
-  ansible.builtin.include_tasks:
-    file: user.yml
+- name: Configure Forgejo runner service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: forgejo-runner
+    service_uid: 904
 
 - name: Ensure stack directory exists
   ansible.builtin.file:

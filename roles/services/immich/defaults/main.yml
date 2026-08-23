@@ -1,2 +1,7 @@
 immich_upload_location: "/mnt/wd_red_pro_20tb/immich"
 # immich_upload_location: "./library"
+
+# Data disk immich_upload_location lives on. tasks/service_user.yml refuses to
+# create the upload dirs unless this is mounted. Clear it when pointing
+# immich_upload_location at a path on the root filesystem.
+immich_media_mount: "/mnt/wd_red_pro_20tb"
