@@ -1,4 +1,10 @@
 ---
+# The container still fixes ownership itself at startup (PUID/PGID in the compose
+# file); this exists so the UID has a name on the host, as with the other 90x
+# service users.
+- name: Configure Photon service user
+  ansible.builtin.include_tasks: user.yml
+
 - name: Deploy Photon
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:

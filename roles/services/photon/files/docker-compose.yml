@@ -5,6 +5,15 @@ services:
     image: docker.io/rtuszik/photon-docker:2.4.0@sha256:21549c60f9e6488fff3217e40429a652c4b445f374800333fe32859e47cec293
     restart: unless-stopped
     environment:
+      # The image cannot run under an arbitrary `user:`: /photon is mode 0750
+      # owned by its built-in photon user, so any other UID cannot even read the
+      # entrypoint. PUID/PGID is the supported route — the entrypoint starts as
+      # root, remaps that user to 907, then drops to it via gosu. That remap
+      # walks the rootfs and the index volume, but only on a container recreate
+      # — /etc/passwd lives in the container layer and survives stop/start — and
+      # measured about 8s to a serving Photon.
+      PUID: 907
+      PGID: 907
       UPDATE_STRATEGY: PARALLEL
       UPDATE_INTERVAL: 14d
       REGION: europe # Optional: specific region (continent, country, or planet)
