@@ -27,21 +27,6 @@
   loop_control:
     label: "{{ item.path }}"
 
-- name: Find Authentik data not owned by the authentik user
-  # Migrates the pre-906 trees, which were owned by UID 1000 — a real login
-  # account on this host, not a service user. rc 1 means a path does not exist
-  # yet, which is the normal state of a check-mode run on a fresh host.
-  ansible.builtin.command: find {{ authentik_writable_dirs | map(attribute='path') | join(' ') }} ! -user authentik -print -quit
-  register: authentik_stale_owner
-  changed_when: false
-  check_mode: false
-  failed_when: authentik_stale_owner.rc not in [0, 1]
-
-- name: Migrate Authentik data ownership to the authentik user
-  ansible.builtin.command: chown -R authentik:authentik {{ authentik_writable_dirs | map(attribute='path') | join(' ') }}
-  when: authentik_stale_owner.stdout | length > 0
-  changed_when: true
-
 - name: Ensure Authentik blueprints directory exists
   ansible.builtin.file:
     path: /opt/stacks/authentik/blueprints

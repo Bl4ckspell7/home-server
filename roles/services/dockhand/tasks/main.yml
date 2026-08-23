@@ -13,16 +13,6 @@
     group: dockhand
     mode: "0755"
 
-- name: Find Dockhand data not owned by the dockhand user
-  ansible.builtin.command: find /opt/stacks/dockhand/data ! -user dockhand -print -quit
-  register: dockhand_stale_owner
-  changed_when: false
-
-- name: Migrate Dockhand data ownership to the dockhand user
-  ansible.builtin.command: chown -R dockhand:dockhand /opt/stacks/dockhand/data
-  when: dockhand_stale_owner.stdout | length > 0
-  changed_when: true
-
 - name: Deploy Dockhand
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
