@@ -62,3 +62,4 @@ System users and groups created by Ansible for running services:
 | **Dockhand**       | dockhand       | 905     | dockhand       | 905     |
 | **Authentik**      | authentik      | 906     | authentik      | 906     |
 | **Photon**         | photon         | 907     | photon         | 907     |
+| **Linkwarden**     | linkwarden     | 908     | linkwarden     | 908     |
