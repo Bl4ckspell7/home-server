@@ -4,25 +4,12 @@
   vars:
     service_name: forgejo-runner
     service_uid: 904
-
-- name: Ensure stack directory exists
-  ansible.builtin.file:
-    path: /opt/stacks/forgejo-runner
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-
-# The runner runs as the non-root forgejo-runner user and writes /data
-# (.runner, cache) — a root-owned dir fails registration with
-# ".runner: permission denied".
-- name: Ensure runner data directory is owned by the runner user
-  ansible.builtin.file:
-    path: /opt/stacks/forgejo-runner/data
-    state: directory
-    owner: forgejo-runner
-    group: forgejo-runner
-    mode: "0750"
+    # The runner runs as the non-root forgejo-runner user and writes /data
+    # (.runner, cache) — a root-owned dir fails registration with
+    # ".runner: permission denied".
+    service_dirs_mode: "0750"
+    service_dirs:
+      - /opt/stacks/forgejo-runner/data
 
 - name: Copy runner config
   ansible.builtin.copy:

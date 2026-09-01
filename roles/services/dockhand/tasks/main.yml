@@ -4,14 +4,8 @@
   vars:
     service_name: dockhand
     service_uid: 905
-
-- name: Ensure Dockhand data directory exists
-  ansible.builtin.file:
-    path: /opt/stacks/dockhand/data
-    state: directory
-    owner: dockhand
-    group: dockhand
-    mode: "0755"
+    service_dirs:
+      - /opt/stacks/dockhand/data
 
 - name: Deploy Dockhand
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml

@@ -5,17 +5,8 @@
     service_name: authentik
     service_uid: 906
 
-- name: Ensure stack directory exists
-  # Must precede the writable dirs below: ansible.builtin.file applies the
-  # task's owner/mode to every intermediate directory it creates, so on a fresh
-  # host /opt/stacks itself would become authentik:authentik 0750.
-  ansible.builtin.file:
-    path: /opt/stacks/authentik
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-
+# The include above creates /opt/stacks/authentik as root, which keeps the
+# intermediate /opt/stacks out of the writable dirs below.
 - name: Ensure Authentik writable directories exist
   ansible.builtin.file:
     path: "{{ item.path }}"

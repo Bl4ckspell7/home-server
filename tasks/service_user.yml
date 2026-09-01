@@ -7,7 +7,10 @@
 # Vars:
 #   service_name      (required) user + group name, e.g. immich
 #   service_uid       (required) uid, also used as the gid
-#   service_dirs      (optional) dirs to create owned by the service user
+#   service_dirs      (optional) dirs to create owned by the service user. Ones
+#                     under /opt/stacks/<service_name> get a root-owned parent
+#                     from the task below; dirs elsewhere (a data disk, say) do
+#                     not — guard those with service_dirs_require_mount
 #   service_dirs_mode (optional) mode for those dirs, default "0755"
 #   service_dirs_require_mount
 #                     (optional) path that must be a mount point before any
@@ -55,6 +58,19 @@
   when:
     - service_dirs_require_mount | default('') | length > 0
     - service_mount_check.rc | default(0) != 0
+
+- name: "Ensure stack directory exists for {{ service_name }}"
+  # Must precede the service_dirs loop: ansible.builtin.file applies the task's
+  # owner/mode to every intermediate directory it creates, so on a fresh host
+  # /opt/stacks itself would be created owned by the service user — the UID its
+  # container runs as, free to touch sibling stacks. deploy_stack.yml runs the
+  # same task later; this is a no-op once the directory exists.
+  ansible.builtin.file:
+    path: "/opt/stacks/{{ service_name }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
 
 - name: "Ensure data directories exist for {{ service_name }}"
   ansible.builtin.file:
