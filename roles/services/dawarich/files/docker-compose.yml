@@ -3,7 +3,7 @@ name: dawarich
 x-variables:
   # shared variables for dawarich services (app and sidekiq)
   # renovate: datasource=docker depName=docker.io/freikin/dawarich
-  dawarich_image: &dawarich_image docker.io/freikin/dawarich:1.12.2@sha256:41372c4084737133765b0a3067e648cff9fc4af23e2054717e4e01c4f0933609
+  dawarich_image: &dawarich_image docker.io/freikin/dawarich:1.14.0@sha256:f251f08d6330a9b22506c862407e53b0b4aec620a63953a446e19cd610d7d476
   app_hosts: &app_hosts localhost,dawarich.${BASE_DOMAIN:?base domain required}
   database_host: &database_host dawarich-postgres
   database_name: &database_name dawarich_development
