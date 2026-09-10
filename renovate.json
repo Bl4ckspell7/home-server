@@ -56,7 +56,7 @@
   "packageRules": [
     {
       "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": true
+      "dependencyDashboardApproval": false
     },
     {
       "matchUpdateTypes": ["digest"],
