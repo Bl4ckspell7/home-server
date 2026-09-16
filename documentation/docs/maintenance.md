@@ -6,26 +6,30 @@ sidebar_position: 6
 
 ## Initial setup (one-time)
 
-Renovate runs as a GitHub Action using the auto-provided `GITHUB_TOKEN` — no PAT or secret to create.
+Renovate runs as a GitHub Action authenticated with a fine-grained PAT stored as the `RENOVATE_TOKEN` secret. The auto-provided `GITHUB_TOKEN` cannot be used: GitHub refuses pushes that modify `.github/workflows/*` from it (no `workflows` permission), so updates to Actions and the Renovate image would never get branches. PRs opened with `GITHUB_TOKEN` would also not trigger `compose-validate` / `ansible-validate`.
 
-### 1. Allow Actions to write + create PRs
+### 1. Create the fine-grained PAT
 
-Repo → **Settings** → **Actions** → **General** → **Workflow permissions**:
+GitHub → **Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**:
 
-- Select **Read and write permissions**
-- Check **Allow GitHub Actions to create and approve pull requests**
+- Resource owner: `Bl4ckspell7`; Repository access: **Only select repositories** → `home-server`
+- Expiration: at most 1 year
+- Repository permissions, **Read and write**: Contents, Pull requests, Issues, Workflows, Commit statuses
+- Repository permissions, **Read-only**: Dependabot alerts (Metadata read is added automatically)
 
-### 2. Verify
+### 2. Store it as a secret
 
-Repo → **Actions** → **renovate** workflow → **Run workflow** → set `dryRun: full`, `logLevel: debug`. Inspect logs; expect no `401 Unauthorized` or `Bad credentials` errors and a "Found N dependencies" summary.
+Repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret** → name `RENOVATE_TOKEN`.
 
-### Caveat: CI does not auto-run on Renovate PRs
+The workflow's own `GITHUB_TOKEN` only checks out the repo (`contents: read`), so **Allow GitHub Actions to create and approve pull requests** under **Settings** → **Actions** → **General** can stay disabled.
 
-PRs opened by `GITHUB_TOKEN` do not trigger other workflows (GitHub anti-loop). `compose-validate` shows no checks on Renovate PRs by default.
+### 3. Verify
 
-Before merging a Renovate PR, re-run validate manually: Repo → **Actions** → **compose-validate** → **Run workflow** → pick the Renovate branch.
+Repo → **Actions** → **renovate** workflow → **Run workflow** → set `dryRun: full`, `logLevel: debug`. Inspect logs; expect no `401 Unauthorized` or `Bad credentials` errors, no `refusing to allow a GitHub App to create or update workflow`, and a "Found N dependencies" summary.
 
-If this manual step becomes tedious, switch to a classic PAT with `repo` + `workflow` scopes stored as `RENOVATE_TOKEN`, then change the workflow's `token:` value.
+### Token rotation
+
+When the PAT expires, Renovate runs fail with `401 Unauthorized` / `Bad credentials`. Regenerate the token (same permissions) and update the `RENOVATE_TOKEN` secret.
 
 ## Host OS updates (unattended-upgrades)
 
