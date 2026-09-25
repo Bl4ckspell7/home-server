@@ -23,7 +23,7 @@ x-variables:
 services:
   dawarich-redis:
     container_name: dawarich-redis
-    image: docker.io/library/redis:7.4.11-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf
+    image: docker.io/library/redis:8.10.2-alpine@sha256:3811787313eba226a2ef38658c6ccb91cd5e110edc89c37767de373120a0e5a0
     command: >
       redis-server
       --save 900 1
