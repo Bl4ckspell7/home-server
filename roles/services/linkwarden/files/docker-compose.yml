@@ -62,6 +62,7 @@ services:
       - .env
     environment:
       - MEILI_NO_ANALYTICS=true
+      - MEILI_UPGRADE_DB=true
     volumes:
       - ./meili_data:/meili_data
     healthcheck:
