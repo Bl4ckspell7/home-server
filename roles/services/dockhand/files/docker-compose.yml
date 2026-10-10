@@ -2,7 +2,7 @@ name: dockhand
 services:
   dockhand:
     container_name: dockhand
-    image: docker.io/fnsys/dockhand:v1.0.51@sha256:ffba7083c8d28ae7afdc3c30e89ee03d43fa6ee99c335ee25e8cfab8b767f431
+    image: docker.io/fnsys/dockhand:v1.0.52@sha256:53529151a01a0866638bd870aa78cb2f2d1fff9a6bc55c60b2e30fe600957726
     restart: unless-stopped
     user: "905:905"
     group_add:
