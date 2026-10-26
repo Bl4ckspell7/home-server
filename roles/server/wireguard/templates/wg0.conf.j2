@@ -1,6 +1,9 @@
 {{ ansible_managed | comment }}
 [Interface]
 Address = 10.10.0.2/24
+# Below the auto 1420: mobile-tether uplinks cap the path near 1470 B and WG adds
+# 60 B, so full-size packets get black-holed. Keep in sync with the VPS side.
+MTU = 1380
 PrivateKey = {{ wg_home_private_key }}
 
 [Peer]
