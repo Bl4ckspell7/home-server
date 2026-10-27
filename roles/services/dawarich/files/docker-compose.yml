@@ -16,26 +16,26 @@ x-variables:
   puid: &puid 1000
   rails_env: &rails_env production
   rails_log_to_stdout: &rails_log_to_stdout true
-  redis_url: &redis_url redis://dawarich-redis:6379
+  redis_url: &redis_url redis://dawarich-valkey:6379
   self_hosted: &self_hosted true
   store_geodata: &store_geodata true
 
 services:
-  dawarich-redis:
-    container_name: dawarich-redis
-    image: docker.io/library/redis:7.4.12-alpine@sha256:338fbfc036dc5517ac0b04d6de21521085935336e565f223406180e9d84166e2
+  dawarich-valkey:
+    container_name: dawarich-valkey
+    image: docker.io/valkey/valkey:9.1.3-alpine@sha256:bf09d58e96d6b4524a15396b65b242bbe18beebbcc15a04d8ee75ddac62fae0b
     command: >
-      redis-server
+      valkey-server
       --save 900 1
       --save 300 10
       --appendonly no
     networks:
       default:
     volumes:
-      - dawarich_shared:/data
+      - dawarich_valkey:/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "valkey-cli", "ping"]
       interval: 10s
       retries: 5
       start_period: 30s
@@ -145,7 +145,7 @@ services:
       dawarich-postgres:
         condition: service_healthy
         restart: true
-      dawarich-redis:
+      dawarich-valkey:
         condition: service_healthy
         restart: true
     deploy:
@@ -157,6 +157,7 @@ services:
 volumes:
   dawarich_db_data:
   dawarich_shared:
+  dawarich_valkey:
   dawarich_public:
   dawarich_watched:
   dawarich_storage:
