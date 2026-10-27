@@ -1,7 +1,7 @@
 name: dawarich
 
 x-variables:
-  # shared variables for dawarich services (app and sidekiq)
+  # shared variables for dawarich services (app and postgres)
   # renovate: datasource=docker depName=docker.io/freikin/dawarich
   dawarich_image: &dawarich_image docker.io/freikin/dawarich:1.18.1@sha256:a2b93286a973b2e4b55d6a1ebd8009a65b8624639687ca95e909d0aac27324f5
   app_hosts: &app_hosts localhost,dawarich.${BASE_DOMAIN:?base domain required}
@@ -93,12 +93,14 @@ services:
     entrypoint: web-entrypoint.sh
     command: ["bin/rails", "server", "-p", "3000", "-b", "::"]
     restart: unless-stopped
+    stop_grace_period: 60s
     env_file: .env
     environment:
       ALLOW_EMAIL_PASSWORD_LOGIN: "false"
       ALLOW_EMAIL_PASSWORD_REGISTRATION: "false"
       APPLICATION_HOSTS: *app_hosts
       APPLICATION_PROTOCOL: http
+      BACKGROUND_PROCESSING_CONCURRENCY: ${BACKGROUND_PROCESSING_CONCURRENCY:-2}
       DATABASE_HOST: *database_host
       DATABASE_NAME: *database_name
       DATABASE_PORT: *database_port
@@ -120,9 +122,10 @@ services:
       RAILS_LOG_TO_STDOUT: *rails_log_to_stdout
       REDIS_URL: *redis_url
       SELF_HOSTED: *self_hosted
+      SIDEKIQ_EMBEDDED: "true" # background jobs run inside this container
       STORE_GEODATA: *store_geodata
       TIME_ZONE: Europe/Berlin
-      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
+      WEB_CONCURRENCY: "0" # must be 0: each extra web process starts its own job threads
     logging:
       driver: "json-file"
       options:
@@ -148,68 +151,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${APP_CPU_LIMIT:-0.50}
+          cpus: ${APP_CPU_LIMIT:-1.00}
           memory: ${APP_MEMORY_LIMIT:-4G}
-
-  dawarich-sidekiq:
-    container_name: dawarich-sidekiq
-    image: *dawarich_image
-    volumes:
-      - dawarich_public:/var/app/public
-      - dawarich_watched:/var/app/tmp/imports/watched
-      - dawarich_storage:/var/app/storage
-    networks:
-      default:
-      svr1-network:
-        ipv4_address: 172.21.255.239
-    dns:
-      - 172.21.255.254
-    dns_search: # don't append any search domain
-      - "."
-    stdin_open: true
-    tty: true
-    entrypoint: sidekiq-entrypoint.sh
-    command: ["sidekiq"]
-    restart: unless-stopped
-    env_file: .env
-    environment:
-      APPLICATION_HOSTS: *app_hosts
-      BACKGROUND_PROCESSING_CONCURRENCY: ${BACKGROUND_PROCESSING_CONCURRENCY:-3}
-      DATABASE_HOST: *database_host
-      DATABASE_NAME: *database_name
-      DATABASE_PORT: *database_port
-      DATABASE_USERNAME: *database_username
-      PGID: *pgid
-      PHOTON_API_HOST: *photon_api_host
-      PHOTON_API_USE_HTTPS: *photon_api_use_https
-      PROMETHEUS_EXPORTER_ENABLED: *prometheus_enabled
-      PUID: *puid
-      RAILS_ENV: *rails_env
-      RAILS_LOG_TO_STDOUT: *rails_log_to_stdout
-      REDIS_URL: *redis_url
-      SELF_HOSTED: *self_hosted
-      STORE_GEODATA: *store_geodata
-    logging:
-      driver: "json-file"
-      options:
-        max-size: ${LOG_MAX_SIZE:-100m}
-        max-file: ${LOG_MAX_FILE:-5}
-    healthcheck:
-      test: ["CMD-SHELL", "pgrep -f sidekiq"]
-      interval: 10s
-      retries: 30
-      start_period: 30s
-      timeout: 10s
-    depends_on:
-      dawarich-postgres:
-        condition: service_healthy
-        restart: true
-      dawarich-redis:
-        condition: service_healthy
-        restart: true
-      dawarich-app:
-        condition: service_healthy
-        restart: true
 
 volumes:
   dawarich_db_data:
