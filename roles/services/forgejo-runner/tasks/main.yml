@@ -144,3 +144,4 @@
   delay: 5
   until: runner_state.stdout | trim == 'running'
   changed_when: false
+  check_mode: false
