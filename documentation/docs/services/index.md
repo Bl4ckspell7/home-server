@@ -63,3 +63,4 @@ System users and groups created by Ansible for running services:
 | **Authentik**      | authentik      | 906     | authentik      | 906     |
 | **Photon**         | photon         | 907     | photon         | 907     |
 | **Linkwarden**     | linkwarden     | 908     | linkwarden     | 908     |
+| **Homepage**       | homepage       | 909     | homepage       | 909     |
