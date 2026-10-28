@@ -18,6 +18,7 @@
     owner: root
     group: root
     mode: "0644"
+  register: runner_config
 
 # deploy_stack.yml copies this again later (no-op); it must exist on the host
 # BEFORE the stack is up so registration can use `docker compose run`.
@@ -117,11 +118,14 @@
     service_name: forgejo-runner
 
 # After a (re-)registration an already-existing daemon container still holds
-# the old (empty) state — restart it so it picks up the fresh .runner.
-- name: Restart the runner after a fresh registration
+# the old (empty) state — restart it so it picks up the fresh .runner. The
+# daemon also reads config.yml only at start, and compose does not notice a
+# change to a bind-mounted file. Inline instead of a handler so the checks
+# below see the restarted daemon.
+- name: Restart the runner after a registration or config change
   ansible.builtin.command:
     cmd: docker restart forgejo-runner
-  when: runner_needs_registration
+  when: runner_needs_registration or runner_config.changed
   changed_when: true
 
 - name: Verify the runner registration file
