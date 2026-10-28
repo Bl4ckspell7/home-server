@@ -15,12 +15,17 @@
     owner: radicale
     group: radicale
     mode: "0644"
+  register: radicale_config
 
 - name: Deploy Radicale
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: radicale
     service_secrets: true
+    # Radicale reads its config only at start, and compose does not notice a
+    # change to a bind-mounted file. The users file needs no recreate: htpasswd
+    # auth re-reads it on every login.
+    compose_recreate: "{{ 'always' if radicale_config.changed else 'auto' }}"
     env_template: users.j2
     env_dest: /opt/stacks/radicale/config/users
     env_owner: radicale

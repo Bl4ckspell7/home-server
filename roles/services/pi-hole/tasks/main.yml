@@ -15,6 +15,7 @@
     group: root
     mode: "0644"
     directory_mode: "0755"
+  register: pihole_dnsmasq
 
 - name: Deploy Pi-hole
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
@@ -22,3 +23,6 @@
     service_name: pi-hole
     service_secrets: true
     env_template: pihole.env.j2
+    # FTL reads /etc/dnsmasq.d only at start, and compose does not notice a
+    # change to a bind-mounted file.
+    compose_recreate: "{{ 'always' if pihole_dnsmasq.changed else 'auto' }}"
