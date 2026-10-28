@@ -5,8 +5,8 @@ usage() {
   cat <<'EOF'
 Usage: scripts/publish-docs.sh <patch|minor|major>
 
-Builds and pushes the next Docusaurus image, updates the deployed image tag,
-commits the tag bump, and deploys the docusaurus service.
+Builds and pushes the next Docusaurus image, pins the deployed image to the new
+tag and digest, commits the bump, and deploys the docusaurus service.
 EOF
 }
 
@@ -55,7 +55,9 @@ from pathlib import Path
 
 path = Path(sys.argv[1])
 image = sys.argv[2]
-pattern = re.compile(rf"^\s*image:\s*{re.escape(image)}:(\d+\.\d+\.\d+)\s*$")
+pattern = re.compile(
+    rf"^\s*image:\s*{re.escape(image)}:(\d+\.\d+\.\d+)(?:@sha256:[0-9a-f]{{64}})?\s*$"
+)
 
 for line in path.read_text(encoding="utf-8").splitlines():
     match = pattern.match(line)
@@ -94,24 +96,34 @@ echo "Publishing docs image ${image}:${current_version} -> ${image}:${next_versi
 cd documentation
 podman login "${registry}"
 podman build -f docker/Dockerfile -t "${image}:${next_version}" .
-podman push "${image}:${next_version}"
+digest_file="$(mktemp)"
+trap 'rm -f "${digest_file}"' EXIT
+podman push --digestfile "${digest_file}" "${image}:${next_version}"
+digest="$(<"${digest_file}")"
 cd ..
 
-python3 - "${compose_file}" "${current_version}" "${next_version}" <<'PY'
+python3 - "${compose_file}" "${image}" "${current_version}" "${next_version}" "${digest}" <<'PY'
+import re
 import sys
 from pathlib import Path
 
 path = Path(sys.argv[1])
-current = sys.argv[2]
-next_version = sys.argv[3]
-old = f"home-server-docs:{current}"
-new = f"home-server-docs:{next_version}"
+image = sys.argv[2]
+current = sys.argv[3]
+next_version = sys.argv[4]
+digest = sys.argv[5]
+
+if not re.fullmatch(r"sha256:[0-9a-f]{64}", digest):
+    raise SystemExit(f"Unexpected digest from podman push: {digest!r}")
+
+pattern = re.compile(rf"{re.escape(image)}:{re.escape(current)}(?:@sha256:[0-9a-f]{{64}})?")
+new = f"{image}:{next_version}@{digest}"
 
 content = path.read_text(encoding="utf-8")
-updated = content.replace(old, new, 1)
+updated, count = pattern.subn(new, content, count=1)
 
-if updated == content:
-    raise SystemExit(f"Could not replace {old} in {path}")
+if count == 0:
+    raise SystemExit(f"Could not replace {image}:{current} in {path}")
 
 path.write_text(updated, encoding="utf-8")
 PY
