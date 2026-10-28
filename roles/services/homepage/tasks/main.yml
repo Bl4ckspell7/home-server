@@ -1,14 +1,23 @@
 ---
-- name: Ensure Homepage directories exist
+- name: Configure Homepage service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: homepage
+    service_uid: 909
+    # The entrypoint runs `chown -R PUID:PGID /app/config` whenever the dir's
+    # owner differs from PUID:PGID. Owned by the service user it is left alone,
+    # so the config files copied below stay root-owned, while homepage can
+    # still write logs/ and its skeleton files.
+    service_dirs:
+      - /opt/stacks/homepage/config
+
+- name: Ensure Homepage icons directory exists
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: /opt/stacks/homepage/icons
     state: directory
     owner: root
     group: root
     mode: "0755"
-  loop:
-    - /opt/stacks/homepage/config
-    - /opt/stacks/homepage/icons
 
 - name: Copy Homepage config files
   ansible.builtin.copy:
