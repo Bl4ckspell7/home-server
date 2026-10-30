@@ -56,17 +56,27 @@ echo "my-very-long-passphrase" > /opt/luks.key
 
 ### Run Ansible Playbook _(from remote)_
 
-Finally, run the playbook:
+Finally, run the playbooks:
 
 ```bash
-ansible-playbook -i inventory.yml playbook.yml [--tags tags]
+ansible-playbook -i inventory.yml server.yml [--tags tags]
+ansible-playbook -i inventory.yml services.yml [--tags tags]
+```
+
+`inventory.yml` reaches the server as `svr1.local`, published by avahi over
+mDNS (see [Network](./network.md#mdns-svr1local)). The GNOME desktop task
+installs avahi, so this normally works right away. On an install without it,
+pass the IP for the first run until the `avahi` role has run:
+
+```bash
+ansible-playbook -i inventory.yml server.yml -e ansible_host=<server-ip>
 ```
 
 ### Wake-on-LAN
 
 1. Enable WOL in BIOS.
 
-2. Find interface & MAC address:
+2. Find the MAC address (for waking it later):
 
 ```bash
 ip addr show
@@ -74,12 +84,14 @@ ip addr show
 
 Example: `enp5s0`, `xx:xx:xx:xx:xx:xx`
 
-→ Set `wol_interface` in `server.yml` and run the Ansible role.
+→ The `nic` role renames the LAN card (the default-route interface) to
+`lan_interface` (`lan0`, set in `server.yml`) from the next boot on; the `wol`
+and `avahi` roles use that name. Run all three, then reboot.
 
 3. Verify WOL support:
 
 ```bash
-ethtool enp5s0 | grep "Wake-on"
+ethtool lan0 | grep "Wake-on"
 ```
 
 Output should contain `"g"`.

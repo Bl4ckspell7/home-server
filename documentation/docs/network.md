@@ -80,6 +80,17 @@ FTLCONF_dns_hosts: |
 
 **Note:** `.lan` domains resolve to container IPs (172.21.255.x), which only work for container-to-container communication. For external access from phones/laptops, use Caddy with public domains.
 
+## mDNS (svr1.local)
+
+The server's LAN address changes with the router's DHCP, so `inventory.yml` and `~/.ssh/config` use `svr1.local` instead of an IP. avahi publishes that name over mDNS (`roles/server/avahi/`):
+
+- **Interface:** `allow-interfaces` limits avahi to `lan_interface` (`lan0`, set in `server.yml`), so it stays off the Docker bridges.
+- **Stable NIC name:** `roles/server/nic/` writes `/etc/systemd/network/10-nic.link`, which names the LAN card `lan0` by its permanent MAC (read from the default-route interface). The name sits outside udev's predictable names (`enp5s0` stays as an altname), so PCI bus renumbering, a BIOS update, a new udev naming scheme or another card can't take it — any of these would break both avahi and Wake-on-LAN. A changed name applies on the next boot. Check with `udevadm info /sys/class/net/lan0 | grep ID_NET_LINK_FILE`.
+- **Firewall:** UFW allows UDP 5353 to `224.0.0.251` and `ff02::fb` (see `roles/server/ufw/tasks/main.yml`).
+- **Clients:** the workstation resolves `.local` through `nss-mdns` (`mdns4_minimal` in `/etc/nsswitch.conf`). Test with `avahi-resolve -n4 svr1.local`.
+
+If another host on the LAN also announces `svr1`, avahi renames this one to `svr1-2.local` and Ansible loses it; check `journalctl -u avahi-daemon`.
+
 ## Caddy
 
 **Container IP:** `172.21.255.238`  
