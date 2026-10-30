@@ -1,5 +1,9 @@
 - name: Configure base system
   hosts: svr1
+  vars:
+    # LAN NIC; the nic role names the card (permanent MAC) this, outside udev's
+    # predictable-name range so no other device can claim it.
+    lan_interface: lan0
   roles:
     - role: apt
       tags: apt
@@ -46,10 +50,21 @@
     - role: gtk
       tags: gtk
 
+    - role: nic
+      tags: nic
+      vars:
+        nic_name: "{{ lan_interface }}"
+
     - role: wol
       tags: wol
       vars:
-        wol_interface: enp5s0
+        wol_interface: "{{ lan_interface }}"
+
+    - role: avahi
+      tags: avahi
+      vars:
+        avahi_allow_interfaces:
+          - "{{ lan_interface }}"
 
     - role: dns
       tags: dns

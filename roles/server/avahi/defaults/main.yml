@@ -1,0 +1,2 @@
+# Interfaces avahi uses for mDNS; empty means all (the package default).
+avahi_allow_interfaces: []

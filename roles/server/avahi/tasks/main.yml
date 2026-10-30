@@ -1,0 +1,22 @@
+# inventory.yml reaches this host as svr1.local, which avahi publishes via mDNS.
+- name: Install avahi-daemon
+  ansible.builtin.apt:
+    name: avahi-daemon
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Deploy avahi-daemon config
+  ansible.builtin.template:
+    src: avahi-daemon.conf.j2
+    dest: /etc/avahi/avahi-daemon.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart avahi-daemon
+
+- name: Ensure avahi-daemon enabled and running
+  ansible.builtin.systemd_service:
+    name: avahi-daemon
+    state: started
+    enabled: true

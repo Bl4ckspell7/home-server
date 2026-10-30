@@ -1,0 +1,9 @@
+# Managed by Ansible — pins the LAN NIC name to the card itself, so PCI bus
+# renumbering, a BIOS update or a new udev naming scheme can't rename it.
+# Only the first matching .link applies, so keep 99-default.link's altnames.
+[Match]
+PermanentMACAddress={{ nic_permanent_mac }}
+
+[Link]
+Name={{ nic_name }}
+AlternativeNamesPolicy=database onboard slot path mac
