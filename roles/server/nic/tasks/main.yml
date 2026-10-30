@@ -1,8 +1,7 @@
 - name: Read permanent MAC address of the LAN NIC
-  # The default-route interface is the LAN NIC under its old or new name, so
-  # this works before and after the rename. Read live instead of stored in the repo.
+  # Read live instead of stored in the repo.
   ansible.builtin.command:
-    cmd: ethtool -P {{ ansible_facts['default_ipv4']['interface'] }}
+    cmd: ethtool -P {{ nic_current_interface }}
   register: nic_permanent_mac_raw
   changed_when: false
   # An all-zero address means "none"; udev would never match it.
@@ -26,3 +25,40 @@
   vars:
     nic_permanent_mac: "{{ nic_permanent_mac_raw.stdout.split()[-1] }}"
   notify: Rebuild initramfs with NIC link
+
+# NetworkManager overrides the sysctl IPv6 baseline (sysctl role) on interfaces
+# it configures, and NetworkManager.conf has no global default for ipv6.method,
+# so IPv6 is switched off in the LAN NIC's own connection profile.
+- name: Find the NetworkManager connection of the LAN NIC
+  ansible.builtin.command:
+    cmd: nmcli -g GENERAL.CON-UUID,GENERAL.STATE device show {{ nic_current_interface }}
+  register: nic_nm_device
+  changed_when: false
+  # An externally configured device only has a profile NM generated itself.
+  failed_when: >-
+    nic_nm_device.rc != 0
+    or nic_nm_device.stdout_lines | length != 2
+    or nic_nm_device.stdout_lines[0] is not regex('^[0-9a-f-]{36}$')
+    or 'externally' in nic_nm_device.stdout_lines[1]
+  check_mode: false
+
+- name: Read IPv6 method of the LAN NIC connection
+  ansible.builtin.command:
+    cmd: nmcli -g ipv6.method connection show uuid {{ nic_nm_device.stdout_lines[0] }}
+  register: nic_nm_ipv6_method
+  changed_when: false
+  check_mode: false
+
+- name: Disable IPv6 in the LAN NIC connection
+  ansible.builtin.command:
+    cmd: nmcli connection modify uuid {{ nic_nm_device.stdout_lines[0] }} ipv6.method disabled
+  when: nic_nm_ipv6_method.stdout != 'disabled'
+  changed_when: true
+
+- name: Apply the connection to the running LAN NIC
+  # Right after the modify instead of a handler, so a later failing role can't
+  # leave the profile changed on disk but not applied. Reapply keeps the link up.
+  ansible.builtin.command:
+    cmd: nmcli device reapply {{ nic_current_interface }}
+  when: nic_nm_ipv6_method.stdout != 'disabled'
+  changed_when: true

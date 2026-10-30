@@ -1,11 +1,12 @@
 # Managed by Ansible — Debian's defaults, except: host-name pinned to the
 # inventory name (inventory.yml reaches this host as <name>.local),
-# allow-interfaces keeps avahi off the Docker bridges, and wide-area (unicast
-# DNS-SD, not needed here) is off.
+# allow-interfaces keeps avahi off the Docker bridges, IPv6 is off (disabled
+# host-wide, see the sysctl and nic roles), and wide-area (unicast DNS-SD, not
+# needed here) is off.
 [server]
 host-name={{ inventory_hostname }}
 use-ipv4=yes
-use-ipv6=yes
+use-ipv6=no
 {% if avahi_allow_interfaces | length > 0 %}
 allow-interfaces={{ avahi_allow_interfaces | join(',') }}
 {% endif %}
