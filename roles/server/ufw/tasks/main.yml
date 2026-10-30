@@ -52,6 +52,19 @@
     - udp
     - tcp
 
+# Duplicates Debian's stock before.rules, but survives edits to them and shows
+# up in `ufw status`; avahi publishes svr1.local, which inventory.yml uses.
+- name: Allow mDNS for avahi
+  community.general.ufw:
+    rule: allow
+    to_ip: "{{ item }}"
+    to_port: "5353"
+    proto: udp
+    comment: "mDNS (avahi, svr1.local)"
+  loop:
+    - 224.0.0.251
+    - ff02::fb
+
 - name: Ensure UFW is enabled
   community.general.ufw:
     state: enabled
