@@ -1,0 +1,3 @@
+# The default-route interface is the LAN NIC under its old or new name, so the
+# role works before and after the rename (which only applies on the next boot).
+nic_current_interface: "{{ ansible_facts['default_ipv4']['interface'] }}"
