@@ -1,0 +1,6 @@
+# The initramfs udev hook copies /etc/systemd/network/*.link, so early boot
+# names the NIC the same way.
+- name: Rebuild initramfs with NIC link
+  ansible.builtin.command: update-initramfs -u -k all
+  become: true
+  changed_when: true

@@ -1,0 +1,28 @@
+- name: Read permanent MAC address of the LAN NIC
+  # The default-route interface is the LAN NIC under its old or new name, so
+  # this works before and after the rename. Read live instead of stored in the repo.
+  ansible.builtin.command:
+    cmd: ethtool -P {{ ansible_facts['default_ipv4']['interface'] }}
+  register: nic_permanent_mac_raw
+  changed_when: false
+  # An all-zero address means "none"; udev would never match it.
+  failed_when: >-
+    nic_permanent_mac_raw.rc != 0
+    or nic_permanent_mac_raw.stdout is not regex('([0-9a-f]{2}:){5}[0-9a-f]{2}$')
+    or nic_permanent_mac_raw.stdout is regex('00:00:00:00:00:00$')
+  check_mode: false
+
+- name: Pin NIC name to its permanent MAC as {{ nic_name }}
+  # PCI bus renumbering, a BIOS update (onboard name eno1) or a new udev
+  # naming scheme would otherwise rename the NIC; avahi and wol use the name.
+  # Fixed file name, so changing nic_name replaces the file instead of adding one.
+  # Takes effect on the next boot.
+  ansible.builtin.template:
+    src: nic.link.j2
+    dest: /etc/systemd/network/10-nic.link
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    nic_permanent_mac: "{{ nic_permanent_mac_raw.stdout.split()[-1] }}"
+  notify: Rebuild initramfs with NIC link
