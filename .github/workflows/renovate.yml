@@ -39,7 +39,7 @@ jobs:
         with:
           token: ${{ secrets.RENOVATE_TOKEN }}
           # renovate: datasource=docker depName=ghcr.io/renovatebot/renovate
-          renovate-version: 44.199.0@sha256:76e0fb8c982004f8f9a6dd041a777f9c8aee6b4b852da862a1217c5ec550e6d9
+          renovate-version: 44.201.1@sha256:4c5e60f6247af3217c51bd7ebc780ba4224dbc4d8c3b44833fa78d1e91211f19
         env:
           LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
           RENOVATE_DRY_RUN: ${{ inputs.dryRun || 'false' }}
