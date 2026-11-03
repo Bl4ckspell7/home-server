@@ -1,0 +1,14 @@
+{# First-run seed (force: false): skips the setup wizard, then Backrest owns the
+   file. passwordBcrypt is base64 of the bcrypt hash. #}
+{{ {
+  "version": 6,
+  "instance": backrest_instance,
+  "auth": {
+    "users": [
+      {
+        "name": authentik_admin_user.username,
+        "passwordBcrypt": backrest_password_bcrypt
+      }
+    ]
+  }
+} | to_nice_json(indent=2) }}

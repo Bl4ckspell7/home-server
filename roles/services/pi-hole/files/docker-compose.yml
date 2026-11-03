@@ -47,7 +47,6 @@ services:
         172.21.255.251 dockge.lan
         172.21.255.250 linkwarden.lan
         172.21.255.249 backrest.lan
-        172.21.255.248 kuma.lan
         172.21.255.247 ddns-updater.lan
         172.21.255.246 homepage.lan
         172.21.255.245 photon.lan

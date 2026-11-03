@@ -1,5 +1,18 @@
 ---
+- name: Ensure Backrest config directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/backrest/config
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
 - name: Deploy Backrest
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: backrest
+    service_secrets: true
+    config_templates:
+      - src: config.json.j2  # seed only: Backrest rewrites it
+        dest: /opt/stacks/backrest/config/config.json
+        force: false

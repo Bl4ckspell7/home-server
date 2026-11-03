@@ -7,3 +7,11 @@
 # The DNS zone itself is managed separately in terraform/dns — changing this alone
 # does not create records.
 base_domain: bl4ckspell.de
+
+# The single human account: declared in Authentik (users.yaml blueprint) and
+# reused by apps that need its identity (backrest, dawarich). Rebuild password:
+# admin_password_hash in roles/services/authentik/vars/secrets.yml.
+authentik_admin_user:
+  username: bl4ckspell
+  name: Bl4ckspell
+  email: bl4ckspell@proton.me

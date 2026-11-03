@@ -15,9 +15,10 @@
 #   env_owner        (optional) default root
 #   env_group        (optional) default root
 #   env_mode         (optional) default "0600"
-#   config_templates (optional) extra files [{src, dest, owner?, group?, mode?}],
-#                    default root:root "0600". Compose misses edits to them: put
-#                    their hash in a service label (see immich)
+#   config_templates (optional) extra files [{src, dest, owner?, group?, mode?,
+#                    force?}], default root:root "0600". force: false only seeds a
+#                    missing file (for files the app rewrites). Compose misses
+#                    edits to them: put their hash in a service label (see immich)
 #   compose_recreate (optional) docker_compose_v2 recreate policy, default auto
 
 - name: "Ensure stack directory exists for {{ service_name }}"
@@ -66,6 +67,7 @@
     owner: "{{ item.owner | default('root') }}"
     group: "{{ item.group | default('root') }}"
     mode: "{{ item.mode | default('0600') }}"
+    force: "{{ item.force | default(true) }}"
   loop: "{{ config_templates | default([]) }}"
   loop_control:
     label: "{{ item.dest }}"

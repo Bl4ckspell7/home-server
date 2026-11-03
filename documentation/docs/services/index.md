@@ -32,7 +32,6 @@ Services behind Caddy use `expose` (no host port binding). Only services requiri
 | **Immich**        | -             | 2283               |
 | **Photon**        | -             | 2322               |
 | **Homepage**      | -             | 3000               |
-| **Uptime Kuma**   | -             | 3001               |
 | **Dawarich**      | -             | 3000               |
 | **Docusaurus**    | -             | 8349               |
 | **Dockhand**      | -             | 3000               |

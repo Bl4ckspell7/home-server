@@ -69,7 +69,6 @@ homepage_icons=(
     proton-mail.svg
     radicale.svg
     steam.svg
-    uptime-kuma.svg
     vaultwarden.svg
     youtube.svg
 )
@@ -78,6 +77,7 @@ homepage_icons=(
 # Authentik serves these from data/media/public/application-icons/ and the
 # blueprint references them as the bare subpath `application-icons/<file>`.
 authentik_icons=(
+    backrest.svg
     dawarich.svg
     dockge.svg
     dockhand.png
@@ -85,7 +85,6 @@ authentik_icons=(
     linkwarden.svg
     paperless-ngx.svg
     pi-hole.svg
-    uptime-kuma.svg
     vaultwarden.svg
 )
 

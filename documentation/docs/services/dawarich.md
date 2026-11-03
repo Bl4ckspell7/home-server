@@ -8,6 +8,9 @@ Port: `:3000` (exposed, no host binding)
 Email/password login and registration are disabled. Authentik OIDC is the only
 interactive login method, with automatic registration for authorized users.
 
+A fresh install seeds `demo@dawarich.app` as admin. The role links it to the
+Authentik account (`files/link_admin.rb`), so the first SSO login lands in it.
+
 `secrets.yml`:
 
 ```yaml
