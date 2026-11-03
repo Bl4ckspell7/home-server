@@ -113,9 +113,6 @@ http://immich.{$BASE_DOMAIN}:8080 {
 http://jellyfin.{$BASE_DOMAIN}:8080 {
 	import proxy jellyfin.lan:8096
 }
-http://kuma.{$BASE_DOMAIN}:8080 {
-	import proxy kuma.lan:3001
-}
 http://linkwarden.{$BASE_DOMAIN}:8080 {
 	import proxy linkwarden.lan:3000
 }

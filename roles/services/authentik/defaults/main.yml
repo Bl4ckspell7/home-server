@@ -119,10 +119,6 @@ authentik_link_apps:
     description: DNS ad blocking
     host: "pihole.{{ authentik_domain }}"
     launch_path: /admin/
-  - slug: uptime-kuma
-    name: Uptime Kuma
-    description: Service monitoring
-    host: "kuma.{{ authentik_domain }}"
 
 # Objects the blueprint deletes. Removing a blueprint file deletes NOTHING in
 # Authentik — it only stops managing those objects — so obsolete entries need an
@@ -132,9 +128,10 @@ authentik_link_apps:
 # The oauth2 providers below are the UI-created ones replaced by the entries
 # above; the applications are repointed earlier in the same blueprint, so the
 # delete cannot orphan anything. ddns-updater is gone entirely: that service was
-# removed when DNS moved to Terraform.
+# removed when DNS moved to Terraform. uptime-kuma: service removed (unused).
 authentik_removed_apps:
   - ddns-updater
+  - uptime-kuma
 authentik_removed_oauth2_providers:
   - Provider for Dawarich
   - Provider for Dockhand

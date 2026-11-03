@@ -60,6 +60,3 @@
 
     - role: vaultwarden
       tags: vaultwarden
-
-    - role: uptime-kuma
-      tags: uptime-kuma

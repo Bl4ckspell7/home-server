@@ -39,13 +39,6 @@
             ping: dockge.lan
             statusStyle: "basic"
 
-        - Uptime-Kuma:
-            icon: /icons/uptime-kuma.svg
-            href: https://kuma.bl4ckspell.de/
-            description: Status
-            ping: kuma.lan
-            statusStyle: "basic"
-
         - Dockhand:
             icon: /icons/dockhand.png
             href: https://dockhand.bl4ckspell.de/

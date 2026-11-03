@@ -69,7 +69,6 @@ homepage_icons=(
     proton-mail.svg
     radicale.svg
     steam.svg
-    uptime-kuma.svg
     vaultwarden.svg
     youtube.svg
 )
@@ -85,7 +84,6 @@ authentik_icons=(
     linkwarden.svg
     paperless-ngx.svg
     pi-hole.svg
-    uptime-kuma.svg
     vaultwarden.svg
 )
 
