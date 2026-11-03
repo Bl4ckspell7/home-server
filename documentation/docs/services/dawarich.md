@@ -12,9 +12,10 @@ interactive login method, with automatic registration for authorized users.
 
 ```yaml
 dawarich_postgres_password: ""
-authentik_client_id: ""
-authentik_client_secret: ""
+dawarich_secret_key_base: ""
 ```
+
+OIDC credentials: shared `vars/oidc_secrets.yml` ([Authentik](authentik.md#oidc-client-credentials)).
 
 **Reverse Geocoding:**
 
