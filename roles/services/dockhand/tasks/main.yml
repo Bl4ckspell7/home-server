@@ -11,3 +11,167 @@
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: dockhand
+    service_oidc_secrets: true
+
+# No config option for OIDC, only the API, which is open while auth is off: a
+# fresh install (or one reset with disable-auth.sh) is configured through it.
+- name: Manage the Authentik OIDC provider
+  when: not ansible_check_mode
+  vars:
+    dockhand_db: [docker, exec, dockhand, sqlite3, -readonly, -json, /app/data/db/dockhand.db]
+    # The body goes on stdin: secrets stay out of the process list.
+    dockhand_api: [docker, exec, -i, dockhand, curl, -sS, --fail-with-body, -H, "Content-Type: application/json", --data-binary, "@-"]
+    dockhand_oidc_name_sql: "{{ dockhand_oidc_name | replace(\"'\", \"''\") }}"
+    dockhand_state_query: >-
+      select (select auth_enabled from auth_settings order by id limit 1) as auth_enabled,
+      (select count(*) from users) as users,
+      (select count(*) from oidc_config x where x.enabled = 1 and x.id is not o.id) as other_oidc,
+      o.id as oidc_id, o.enabled, o.issuer_url, o.client_id, o.redirect_uri, o.scopes,
+      o.username_claim, o.admin_claim, o.admin_value
+      from (select 1) left join oidc_config o on o.name = '{{ dockhand_oidc_name_sql }}' order by o.id limit 1
+    dockhand_state: "{{ (dockhand_state_raw.stdout | from_json)[0] }}"
+    dockhand_bootstrap: "{{ dockhand_state.auth_enabled | default(0, true) | int == 0 }}"
+    # Same provider twice (API body vs DB row): keep in sync.
+    dockhand_oidc_body:
+      name: "{{ dockhand_oidc_name }}"
+      enabled: true
+      issuerUrl: "{{ dockhand_oidc_issuer }}"
+      clientId: "{{ oidc_dockhand_client_id }}"
+      clientSecret: "{{ oidc_dockhand_client_secret }}"
+      redirectUri: "{{ dockhand_oidc_redirect_uri }}"
+      scopes: openid profile email
+      usernameClaim: preferred_username
+      adminClaim: groups
+      adminValue: "{{ dockhand_oidc_admin_group }}"
+    dockhand_oidc_expected:
+      enabled: 1
+      issuer_url: "{{ dockhand_oidc_issuer }}"
+      client_id: "{{ oidc_dockhand_client_id }}"
+      redirect_uri: "{{ dockhand_oidc_redirect_uri }}"
+      scopes: openid profile email
+      username_claim: preferred_username
+      admin_claim: groups
+      admin_value: "{{ dockhand_oidc_admin_group }}"
+  block:
+    - name: Wait for Dockhand to be healthy
+      community.docker.docker_container_info:
+        name: dockhand
+      register: dockhand_info
+      until: dockhand_info.container.State.Health.Status | default('') == 'healthy'
+      retries: 30
+      delay: 10
+
+    - name: Read the Dockhand auth state
+      ansible.builtin.command:
+        argv: "{{ dockhand_db + [dockhand_state_query] }}"
+      register: dockhand_state_raw
+      changed_when: false
+
+    - name: Configure Dockhand while its auth is off
+      when: dockhand_bootstrap | bool
+      block:
+        - name: Create the admin user
+          # Enabling auth needs a user; the first SSO login takes it over by
+          # username. The password is never stored: local login is disabled.
+          ansible.builtin.command:
+            argv: "{{ dockhand_api + ['http://127.0.0.1:3000/api/users'] }}"
+            stdin: >-
+              {{ {'username': authentik_admin_user.username,
+                  'email': authentik_admin_user.email,
+                  'displayName': authentik_admin_user.name,
+                  'password': lookup('ansible.builtin.password', '/dev/null', length=32, chars=['ascii_letters', 'digits'])}
+                 | to_json }}
+          register: dockhand_user_create
+          changed_when: dockhand_user_create.rc == 0
+          failed_when: false
+          no_log: true
+          when: dockhand_state.users | int == 0
+
+        - name: Fail with the user creation error
+          ansible.builtin.fail:
+            msg: "{{ dockhand_user_create.stdout }} {{ dockhand_user_create.stderr }}"
+          when: dockhand_user_create.rc | default(0) != 0
+
+        - name: Write the Authentik OIDC provider
+          # Update too, not just create: this also repairs a drifted provider or
+          # a rotated secret, which can't be compared (stored encrypted).
+          ansible.builtin.command:
+            argv: >-
+              {{ dockhand_api + ['-X', 'POST', 'http://127.0.0.1:3000/api/auth/oidc'] if dockhand_state.oidc_id is none
+                 else dockhand_api + ['-X', 'PUT', 'http://127.0.0.1:3000/api/auth/oidc/' ~ dockhand_state.oidc_id] }}
+            stdin: "{{ dockhand_oidc_body | to_json }}"
+          register: dockhand_oidc_write
+          changed_when: dockhand_oidc_write.rc == 0
+          failed_when: false
+          no_log: true
+
+        - name: Fail with the OIDC provider error
+          ansible.builtin.fail:
+            msg: >-
+              {{ (dockhand_oidc_write.stdout ~ ' ' ~ dockhand_oidc_write.stderr)
+                 | replace(oidc_dockhand_client_secret, '<secret>') }}
+          when: dockhand_oidc_write.rc != 0
+
+        - name: Wait until Dockhand can reach the Authentik discovery document
+          # Fresh install: Authentik creates the provider asynchronously.
+          ansible.builtin.command:
+            argv:
+              - docker
+              - exec
+              - dockhand
+              - curl
+              - -sS
+              - -X
+              - POST
+              - "http://127.0.0.1:3000/api/auth/oidc/{{ (dockhand_oidc_write.stdout | from_json).id }}/test"
+          register: dockhand_oidc_test
+          changed_when: false
+          until: dockhand_oidc_test.stdout is search('"success":\s*true')
+          retries: 12
+          delay: 10
+
+    - name: Re-read the Dockhand auth state
+      ansible.builtin.command:
+        argv: "{{ dockhand_db + [dockhand_state_query] }}"
+      register: dockhand_check_raw
+      changed_when: false
+
+    - name: Check that only the Authentik provider can log in
+      # Before enabling auth: a wrong provider would lock everyone out.
+      vars:
+        dockhand_check: "{{ (dockhand_check_raw.stdout | from_json)[0] }}"
+      ansible.builtin.assert:
+        that:
+          - dockhand_check.other_oidc | int == 0
+          - >-
+            dockhand_oidc_expected == (dockhand_check | dict2items
+            | selectattr('key', 'in', dockhand_oidc_expected.keys() | list) | items2dict)
+        fail_msg: >-
+          Dockhand's '{{ dockhand_oidc_name }}' OIDC provider is missing or differs
+          from {{ dockhand_oidc_expected }}, or another provider is enabled. Repair:
+          docker exec dockhand /app/scripts/disable-auth.sh, then deploy.
+        quiet: true
+
+    - name: Enable Dockhand auth
+      ansible.builtin.command:
+        argv: [docker, exec, dockhand, curl, -sS, --fail-with-body, -X, PUT, -H, "Content-Type: application/json",
+               --data, '{"authEnabled": true}', http://127.0.0.1:3000/api/auth/settings]
+      register: dockhand_auth_enable
+      changed_when: true
+      failed_when: dockhand_auth_enable.rc != 0 or dockhand_auth_enable.stdout is not search('"authEnabled":\s*true')
+      when: dockhand_bootstrap | bool
+
+  rescue:
+    - name: Stop Dockhand while its auth is off
+      # Fail closed: with auth off its API is open to anyone.
+      community.docker.docker_compose_v2:
+        project_src: /opt/stacks/dockhand
+        state: stopped
+      when: dockhand_state_raw.rc | default(1) == 0 and dockhand_bootstrap | bool
+
+    - name: Fail after the Dockhand OIDC error
+      ansible.builtin.fail:
+        msg: >-
+          Dockhand OIDC setup failed (see the task above).
+          {{ 'Dockhand was stopped because its auth is off.' if dockhand_state_raw.rc | default(1) == 0
+             and dockhand_bootstrap | bool else '' }}

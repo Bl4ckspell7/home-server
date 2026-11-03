@@ -57,7 +57,7 @@ authentik_proxy_grant_types:
 # OIDC consumers. Credentials: oidc_<slug>_client_id / _client_secret (dashes
 # become underscores) in vars/oidc_secrets.yml, shared with the consuming app's
 # role (service_oidc_secrets). Set explicitly rather than generated, so recreating
-# a provider keeps them. Dockhand still keeps its copy only in its own DB.
+# a provider keeps them. Dockhand copies its secret only at setup (see its docs).
 authentik_oidc_apps:
   - slug: dawarich
     name: Dawarich

@@ -1,0 +1,7 @@
+---
+# Dockhand keeps its OIDC provider only in its DB (see tasks/main.yml).
+dockhand_oidc_name: Authentik
+dockhand_oidc_issuer: "https://authentik.{{ base_domain }}/application/o/dockhand/"
+dockhand_oidc_redirect_uri: "https://dockhand.{{ base_domain }}/api/auth/oidc/callback"
+# Grants the Admin role; without it the profile and user list show non-admin.
+dockhand_oidc_admin_group: authentik Admins
