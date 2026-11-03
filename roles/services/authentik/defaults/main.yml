@@ -1,6 +1,13 @@
 ---
 authentik_domain: "{{ base_domain }}"
 
+# The single human account (templates/users.yaml.j2). Rebuild password:
+# admin_password_hash in vars/secrets.yml.
+authentik_admin_user:
+  username: bl4ckspell
+  name: Bl4ckspell
+  email: bl4ckspell@proton.me
+
 # Bind-mounted directories the containers write to. Both run as the dedicated
 # authentik user, and the image entrypoint only fixes permissions when
 # it starts as root — which it no longer does — so Ansible owns them instead.
@@ -49,14 +56,13 @@ authentik_proxy_grant_types:
 #                role. Never a CDN URL: tiles are fetched client-side, so a remote
 #                icon renders intermittently and leaks a request per tile.
 #                Override only where the filename differs from the slug.
+#   scope_mappings  OIDC only: extra claims [{scope_name, description,
+#                expression}]; the app must request scope_name.
 
-# OIDC consumers. Credentials live in vars/secrets.yml as
-# oidc_<slug>_client_id / oidc_<slug>_client_secret (dashes become underscores)
-# and reach the containers as AUTHENTIK_OIDC_<SLUG>_CLIENT_ID / _CLIENT_SECRET
-# for the blueprint's !Env lookups. They are set explicitly rather than
-# generated, so recreating a provider keeps the credentials each consuming app
-# already has configured — dockhand and immich in particular hold theirs only in
-# their own runtime config, nowhere in this repo.
+# OIDC consumers. Credentials: oidc_<slug>_client_id / _client_secret (dashes
+# become underscores) in vars/oidc_secrets.yml, shared with the consuming app's
+# role (service_oidc_secrets). Set explicitly rather than generated, so recreating
+# a provider keeps them. Dockhand still keeps its copy only in its own DB.
 authentik_oidc_apps:
   - slug: dawarich
     name: Dawarich
@@ -79,6 +85,16 @@ authentik_oidc_apps:
       - "app.immich:///oauth-callback"
       - "https://immich.{{ authentik_domain }}/auth/login"
       - "https://immich.{{ authentik_domain }}/user-settings"
+    scope_mappings:
+      # Immich's oauth.roleClaim, synced on every login.
+      - scope_name: immich_role
+        description: Immich admin role from authentik Admins membership
+        expression: |
+          return {
+              "immich_role": "admin"
+              if ak_is_group_member(request.user, name="authentik Admins")
+              else "user"
+          }
 
   - slug: linkwarden
     name: Linkwarden

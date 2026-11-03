@@ -72,6 +72,15 @@
     mode: "0644"
   notify: Restart Authentik worker
 
+- name: Copy Authentik MFA blueprint
+  ansible.builtin.copy:
+    src: mfa.yaml
+    dest: /opt/stacks/authentik/blueprints/mfa.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Authentik worker
+
 - name: Remove superseded proxy-apps blueprint
   # Replaced by apps.yaml. Deleting the file does NOT remove anything it created
   # in Authentik — that is what the tombstone entries in apps.yaml are for — but
@@ -86,4 +95,16 @@
   vars:
     service_name: authentik
     service_secrets: true
+    service_oidc_secrets: true
     env_template: authentik.env.j2
+
+- name: Render Authentik users blueprint
+  # After the deploy: the worker applies it on write, and its !Env hashes must
+  # already be in the containers. On a fresh install, bootstrap also runs first.
+  ansible.builtin.template:
+    src: users.yaml.j2
+    dest: /opt/stacks/authentik/blueprints/users.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Authentik worker
