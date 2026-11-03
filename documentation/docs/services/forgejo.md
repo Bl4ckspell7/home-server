@@ -12,6 +12,19 @@ forgejo_db_password: ""
 forgejo_secret_key: "" # 64 alphanumeric characters
 ```
 
+OIDC credentials: shared `vars/oidc_secrets.yml` ([Authentik](authentik.md#oidc-client-credentials)).
+
+## Login
+
+Authentik only. The first SSO login links to the existing account by username
+(asks Forgejo's own 2FA once); site admin follows `authentik Admins`.
+
+- Git, registry, API: access tokens only (passwords rejected).
+- Break-glass: `docker exec forgejo forgejo admin …`, or
+  `ENABLE_INTERNAL_SIGNIN: "true"` and redeploy.
+- Fresh install: the first SSO login creates the admin; the `renovate` user and
+  the Actions secrets are manual.
+
 ## Secret key
 
 Don't change `forgejo_secret_key`: TOTP, Actions secrets and mirror addresses
