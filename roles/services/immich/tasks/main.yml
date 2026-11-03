@@ -20,4 +20,10 @@
   vars:
     service_name: immich
     service_secrets: true
+    service_oidc_secrets: true
     env_template: immich.env.j2
+    config_templates:
+      - src: immich.json.j2  # group-readable: the container runs as immich
+        dest: /opt/stacks/immich/immich.json
+        group: immich
+        mode: "0640"

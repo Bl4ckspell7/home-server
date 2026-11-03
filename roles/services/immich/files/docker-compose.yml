@@ -27,8 +27,14 @@ services:
       # Do not edit the next line. If you want to change the media storage location on your system, edit the value of UPLOAD_LOCATION in the .env file
       - ${UPLOAD_LOCATION}:/data
       - /etc/localtime:/etc/localtime:ro
+      - ./immich.json:/config/immich.json:ro
     env_file:
       - .env
+    environment:
+      IMMICH_CONFIG_FILE: /config/immich.json  # templates/immich.json.j2
+    labels:
+      # Recreates the container when immich.json changes.
+      home-server.config-hash: ${IMMICH_CONFIG_HASH:?config hash required}
     expose:
       - "2283"
     networks:
