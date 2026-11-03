@@ -40,9 +40,12 @@
     owner: root
     group: root
     mode: "0644"
+  register: homepage_icons
 
 - name: Deploy Homepage
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: homepage
     env_template: homepage.env.j2
+    # Next.js only serves public/ files present at startup, so new icons need a recreate.
+    compose_recreate: "{{ 'always' if homepage_icons.changed else 'auto' }}"
