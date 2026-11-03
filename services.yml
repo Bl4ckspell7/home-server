@@ -46,6 +46,9 @@
     - role: ollama
       tags: ollama
 
+    - role: openwebui
+      tags: openwebui
+
     - role: paperless-ngx
       tags: paperless
 
