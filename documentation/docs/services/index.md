@@ -46,6 +46,7 @@ Services behind Caddy use `expose` (no host port binding). Only services requiri
 | **Jellyfin**      | -             | 8096               |
 | **Authentik**     | -             | 9443               |
 | **Ollama**        | -             | 11434              |
+| **Open WebUI**    | -             | 3000               |
 
 ## Service Users and Groups
 

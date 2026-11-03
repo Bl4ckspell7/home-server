@@ -54,6 +54,7 @@ services:
         172.21.255.243 immich.lan
         172.21.255.241 ollama.lan
         172.21.255.240 jellyfin.lan
+        172.21.255.239 openwebui.lan
         172.21.255.238 caddy.lan
         172.21.255.237 dockhand.lan
         172.21.255.236 anubis.lan
@@ -61,6 +62,8 @@ services:
         172.21.255.234 radicale.lan
         172.21.255.233 docs.lan
         172.21.255.232 vaultwarden.lan
+      # LAN hostnames (<host>.fritz.box) from the FritzBox, which tracks DHCP leases
+      FTLCONF_dns_revServers: "true,192.168.178.0/24,192.168.178.1,fritz.box"
       FTLCONF_dhcp_active: "false"
       # load custom dnsmasq snippets from /etc/dnsmasq.d
       FTLCONF_misc_etc_dnsmasq_d: "true"

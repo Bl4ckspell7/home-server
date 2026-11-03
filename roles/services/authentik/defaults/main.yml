@@ -109,6 +109,16 @@ authentik_oidc_apps:
     redirect_uris:
       - "https://linkwarden.{{ authentik_domain }}/api/v1/auth/callback/authentik"
 
+  - slug: openwebui
+    name: Open WebUI
+    description: Chat UI for local LLMs
+    icon: application-icons/open-webui.svg
+    grant_types:
+      - authorization_code
+      - refresh_token
+    redirect_uris:
+      - "https://openwebui.{{ authentik_domain }}/oauth/oidc/callback"
+
   - slug: paperless-ngx
     name: Paperless-ngx
     description: Document management

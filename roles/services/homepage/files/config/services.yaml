@@ -53,6 +53,13 @@
             ping: ollama.lan
             statusStyle: "basic"
 
+        - Open WebUI:
+            icon: /icons/open-webui.svg
+            href: https://openwebui.bl4ckspell.de/
+            description: Chat UI for local LLMs
+            ping: openwebui.lan
+            statusStyle: "basic"
+
         - Photon:
             icon: /icons/photon.png
             description: Geocoder

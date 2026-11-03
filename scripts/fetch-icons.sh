@@ -64,6 +64,7 @@ homepage_icons=(
     mastodon.svg
     matrix-light.svg
     ollama.svg
+    open-webui.svg
     paperless-ngx.svg
     pi-hole.svg
     proton-mail.svg
@@ -84,6 +85,7 @@ authentik_icons=(
     forgejo.svg
     immich.svg
     linkwarden.svg
+    open-webui.svg
     paperless-ngx.svg
     pi-hole.svg
     vaultwarden.svg
