@@ -1,0 +1,28 @@
+{# IMMICH_CONFIG_FILE: replaces the DB config, makes the settings UI read-only.
+   Overrides only (merged over defaults). Login page: /auth/login?autoLaunch=0 #}
+{{ {
+  "oauth": {
+    "enabled": true,
+    "issuerUrl": "https://authentik." ~ base_domain ~ "/application/o/immich/",
+    "clientId": oidc_immich_client_id,
+    "clientSecret": oidc_immich_client_secret,
+    "buttonText": "Authentik",
+    "autoRegister": true,
+    "autoLaunch": true,
+    "scope": "openid email profile immich_role",
+    "roleClaim": "immich_role"
+  },
+  "passwordLogin": {
+    "enabled": false
+  },
+  "backup": {
+    "database": {
+      "keepLastAmount": 7
+    }
+  },
+  "machineLearning": {
+    "ocr": {
+      "modelName": "PP-OCRv5_server"
+    }
+  }
+} | to_nice_json(indent=2) }}

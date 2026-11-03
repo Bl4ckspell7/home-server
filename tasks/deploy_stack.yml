@@ -7,11 +7,17 @@
 # Vars:
 #   service_name     (required) stack name; dir becomes /opt/stacks/<service_name>
 #   service_secrets  (bool, default false) decrypt vars/secrets.yml and load as facts
+#   service_oidc_secrets
+#                    (bool, default false) also load the shared Authentik OIDC
+#                    credentials from vars/oidc_secrets.yml at the repo root
 #   env_template     (optional) template file to render before deploy
 #   env_dest         (optional) render destination, default /opt/stacks/<service_name>/.env
 #   env_owner        (optional) default root
 #   env_group        (optional) default root
 #   env_mode         (optional) default "0600"
+#   config_templates (optional) extra files [{src, dest, owner?, group?, mode?}],
+#                    default root:root "0600". Compose misses edits to them: put
+#                    their hash in a service label (see immich)
 #   compose_recreate (optional) docker_compose_v2 recreate policy, default auto
 
 - name: "Ensure stack directory exists for {{ service_name }}"
@@ -24,23 +30,24 @@
 
 - name: "Decrypt secrets for {{ service_name }}"
   ansible.builtin.command:
-    cmd: "sops decrypt {{ role_path }}/vars/secrets.yml"
+    cmd: "sops decrypt {{ item }}"
+  loop: >-
+    {{ ([role_path ~ '/vars/secrets.yml'] if service_secrets | default(false) else [])
+       + ([playbook_dir ~ '/vars/oidc_secrets.yml'] if service_oidc_secrets | default(false) else []) }}
   delegate_to: localhost
   become: false
   changed_when: false
   check_mode: false
   no_log: true
   register: secrets_raw
-  when: service_secrets | default(false)
 
 - name: "Load secrets for {{ service_name }}"
   ansible.builtin.set_fact:
     "{{ item.key }}": "{{ item.value }}"
-  loop: "{{ secrets_raw.stdout | from_yaml | dict2items }}"
+  loop: "{{ secrets_raw.results | map(attribute='stdout') | map('from_yaml') | map('dict2items') | flatten }}"
   loop_control:
     label: "{{ item.key }}"
   no_log: true
-  when: service_secrets | default(false)
 
 - name: "Render config template for {{ service_name }}"
   ansible.builtin.template:
@@ -49,7 +56,20 @@
     owner: "{{ env_owner | default('root') }}"
     group: "{{ env_group | default('root') }}"
     mode: "{{ env_mode | default('0600') }}"
+  diff: false  # secrets; --diff would print them
   when: env_template is defined
+
+- name: "Render config files for {{ service_name }}"
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0600') }}"
+  loop: "{{ config_templates | default([]) }}"
+  loop_control:
+    label: "{{ item.dest }}"
+  diff: false
 
 - name: "Copy docker-compose file for {{ service_name }}"
   ansible.builtin.copy:

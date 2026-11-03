@@ -12,4 +12,5 @@
   vars:
     service_name: linkwarden
     service_secrets: true
+    service_oidc_secrets: true
     env_template: linkwarden.env.j2

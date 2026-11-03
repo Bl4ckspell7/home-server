@@ -1,2 +1,6 @@
 exclude_paths:
   - "**/vars/secrets.yml"
+  - vars/oidc_secrets.yml
+  # Blueprint tags (!Find, …) are not loadable YAML.
+  - roles/services/authentik/files/brand.yaml
+  - roles/services/authentik/files/mfa.yaml

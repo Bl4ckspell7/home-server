@@ -1,0 +1,51 @@
+{{ ansible_managed | comment }}
+# The single human account (authentik_admin_user). App admin rights derive from
+# `authentik Admins`. Own file: a failing entry rolls back its whole blueprint.
+version: 1
+metadata:
+  name: home-server-users
+  labels:
+    blueprints.goauthentik.io/instantiate: "true"
+entries:
+  # Also created by bootstrap, but blueprint files apply in no fixed order.
+  - model: authentik_core.group
+    id: admins
+    state: present
+    identifiers:
+      name: authentik Admins
+    attrs:
+      is_superuser: true
+
+  # Password on creation only (fresh rebuild); `present` would reset it each apply.
+  - model: authentik_core.user
+    state: created
+    identifiers:
+      username: {{ authentik_admin_user.username | to_json }}
+    attrs:
+      name: {{ authentik_admin_user.name | to_json }}
+      password_hash: !Env AUTHENTIK_ADMIN_PASSWORD_HASH
+
+  # `groups` replaces the whole set: membership is managed here, not in the UI.
+  - model: authentik_core.user
+    state: present
+    identifiers:
+      username: {{ authentik_admin_user.username | to_json }}
+    attrs:
+      name: {{ authentik_admin_user.name | to_json }}
+      email: {{ authentik_admin_user.email | to_json }}
+      type: internal
+      is_active: true
+      groups:
+        - !KeyOf admins
+
+  # Bootstrap's akadmin only marks setup done. Inactive rather than absent, and
+  # with the throwaway hash, so either apply order ends locked. Deleting it in
+  # the UI just gets it re-created.
+  - model: authentik_core.user
+    state: present
+    identifiers:
+      username: akadmin
+    attrs:
+      name: authentik Default Admin
+      is_active: false
+      password_hash: !Env AUTHENTIK_BOOTSTRAP_PASSWORD_HASH

@@ -20,9 +20,11 @@ stay owned by `authentik`; the role enforces that on every run.
 ```yaml
 pg_pass: 80 characters
 secret_key: 60 characters
+admin_password_hash: Django hash of the admin password (see Accounts)
+bootstrap_password_hash: Django hash of a throwaway password
 ```
 
-(don't use special characters)
+(no special characters in `pg_pass` / `secret_key`)
 
 - encrypt
 
@@ -30,14 +32,43 @@ secret_key: 60 characters
 sops encrypt --in-place secrets.yml
 ```
 
+## Accounts
+
+One human account (`authentik_admin_user`, `users.yaml` blueprint), member of
+`authentik Admins`. Apps derive admin rights from that group.
+
+- **Password**: `admin_password_hash` is applied only on a fresh rebuild.
+  Refresh it after a password change:
+
+  ```bash
+  ssh server 'docker exec -i authentik-postgresql psql -U authentik -d authentik -At -c "select password from authentik_core_user where username = '"'"'bl4ckspell'"'"'"' \
+    | python3 -c 'import sys,json; sys.stdout.write(json.dumps(sys.stdin.read().strip()))' \
+    | sops set --value-stdin roles/services/authentik/vars/secrets.yml '["admin_password_hash"]'
+  ```
+
+- **MFA devices** are not restored; a rebuild enrolls new ones at first login.
+- **`akadmin`** (bootstrap) only marks setup done; `users.yaml` keeps it
+  inactive. Don't delete it, it gets re-created.
+
+## OIDC client credentials
+
+`vars/oidc_secrets.yml` (repo root) holds every pair, read by this role and by
+the consuming app's role (`service_oidc_secrets: true`). Dashes in the slug
+become underscores:
+
+```yaml
+oidc_immich_client_id: ""
+oidc_immich_client_secret: ""
+```
+
+```bash
+sops edit vars/oidc_secrets.yml
+```
+
 ## Force MFA
 
-Flows and Stages -> Flows:
-
-`default-authentication-mfa-validation` ->
-
-- Not configured action: -> Force..
-- Configuration stages: -> `default-authenticator-webauthn-setup` & `default-authenticator-totp-setup`
+`files/mfa.yaml`: logins need TOTP or WebAuthn, and users without a device must
+enroll one. UI changes are overwritten.
 
 ## User switching
 
