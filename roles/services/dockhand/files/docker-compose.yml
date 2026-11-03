@@ -13,7 +13,8 @@ services:
       svr1-network:
         ipv4_address: 172.21.255.237
     environment:
-      DISABLE_LOCAL_LOGIN: false
+      DISABLE_LOCAL_LOGIN: "true"
+      OIDC_AUTOLOGIN: "true"
     dns:
       - 172.21.255.254
     dns_search: # don't append any search domain
