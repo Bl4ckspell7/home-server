@@ -1,13 +1,6 @@
 ---
 authentik_domain: "{{ base_domain }}"
 
-# The single human account (templates/users.yaml.j2). Rebuild password:
-# admin_password_hash in vars/secrets.yml.
-authentik_admin_user:
-  username: bl4ckspell
-  name: Bl4ckspell
-  email: bl4ckspell@proton.me
-
 # Bind-mounted directories the containers write to. Both run as the dedicated
 # authentik user, and the image entrypoint only fixes permissions when
 # it starts as root — which it no longer does — so Ansible owns them instead.
