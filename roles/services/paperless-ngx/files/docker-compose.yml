@@ -37,6 +37,12 @@ services:
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless-gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://paperless-tika:9998
       PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+      # Authentik-only; superuser follows the groups claim on each login.
+      # /admin/ still takes the break-glass PAPERLESS_ADMIN_USER.
+      PAPERLESS_DISABLE_REGULAR_LOGIN: "true"
+      PAPERLESS_REDIRECT_LOGIN_TO_SSO: "true"
+      PAPERLESS_SOCIAL_AUTO_SIGNUP: "true"
+      PAPERLESS_SOCIAL_ACCOUNT_SYNC_SUPERUSER_GROUP: "authentik Admins"
       PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
         {
             "openid_connect": {
