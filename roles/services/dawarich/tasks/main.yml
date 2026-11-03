@@ -6,3 +6,64 @@
     service_secrets: true
     service_oidc_secrets: true
     env_template: dawarich.env.j2
+
+# Fresh install only: link the seeded demo admin to the Authentik account
+# (files/link_admin.rb). Skipped once demo@dawarich.app is gone.
+- name: Link the seeded Dawarich admin to Authentik
+  when: not ansible_check_mode
+  block:
+    - name: Check for the seeded Dawarich demo user
+      # Retried until the seed has run (users > 0); the table may not exist yet.
+      ansible.builtin.command:
+        argv:
+          - docker
+          - exec
+          - dawarich-postgres
+          - psql
+          - -U
+          - postgres
+          - -d
+          - dawarich_development
+          - -Atc
+          - "select count(*), count(*) filter (where email = 'demo@dawarich.app') from users"
+      register: dawarich_users
+      changed_when: false
+      failed_when: false
+      until: dawarich_users.rc == 0 and (dawarich_users.stdout.split('|')[0] | int) > 0
+      retries: 30
+      delay: 10
+
+    - name: Read the admin account's Authentik subject
+      # Retried: on a fresh install the users blueprint is applied asynchronously.
+      ansible.builtin.command:
+        argv:
+          - docker
+          - exec
+          - authentik-worker
+          - ak
+          - shell
+          - -c
+          - "from authentik.core.models import User; print('SUB=' + User.objects.get(username={{ authentik_admin_user.username | to_json }}).uid)"
+      register: dawarich_admin_sub
+      changed_when: false
+      until: dawarich_admin_sub.stdout is search('^SUB=[0-9a-f]{64}$', multiline=True)
+      retries: 30
+      delay: 10
+      when: (dawarich_users.stdout.split('|')[1] | int) > 0
+
+    - name: Link the demo admin to the Authentik account
+      ansible.builtin.command:
+        argv:
+          - docker
+          - exec
+          - -e
+          - "LINK_SUB={{ dawarich_admin_sub.stdout | regex_search('^SUB=([0-9a-f]{64})$', '\\1', multiline=True) | first }}"
+          - -e
+          - "LINK_EMAIL={{ authentik_admin_user.email }}"
+          - dawarich-app
+          - bin/rails
+          - runner
+          - "{{ lookup('ansible.builtin.file', 'link_admin.rb') }}"
+      register: dawarich_link
+      changed_when: "'changed:' in dawarich_link.stdout"
+      when: (dawarich_users.stdout.split('|')[1] | int) > 0
