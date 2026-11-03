@@ -9,7 +9,19 @@ Port: HTTP `3000` (internal only). The web UI offers HTTPS cloning only; SSH is 
 
 ```yaml
 forgejo_db_password: ""
+forgejo_secret_key: "" # 64 alphanumeric characters
 ```
+
+## Secret key
+
+Don't change `forgejo_secret_key`: TOTP, Actions secrets and mirror addresses
+become unreadable, with no re-encrypt tool. To rotate anyway, back up, deploy,
+then:
+
+- mirrors: `UPDATE mirror SET encrypted_remote_address = NULL;` and sync
+  (Forgejo re-reads the address from git config)
+- Actions secrets: set them again
+- TOTP: `DELETE FROM two_factor WHERE uid = <id>;`
 
 ## Backup
 
