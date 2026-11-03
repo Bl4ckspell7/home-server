@@ -16,8 +16,9 @@ OIDC credentials: shared `vars/oidc_secrets.yml` ([Authentik](authentik.md#oidc-
 
 ## Login
 
-Authentik only. The first SSO login links to the existing account by username
-(asks Forgejo's own 2FA once); site admin follows `authentik Admins`.
+Authentik only. The first SSO login links to the existing account by username;
+remove that account's Forgejo 2FA first (Forgejo bug: auto-linking fails when
+2FA is enrolled). Site admin follows `authentik Admins`.
 
 - Git, registry, API: access tokens only (passwords rejected).
 - Break-glass: `docker exec forgejo forgejo admin …`, or
