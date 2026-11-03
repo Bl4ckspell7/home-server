@@ -105,6 +105,10 @@ authentik_oidc_apps:
 # Forward-auth consumers. A provider here does not by itself protect anything —
 # the matching Caddy route must import the `authentik` snippet.
 authentik_proxy_apps:
+  - slug: backrest
+    name: Backrest
+    description: Restic backup UI
+
   - slug: vaultwarden
     name: Vaultwarden
     description: Password manager

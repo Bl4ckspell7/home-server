@@ -77,6 +77,7 @@ homepage_icons=(
 # Authentik serves these from data/media/public/application-icons/ and the
 # blueprint references them as the bare subpath `application-icons/<file>`.
 authentik_icons=(
+    backrest.svg
     dawarich.svg
     dockge.svg
     dockhand.png

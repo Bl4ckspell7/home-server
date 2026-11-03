@@ -90,7 +90,7 @@ http://homepage.{$BASE_DOMAIN}:8080 {
 	import proxy homepage.lan:3000
 }
 http://backrest.{$BASE_DOMAIN}:8080 {
-	import proxy backrest.lan:9898
+	import proxy_auth backrest.lan:9898
 }
 http://dawarich.{$BASE_DOMAIN}:8080 {
 	import proxy dawarich.lan:3000

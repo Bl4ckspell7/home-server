@@ -1,0 +1,3 @@
+---
+# Tags every snapshot (created-by:<instance>); keep it stable.
+backrest_instance: bl4ckspell-home-server
