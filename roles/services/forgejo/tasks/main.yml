@@ -21,4 +21,119 @@
   vars:
     service_name: forgejo
     service_secrets: true
+    service_oidc_secrets: true
     env_template: forgejo.env.j2
+
+- name: Manage the Authentik login source
+  when: not ansible_check_mode
+  vars:
+    # Same state twice (compared vs passed to the CLI): keep in sync.
+    forgejo_oidc_source:
+      ClientID: "{{ oidc_forgejo_client_id }}"
+      ClientSecret: "{{ oidc_forgejo_client_secret }}"
+      OpenIDConnectAutoDiscoveryURL: "{{ forgejo_oidc_discovery_url }}"
+      Scopes: [email, profile]
+      GroupClaimName: groups
+      AdminGroup: "{{ forgejo_oidc_admin_group }}"
+    forgejo_oidc_args:
+      - --key
+      - "{{ oidc_forgejo_client_id }}"
+      - --secret
+      - "{{ oidc_forgejo_client_secret }}"
+      - --auto-discover-url
+      - "{{ forgejo_oidc_discovery_url }}"
+      - --scopes
+      - email
+      - --scopes
+      - profile
+      - --group-claim-name
+      - groups
+      - --admin-group
+      - "{{ forgejo_oidc_admin_group }}"
+    forgejo_auth_query: >-
+      select id, cfg from login_source where name = '{{ forgejo_oidc_source_name }}'
+  block:
+    - name: Wait for Forgejo to be healthy
+      community.docker.docker_container_info:
+        name: forgejo
+      register: forgejo_info
+      until: forgejo_info.container.State.Health.Status | default('') == 'healthy'
+      retries: 30
+      delay: 10
+
+    - name: Read the Authentik login source
+      ansible.builtin.command:
+        argv: [docker, exec, forgejo-postgres, psql, -U, forgejo, -d, forgejo, -Atc, "{{ forgejo_auth_query }}"]
+      register: forgejo_auth_row
+      changed_when: false
+      no_log: true
+
+    - name: Wait for the Authentik discovery document
+      # Fresh install: Authentik creates the provider asynchronously.
+      ansible.builtin.command:
+        argv: [docker, exec, forgejo, wget, -qO, /dev/null, "{{ forgejo_oidc_discovery_url }}"]
+      register: forgejo_discovery
+      changed_when: false
+      until: forgejo_discovery.rc == 0
+      retries: 12
+      delay: 10
+      when: forgejo_auth_row.stdout | length == 0
+
+    - name: Add the Authentik login source
+      # --skip-local-2fa only here: update-oauth cannot set it.
+      ansible.builtin.command:
+        argv: "{{ ['docker', 'exec', 'forgejo', 'forgejo', 'admin', 'auth', 'add-oauth', '--name', forgejo_oidc_source_name,
+                   '--provider', 'openidConnect', '--skip-local-2fa'] + forgejo_oidc_args }}"
+      register: forgejo_auth_add
+      changed_when: forgejo_auth_add.rc == 0
+      failed_when: false
+      no_log: true
+      when: forgejo_auth_row.stdout | length == 0
+
+    - name: Fail with the add-oauth error
+      ansible.builtin.fail:
+        msg: "{{ (forgejo_auth_add.stdout ~ ' ' ~ forgejo_auth_add.stderr) | replace(oidc_forgejo_client_secret, '<secret>') }}"
+      when: forgejo_auth_add.rc | default(0) != 0
+
+    - name: Re-read the Authentik login source
+      ansible.builtin.command:
+        argv: [docker, exec, forgejo-postgres, psql, -U, forgejo, -d, forgejo, -Atc, "{{ forgejo_auth_query }}"]
+      register: forgejo_auth_reread
+      changed_when: false
+      no_log: true
+      when: forgejo_auth_add.rc | default(1) == 0
+
+    - name: Check that the Authentik login source skips local 2FA
+      vars:
+        forgejo_auth_current: "{{ forgejo_auth_reread if forgejo_auth_add.rc | default(1) == 0 else forgejo_auth_row }}"
+      ansible.builtin.assert:
+        that:
+          - forgejo_auth_current.stdout | length > 0
+          - (forgejo_auth_current.stdout.split('|', 1)[1] | from_json).SkipLocalTwoFA | default(false)
+        fail_msg: >-
+          Login source '{{ forgejo_oidc_source_name }}' is missing, or no longer
+          skips local 2FA (update-oauth cannot set that: enable "Skip local 2FA"
+          in Site administration -> Authentication sources).
+        quiet: true
+
+    - name: Update the Authentik login source
+      ansible.builtin.command:
+        argv: "{{ ['docker', 'exec', 'forgejo', 'forgejo', 'admin', 'auth', 'update-oauth',
+                   '--id', forgejo_auth_row.stdout.split('|', 1)[0]] + forgejo_oidc_args }}"
+      register: forgejo_auth_update
+      changed_when: true
+      no_log: true
+      when:
+        - forgejo_auth_add is skipped
+        - >-
+          forgejo_oidc_source != (forgejo_auth_row.stdout.split('|', 1)[1] | from_json | dict2items
+          | selectattr('key', 'in', forgejo_oidc_source.keys() | list) | items2dict)
+
+    - name: Restart Forgejo to load the updated login source
+      # Inline: a later failure would drop a handler, and the next run sees no drift.
+      community.docker.docker_compose_v2:
+        project_src: /opt/stacks/forgejo
+        services:
+          - forgejo
+        state: restarted
+      when: forgejo_auth_update.rc | default(1) == 0

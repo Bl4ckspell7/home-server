@@ -81,6 +81,7 @@ authentik_icons=(
     dawarich.svg
     dockge.svg
     dockhand.png
+    forgejo.svg
     immich.svg
     linkwarden.svg
     paperless-ngx.svg

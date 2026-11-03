@@ -70,6 +70,16 @@ authentik_oidc_apps:
     redirect_uris:
       - "https://dockhand.{{ authentik_domain }}/api/auth/oidc/callback"
 
+  - slug: forgejo
+    name: Forgejo
+    description: Git forge
+    grant_types:
+      - authorization_code
+      - refresh_token
+    redirect_uris:
+      # Path segment = forgejo_oidc_source_name (forgejo role).
+      - "https://forgejo.{{ authentik_domain }}/user/oauth2/authentik/callback"
+
   - slug: immich
     name: Immich
     description: Photo and video library

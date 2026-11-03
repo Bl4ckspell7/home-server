@@ -1,0 +1,6 @@
+---
+# Managed via the CLI: Forgejo has no config option for login sources. The name
+# is part of the callback URL registered in Authentik.
+forgejo_oidc_source_name: authentik
+forgejo_oidc_discovery_url: "https://authentik.{{ base_domain }}/application/o/forgejo/.well-known/openid-configuration"
+forgejo_oidc_admin_group: authentik Admins

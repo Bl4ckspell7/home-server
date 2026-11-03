@@ -9,7 +9,32 @@ Port: HTTP `3000` (internal only). The web UI offers HTTPS cloning only; SSH is 
 
 ```yaml
 forgejo_db_password: ""
+forgejo_secret_key: "" # 64 alphanumeric characters
 ```
+
+OIDC credentials: shared `vars/oidc_secrets.yml` ([Authentik](authentik.md#oidc-client-credentials)).
+
+## Login
+
+Authentik only. The first SSO login links to the existing account by username
+(asks Forgejo's own 2FA once); site admin follows `authentik Admins`.
+
+- Git, registry, API: access tokens only (passwords rejected).
+- Break-glass: `docker exec forgejo forgejo admin …`, or
+  `ENABLE_INTERNAL_SIGNIN: "true"` and redeploy.
+- Fresh install: the first SSO login creates the admin; the `renovate` user and
+  the Actions secrets are manual.
+
+## Secret key
+
+Don't change `forgejo_secret_key`: TOTP, Actions secrets and mirror addresses
+become unreadable, with no re-encrypt tool. To rotate anyway, back up, deploy,
+then:
+
+- mirrors: `UPDATE mirror SET encrypted_remote_address = NULL;` and sync
+  (Forgejo re-reads the address from git config)
+- Actions secrets: set them again
+- TOTP: `DELETE FROM two_factor WHERE uid = <id>;`
 
 ## Backup
 
