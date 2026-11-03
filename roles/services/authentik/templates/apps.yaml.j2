@@ -119,6 +119,22 @@ entries:
       meta_launch_url: {{ ('https://' ~ host ~ (app.launch_path | default(''))) | to_json }}
       meta_description: {{ app.description | to_json }}
 
+{% if app.access_group is defined %}
+  # Declared here too: blueprint files apply in no fixed order. No attrs, so
+  # the users blueprint keeps owning the group's settings.
+  - model: authentik_core.group
+    id: {{ app.slug }}-access-group
+    identifiers:
+      name: {{ app.access_group | to_json }}
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf {{ app.slug }}-app
+      order: 0
+    attrs:
+      group: !KeyOf {{ app.slug }}-access-group
+
+{% endif %}
 {% endfor %}
   # ── Forward-auth (proxy) providers + applications ─────────────────────────
 {% for app in authentik_proxy_apps %}

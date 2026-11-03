@@ -51,6 +51,8 @@ authentik_proxy_grant_types:
 #                Override only where the filename differs from the slug.
 #   scope_mappings  OIDC only: extra claims [{scope_name, description,
 #                expression}]; the app must request scope_name.
+#   access_group OIDC only: the one group allowed to use the app; default everyone.
+#                Removing it leaves the binding in Authentik: delete that in the UI.
 
 # OIDC consumers. Credentials: oidc_<slug>_client_id / _client_secret (dashes
 # become underscores) in vars/oidc_secrets.yml, shared with the consuming app's
@@ -67,6 +69,8 @@ authentik_oidc_apps:
     name: Dockhand
     description: Docker management UI
     icon: application-icons/dockhand.png
+    # Every Dockhand user is admin (free edition), i.e. root via the docker socket.
+    access_group: authentik Admins
     redirect_uris:
       - "https://dockhand.{{ authentik_domain }}/api/auth/oidc/callback"
 
