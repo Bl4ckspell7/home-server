@@ -116,6 +116,9 @@ http://jellyfin.{$BASE_DOMAIN}:8080 {
 http://linkwarden.{$BASE_DOMAIN}:8080 {
 	import proxy linkwarden.lan:3000
 }
+http://openwebui.{$BASE_DOMAIN}:8080 {
+	import proxy openwebui.lan:3000
+}
 http://paperless.{$BASE_DOMAIN}:8080 {
 	import proxy paperless.lan:8000
 }
