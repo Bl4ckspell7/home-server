@@ -17,7 +17,8 @@ services:
       - "."
     env_file: .env
     environment:
-      AUTHENTIK_ISSUER: https://authentik.${BASE_DOMAIN:?base domain required}/application/o/linkwarden/
+      # No trailing slash: NextAuth appends /.well-known/…, `//` is a 404.
+      AUTHENTIK_ISSUER: https://authentik.${BASE_DOMAIN:?base domain required}/application/o/linkwarden
       DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@linkwarden-postgres:5432/postgres
       DISABLE_NEW_SSO_USERS: "false"
       # Interpolated from BASE_DOMAIN in .env rather than baked into the env
