@@ -61,9 +61,9 @@ homepage_icons=(
     immich.svg
     jellyfin.svg
     linkwarden.svg
+    llama-cpp.svg
     mastodon.svg
     matrix-light.svg
-    ollama.svg
     open-webui.svg
     paperless-ngx.svg
     pi-hole.svg

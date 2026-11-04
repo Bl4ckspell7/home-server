@@ -47,10 +47,10 @@
             statusStyle: "basic"
 
     - AI & Data:
-        - Ollama:
-            icon: /icons/ollama.svg
-            description: Local AI models
-            ping: ollama.lan
+        - llama.cpp:
+            icon: /icons/llama-cpp.svg
+            description: Local LLM server (CPU)
+            ping: llamacpp.lan
             statusStyle: "basic"
 
         - Open WebUI:
