@@ -4,8 +4,9 @@ services:
     container_name: llamacpp
     image: ghcr.io/ggml-org/llama.cpp:server-b12063@sha256:10a38e6cc91760ab157f0a0a8546218d35f4a314432a70298abfa3d096829ad7
     restart: unless-stopped
-    # Leak guard, not a sizing target: observed peak ~16.3G with Gemma4 IQ2_M loaded.
-    mem_limit: 20g
+    # Leak guard, not a sizing target: observed peak ~16.3G with Gemma4 IQ2_M loaded,
+    # ~18.5G with the 2B model next to it.
+    mem_limit: 22g
     expose:
       - "8080"
     networks:
@@ -20,8 +21,9 @@ services:
     volumes:
       - ./models:/models:ro
       - ./models.ini:/models.ini:ro
-    # Router mode, API only (chat UI is Open WebUI): one model loaded at a time, on first
-    # request; unloaded after 15 min idle to give the RAM back.
+    # Router mode, API only (chat UI is Open WebUI): models load on first request; two at
+    # once so Open WebUI's task model runs next to the chat model without reloads; each is
+    # unloaded after 15 min idle to give the RAM back.
     command:
       - --no-webui
       - --host
@@ -31,7 +33,7 @@ services:
       - --models-preset
       - /models.ini
       - --models-max
-      - "1"
+      - "2"
       - --sleep-idle-seconds
       - "900"
     # The image's own HEALTHCHECK curls /health.
