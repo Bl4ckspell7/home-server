@@ -43,8 +43,8 @@
     - role: linkwarden
       tags: linkwarden
 
-    - role: ollama
-      tags: ollama
+    - role: llamacpp
+      tags: llamacpp
 
     - role: openwebui
       tags: openwebui

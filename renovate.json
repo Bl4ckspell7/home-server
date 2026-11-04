@@ -82,6 +82,13 @@
         "docker.io/vaultwarden/server"
       ],
       "versioning": "semver"
+    },
+    {
+      "description": "llama.cpp CPU build tags (server-bNNNNN): every build is a 'major', several a day",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/ggml-org/llama.cpp"],
+      "versioning": "regex:^server-b(?<major>\\d+)$",
+      "schedule": ["* * * * 1"]
     }
   ]
 }

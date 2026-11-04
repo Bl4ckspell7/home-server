@@ -45,7 +45,7 @@ Services behind Caddy use `expose` (no host port binding). Only services requiri
 | **Paperless-ngx** | -             | 8000               |
 | **Jellyfin**      | -             | 8096               |
 | **Authentik**     | -             | 9443               |
-| **Ollama**        | -             | 11434              |
+| **llama.cpp**     | -             | 8080               |
 | **Open WebUI**    | -             | 3000               |
 
 ## Service Users and Groups

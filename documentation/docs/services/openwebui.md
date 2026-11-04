@@ -13,7 +13,7 @@ lands as pending.
 - **llama.cpp on the desktop** (`linux-docker-config` `roles/llamacpp`, GPU) by its
   `fritz.box` name, which Pi-hole resolves via the FritzBox. Listed only while the
   desktop is on. Both repos hold the same `llamacpp_api_key` in sops.
-- **Ollama** here (CPU, always on), see [Ollama](ollama.md).
+- **llama.cpp** here (CPU, always on), see [llama.cpp](llamacpp.md).
 
 `secrets.yml`:
 
@@ -28,8 +28,8 @@ OIDC credentials: shared `vars/oidc_secrets.yml` ([Authentik](authentik.md#oidc-
 ## Config
 
 Env vars only seed a fresh database (persistent config). After the first start,
-change settings in Admin Settings — including a rotated `llamacpp_api_key`
-(Connections), or the desktop models answer 401.
+change settings in Admin Settings — including a rotated `llamacpp_api_key` or a
+new connection (Connections), or the desktop models answer 401.
 
 Web search uses DuckDuckGo for now. Once SearXNG runs here behind a VPN, switch it
 in Admin Settings → Web Search. The Web Search toggle must also be on in the chat.

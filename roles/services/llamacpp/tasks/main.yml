@@ -1,0 +1,37 @@
+---
+- name: Ensure llama.cpp models directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/llamacpp/models
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+# Skipped when the file already exists with a matching checksum.
+- name: Download llama.cpp models
+  ansible.builtin.get_url:
+    url: "https://huggingface.co/{{ item.repo }}/resolve/main/{{ item.file }}"
+    dest: "/opt/stacks/llamacpp/models/{{ item.file }}"
+    checksum: "sha256:{{ item.sha256 }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ llamacpp_models }}"
+  loop_control:
+    label: "{{ item.file }}"
+
+- name: Copy llama.cpp model presets
+  ansible.builtin.copy:
+    src: models.ini
+    dest: /opt/stacks/llamacpp/models.ini
+    owner: root
+    group: root
+    mode: "0644"
+  register: llamacpp_presets
+
+- name: Deploy llama.cpp
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
+  vars:
+    service_name: llamacpp
+    # A single-file bind mount keeps the old inode, so preset changes need a recreate.
+    compose_recreate: "{{ 'always' if llamacpp_presets.changed else 'auto' }}"

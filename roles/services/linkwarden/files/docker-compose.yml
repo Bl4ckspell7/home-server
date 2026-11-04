@@ -27,8 +27,12 @@ services:
       NEXTAUTH_URL: https://linkwarden.${BASE_DOMAIN:?base domain required}/api/v1/auth
       NEXT_PUBLIC_CREDENTIALS_ENABLED: "false"
       NEXT_PUBLIC_DISABLE_REGISTRATION: "true"
-      NEXT_PUBLIC_OLLAMA_ENDPOINT_URL: http://ollama.lan:11434
-      OLLAMA_MODEL: mistral
+      # AI tagging via the local llama.cpp (OpenAI-compatible). It has no API key, but
+      # Linkwarden only enables AI when OPENAI_API_KEY is set.
+      CUSTOM_OPENAI_BASE_URL: http://llamacpp.lan:8080/v1
+      CUSTOM_OPENAI_NAME: llamacpp
+      OPENAI_API_KEY: none
+      OPENAI_MODEL: gemma4-26b-a4b-iq2m
     volumes:
       - ./data:/data/data
     depends_on:
