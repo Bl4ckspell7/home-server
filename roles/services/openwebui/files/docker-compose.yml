@@ -39,6 +39,8 @@ services:
       ENABLE_WEB_SEARCH: "True"
       WEB_SEARCH_ENGINE: duckduckgo
       DDGS_BACKEND: duckduckgo
+      # New chats start with web search and code interpreter on (Admin > Models > Model Defaults).
+      DEFAULT_MODEL_METADATA: '{"defaultFeatureIds": ["web_search", "code_interpreter"]}'
       ANONYMIZED_TELEMETRY: "False"
       DO_NOT_TRACK: "True"
       SCARF_NO_ANALYTICS: "True"
