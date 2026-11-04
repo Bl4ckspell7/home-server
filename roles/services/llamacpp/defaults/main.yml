@@ -1,0 +1,6 @@
+---
+# GGUF models served by the llama.cpp router (see files/models.ini).
+llamacpp_models:
+  - file: Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced-IQ2_M.gguf
+    repo: HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced
+    sha256: 0c5a4fd9b2d0ca031e965e35cf128715cee649c9fccd6ff81a14b3ea8e263477
