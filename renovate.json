@@ -59,8 +59,9 @@
       "dependencyDashboardApproval": false
     },
     {
+      "description": "Digest updates once a week, all of Monday (UTC). The scheduled workflow runs at 04:00 and starts hours late, so a narrow window was never hit.",
       "matchUpdateTypes": ["digest"],
-      "schedule": ["* 13-15 * * 1"]
+      "schedule": ["* * * * 1"]
     },
     {
       "description": "Renovate releases several times a day, so updating it opened a PR almost daily. Once a month, all of the 1st (UTC), as one PR.",
