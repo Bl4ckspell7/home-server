@@ -53,6 +53,7 @@
       - initramfs-tools
       - inotify-tools
       - iputils-ping
+      - iw
       - libayatana-appindicator3-1
       - libssl-dev
       - linux-headers-amd64
