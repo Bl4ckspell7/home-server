@@ -91,6 +91,10 @@ The server's LAN address changes with the router's DHCP, so `inventory.yml` and 
 
 If another host on the LAN also announces `svr1`, avahi renames this one to `svr1-2.local` and Ansible loses it; check `journalctl -u avahi-daemon`.
 
+## Wifi
+
+On the phone hotspot the server runs on wifi (`wlp4s0`), often with a weak signal. With power save on, the card dozes, misses frames and the server drops off the network for minutes. So `roles/server/wifi/` turns it off: `/etc/NetworkManager/conf.d/wifi-powersave.conf` (`wifi.powersave=2`) covers every wifi profile left at `802-11-wireless.powersave=default` from its next activation, and `iw` switches the running device off right away. Check with `iw dev wlp4s0 get power_save`.
+
 ## IPv6
 
 IPv6 is off on the server, in two layers:
