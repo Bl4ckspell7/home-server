@@ -1,3 +1,17 @@
+- name: List NetworkManager devices
+  ansible.builtin.command:
+    cmd: nmcli -g DEVICE,TYPE device
+  register: nic_nm_devices
+  changed_when: false
+  check_mode: false
+
+- name: Check there is exactly one physical ethernet NIC
+  # A second card (USB dongle, new NIC) needs a decision, not a guess.
+  ansible.builtin.assert:
+    that: nic_ethernet_devices | length == 1
+    fail_msg: "Expected one physical ethernet NIC, found: {{ nic_ethernet_devices }}"
+    quiet: true
+
 - name: Read permanent MAC address of the LAN NIC
   # Read live instead of stored in the repo.
   ansible.builtin.command:
@@ -35,30 +49,35 @@
   register: nic_nm_device
   changed_when: false
   # An externally configured device only has a profile NM generated itself.
+  # No connection (empty UUID, cable unplugged e.g. on the hotspot) skips the
+  # IPv6 steps; the next run on the LAN applies them.
   failed_when: >-
     nic_nm_device.rc != 0
     or nic_nm_device.stdout_lines | length != 2
-    or nic_nm_device.stdout_lines[0] is not regex('^[0-9a-f-]{36}$')
+    or nic_nm_device.stdout_lines[0] is not regex('^([0-9a-f-]{36})?$')
     or 'externally' in nic_nm_device.stdout_lines[1]
   check_mode: false
 
-- name: Read IPv6 method of the LAN NIC connection
-  ansible.builtin.command:
-    cmd: nmcli -g ipv6.method connection show uuid {{ nic_nm_device.stdout_lines[0] }}
-  register: nic_nm_ipv6_method
-  changed_when: false
-  check_mode: false
-
 - name: Disable IPv6 in the LAN NIC connection
-  ansible.builtin.command:
-    cmd: nmcli connection modify uuid {{ nic_nm_device.stdout_lines[0] }} ipv6.method disabled
-  when: nic_nm_ipv6_method.stdout != 'disabled'
-  changed_when: true
+  when: nic_nm_device.stdout_lines[0] | length > 0
+  block:
+    - name: Read IPv6 method of the LAN NIC connection
+      ansible.builtin.command:
+        cmd: nmcli -g ipv6.method connection show uuid {{ nic_nm_device.stdout_lines[0] }}
+      register: nic_nm_ipv6_method
+      changed_when: false
+      check_mode: false
 
-- name: Apply the connection to the running LAN NIC
-  # Right after the modify instead of a handler, so a later failing role can't
-  # leave the profile changed on disk but not applied. Reapply keeps the link up.
-  ansible.builtin.command:
-    cmd: nmcli device reapply {{ nic_current_interface }}
-  when: nic_nm_ipv6_method.stdout != 'disabled'
-  changed_when: true
+    - name: Disable IPv6 in the LAN NIC connection profile
+      ansible.builtin.command:
+        cmd: nmcli connection modify uuid {{ nic_nm_device.stdout_lines[0] }} ipv6.method disabled
+      when: nic_nm_ipv6_method.stdout != 'disabled'
+      changed_when: true
+
+    - name: Apply the connection to the running LAN NIC
+      # Right after the modify instead of a handler, so a later failing role can't
+      # leave the profile changed on disk but not applied. Reapply keeps the link up.
+      ansible.builtin.command:
+        cmd: nmcli device reapply {{ nic_current_interface }}
+      when: nic_nm_ipv6_method.stdout != 'disabled'
+      changed_when: true

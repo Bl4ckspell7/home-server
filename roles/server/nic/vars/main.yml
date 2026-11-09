@@ -1,3 +1,17 @@
-# The default-route interface is the LAN NIC under its old or new name, so the
-# role works before and after the rename (which only applies on the next boot).
-nic_current_interface: "{{ ansible_facts['default_ipv4']['interface'] }}"
+# The only physical ethernet card is the LAN NIC under its old or new name, so
+# the role works before and after the rename (which only applies on the next
+# boot). Not the default-route interface: on the hotspot that's the wifi card.
+# Docker veths and USB NICs (e.g. a phone's USB tether) are nmcli type ethernet
+# too, but have no PCI address.
+nic_ethernet_devices: >-
+  {{ nic_nm_devices.stdout_lines
+     | select('match', '[^:]+:ethernet$')
+     | map('regex_replace', ':ethernet$', '')
+     | select('in', ansible_facts['interfaces'])
+     | map('replace', '-', '_')
+     | map('extract', ansible_facts)
+     | selectattr('pciid', 'defined')
+     | selectattr('pciid')
+     | map(attribute='device')
+     | list }}
+nic_current_interface: "{{ nic_ethernet_devices | first }}"
