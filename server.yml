@@ -4,6 +4,8 @@
     # LAN NIC; the nic role names the card (permanent MAC) this, outside udev's
     # predictable-name range so no other device can claim it.
     lan_interface: lan0
+    # Wifi card; NetworkManager's hotspot profile is bound to this name.
+    wifi_interface: wlp4s0
   roles:
     - role: apt
       tags: apt
@@ -65,6 +67,7 @@
       vars:
         avahi_allow_interfaces:
           - "{{ lan_interface }}"
+          - "{{ wifi_interface }}"
 
     - role: wifi
       tags: wifi
