@@ -1,7 +1,7 @@
 ---
 # Baseline for every interface NetworkManager doesn't configure (lo, Docker
-# bridges, wg0). NetworkManager overrides it on the ones it does; the nic role
-# disables IPv6 in the LAN NIC's connection profile for that.
+# bridges, wg0). NetworkManager overrides it on the ones it does; the nic and
+# wifi roles disable IPv6 in the LAN and wifi connection profiles for that.
 - name: Disable IPv6 system-wide
   ansible.builtin.copy:
     dest: /etc/sysctl.d/99-disable-ipv6.conf

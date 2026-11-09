@@ -45,3 +45,42 @@
     label: "{{ item.item }}"
   when: "'Power save: on' in item.stdout"
   changed_when: true
+
+# NetworkManager re-enables IPv6 on interfaces it configures (see the nic role),
+# so IPv6 is switched off in every wifi profile.
+- name: Find wifi connections
+  ansible.builtin.command:
+    cmd: nmcli -g UUID,TYPE,DEVICE connection show
+  register: wifi_nm_connections
+  changed_when: false
+  check_mode: false
+
+- name: Read IPv6 method of wifi connections
+  ansible.builtin.command:
+    cmd: nmcli -g ipv6.method connection show uuid {{ item.split(':')[0] }}
+  loop: "{{ wifi_nm_connections.stdout_lines | select('search', ':802-11-wireless:') | list }}"
+  register: wifi_ipv6_methods
+  changed_when: false
+  check_mode: false
+
+- name: Disable IPv6 in wifi connections
+  ansible.builtin.command:
+    cmd: nmcli connection modify uuid {{ item.item.split(':')[0] }} ipv6.method disabled
+  loop: "{{ wifi_ipv6_methods.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: item.stdout != 'disabled'
+  changed_when: true
+
+- name: Apply the connections to active wifi devices
+  # Right after the modify instead of a handler, so a later failing role can't
+  # leave a profile changed on disk but not applied. Reapply keeps the link up.
+  ansible.builtin.command:
+    cmd: nmcli device reapply {{ item.item.split(':')[2] }}
+  loop: "{{ wifi_ipv6_methods.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when:
+    - item.stdout != 'disabled'
+    - item.item.split(':')[2] | length > 0
+  changed_when: true
