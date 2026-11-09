@@ -1,0 +1,4 @@
+# Active connections are left alone.
+- name: Reload NetworkManager config
+  ansible.builtin.command: nmcli general reload conf
+  changed_when: true

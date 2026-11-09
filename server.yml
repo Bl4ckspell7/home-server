@@ -66,6 +66,9 @@
         avahi_allow_interfaces:
           - "{{ lan_interface }}"
 
+    - role: wifi
+      tags: wifi
+
     - role: dns
       tags: dns
 

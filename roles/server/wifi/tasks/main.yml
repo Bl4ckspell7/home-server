@@ -1,0 +1,47 @@
+# On a weak hotspot link the dozing card misses frames and the server drops off
+# the network for minutes. A global default covers every wifi profile left at
+# 802-11-wireless.powersave=default.
+- name: Disable wifi power save in NetworkManager
+  ansible.builtin.copy:
+    dest: /etc/NetworkManager/conf.d/wifi-powersave.conf
+    content: |
+      [connection]
+      # 2 = disable
+      wifi.powersave=2
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload NetworkManager config
+
+- name: Reload NetworkManager config now
+  # Not at play end, so a later failing role can't leave the file changed but
+  # never loaded.
+  ansible.builtin.meta: flush_handlers
+
+- name: Find wifi devices
+  ansible.builtin.command:
+    cmd: nmcli -g DEVICE,TYPE device
+  register: wifi_nm_devices
+  changed_when: false
+  check_mode: false
+
+- name: Read power save state of wifi devices
+  ansible.builtin.command:
+    cmd: iw dev {{ item }} get power_save
+  loop: "{{ wifi_devices }}"
+  vars:
+    wifi_devices: "{{ wifi_nm_devices.stdout_lines | select('match', '.+:wifi$') | map('regex_replace', ':wifi$', '') | list }}"
+  register: wifi_power_save
+  changed_when: false
+  check_mode: false
+
+- name: Turn power save off on running wifi devices
+  # NM applies the drop-in only on activation; reactivating would drop the link
+  # Ansible runs over.
+  ansible.builtin.command:
+    cmd: iw dev {{ item.item }} set power_save off
+  loop: "{{ wifi_power_save.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: "'Power save: on' in item.stdout"
+  changed_when: true
