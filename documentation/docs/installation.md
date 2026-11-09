@@ -84,7 +84,7 @@ ip addr show
 
 Example: `enp5s0`, `xx:xx:xx:xx:xx:xx`
 
-→ The `nic` role renames the LAN card (the default-route interface) to
+→ The `nic` role renames the LAN card (the one physical ethernet card) to
 `lan_interface` (`lan0`, set in `server.yml`) from the next boot on; the `wol`
 and `avahi` roles use that name. Run all three, then reboot.
 

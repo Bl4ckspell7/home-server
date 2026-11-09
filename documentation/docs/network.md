@@ -84,8 +84,8 @@ FTLCONF_dns_hosts: |
 
 The server's LAN address changes with the router's DHCP, so `inventory.yml` and `~/.ssh/config` use `svr1.local` instead of an IP. avahi publishes that name over mDNS (`roles/server/avahi/`):
 
-- **Interface:** `allow-interfaces` limits avahi to `lan_interface` (`lan0`, set in `server.yml`), so it stays off the Docker bridges.
-- **Stable NIC name:** `roles/server/nic/` writes `/etc/systemd/network/10-nic.link`, which names the LAN card `lan0` by its permanent MAC (read from the default-route interface). The name sits outside udev's predictable names (`enp5s0` stays as an altname), so PCI bus renumbering, a BIOS update, a new udev naming scheme or another card can't take it — any of these would break both avahi and Wake-on-LAN. A changed name applies on the next boot. Check with `udevadm info /sys/class/net/lan0 | grep ID_NET_LINK_FILE`.
+- **Interface:** `allow-interfaces` limits avahi to `lan_interface` (`lan0`) and `wifi_interface` (`wlp4s0`), both set in `server.yml`, so it stays off the Docker bridges.
+- **Stable NIC name:** `roles/server/nic/` writes `/etc/systemd/network/10-nic.link`, which names the LAN card `lan0` by its permanent MAC (read from the one physical ethernet card, not the default route, which on the hotspot is the wifi card). The name sits outside udev's predictable names (`enp5s0` stays as an altname), so PCI bus renumbering, a BIOS update, a new udev naming scheme or another card can't take it — any of these would break both avahi and Wake-on-LAN. A changed name applies on the next boot. Check with `udevadm info /sys/class/net/lan0 | grep ID_NET_LINK_FILE`.
 - **Firewall:** UFW allows UDP 5353 to `224.0.0.251` (see `roles/server/ufw/tasks/main.yml`). IPv4 only, since IPv6 is off (see below).
 - **Clients:** the workstation resolves `.local` through `nss-mdns` (`mdns4_minimal` in `/etc/nsswitch.conf`). Test with `avahi-resolve -n4 svr1.local`.
 
@@ -100,7 +100,7 @@ On the phone hotspot the server runs on wifi (`wlp4s0`), often with a weak signa
 IPv6 is off on the server, in two layers:
 
 - **sysctl** (`roles/server/sysctl/`): `/etc/sysctl.d/99-disable-ipv6.conf` sets `disable_ipv6 = 1` for `all`, `default` and `lo`. This covers every interface NetworkManager doesn't configure: `lo`, `docker0`, the Docker bridges and `wg0` (all shown as "connected (externally)" in `nmcli device`).
-- **NetworkManager** (`roles/server/nic/`): NetworkManager re-enables IPv6 on interfaces it configures, which would override the sysctl, and `NetworkManager.conf` has no global default for `ipv6.method`. So the LAN NIC's connection profile is set to `ipv6.method=disabled`.
+- **NetworkManager** (`roles/server/nic/`, `roles/server/wifi/`): NetworkManager re-enables IPv6 on interfaces it configures, which would override the sysctl, and `NetworkManager.conf` has no global default for `ipv6.method`. So the LAN NIC's connection profile and every wifi profile are set to `ipv6.method=disabled`. The LAN profile is only handled while the cable is connected, so a run on the hotspot skips it; the next run on the LAN applies it.
 
 Docker runs with `enable_ipv6: false`, dnscrypt-proxy with `block_ipv6 = true`, avahi with `use-ipv6=no`, and the WireGuard endpoint is IPv4. The kernel option `ipv6.disable=1` is deliberately not used: it removes IPv6 sockets entirely, so services that only listen on `::` (Dawarich's `-b ::`) would fail to start.
 
