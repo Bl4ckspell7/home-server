@@ -114,6 +114,31 @@ Docker runs with `enable_ipv6: false`, dnscrypt-proxy with `block_ipv6 = true`, 
 
 Check: `sysctl net.ipv6.conf.lan0.disable_ipv6` should be `1` and `ip -6 addr` empty.
 
+## ProtonVPN (outbound)
+
+All outbound traffic of the host and of every container leaves through ProtonVPN (`proton0`, `roles/server/protonvpn/`), so the home IP stays hidden for outbound traffic too. `wg-quick` only adds a default route in its own table, so anything with a more specific route stays off the tunnel: the LAN (SSH, pi-hole clients, mDNS), the Docker bridges and the front-door tunnel `wg0`. `wg0` carries the same firewall mark as `proton0`, which makes it reach the VPS directly.
+
+MTU is 1280 so the tunnel fits through any uplink; forwarded container TCP gets its MSS clamped to match. The Proton config's `DNS` line is left out: DNS stays pi-hole → dnscrypt-proxy, and those upstream queries exit through the tunnel.
+
+There is no killswitch. While `proton0` is up, a dead Proton server blocks outbound traffic rather than leaking; with the unit stopped the server uses the normal uplink.
+
+Check: `curl -4 ifconfig.io` on the host and `docker exec caddy wget -qO- ifconfig.io` both show a Proton IP; `wg show proton0` shows a recent handshake.
+
+### Break-glass
+
+Each of these turns the VPN off and leaves the config in place:
+
+1. On the LAN: `ssh server systemctl disable --now wg-quick@proton0`
+2. Off the LAN, through the VPS: `ssh -J ionos-vps root@10.10.0.2 systemctl disable --now wg-quick@proton0`
+3. Ansible: `ansible-playbook -i inventory.yml server.yml --tags protonvpn -e '{"protonvpn_enabled": false}'`
+4. No network at all: the same command on the console, or add `systemd.mask=wg-quick@proton0.service` to the kernel line in GRUB.
+
+Back on: `systemctl enable --now wg-quick@proton0`, or run the role. A role run that (re)starts the tunnel arms a 5-minute timer that turns it off again (stopped and disabled) unless the run confirms the server is still reachable and the tunnel has a handshake.
+
+ufw limits SSH to 6 new connections per 30 s and refuses the rest, so don't retry in quick succession.
+
+New Proton server: download its WireGuard config, put key, peer key, endpoint and address into `roles/server/protonvpn/vars/secrets.yml` (`sops edit`), run the role.
+
 ## Caddy
 
 **Container IP:** `172.21.255.238`  
