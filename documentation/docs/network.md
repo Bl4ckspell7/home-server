@@ -78,7 +78,7 @@ FTLCONF_dns_hosts: |
   # ... other services
 ```
 
-**Note:** `.lan` domains resolve to container IPs (172.21.255.x), which only work for container-to-container communication. For external access from phones/laptops, use Caddy with public domains.
+**Note:** `.lan` domains resolve to container IPs (172.21.255.x), which only work for container-to-container communication, plus the LAN hosts mirrored from mDNS (see [mDNS names for containers](#mdns-names-for-containers)). For external access from phones/laptops, use Caddy with public domains.
 
 ## mDNS (svr1.local)
 
@@ -90,6 +90,14 @@ The server's LAN address changes with the router's DHCP, so `inventory.yml` and 
 - **Clients:** the workstation resolves `.local` through `nss-mdns` (`mdns4_minimal` in `/etc/nsswitch.conf`). Test with `avahi-resolve -n4 svr1.local`.
 
 If another host on the LAN also announces `svr1`, avahi renames this one to `svr1-2.local` and Ansible loses it; check `journalctl -u avahi-daemon`.
+
+### mDNS names for containers
+
+Containers can't resolve `.local`, and Pi-hole (dnsmasq) can't do mDNS either. `pihole-mdns-hosts.timer` (`roles/services/pi-hole/`) runs every 30 s, resolves each name in the sops list `pihole_mdns_hosts` through the host's avahi, and writes `<ip> <host>.lan` to `/opt/stacks/pi-hole/mdns-hosts/mdns.hosts`. Pi-hole loads that file via `addn-hosts`. On a change the updater runs `pihole reloaddns`, so a `.lan` name trails a new address by at most ~30 s. A failed lookup (host off, wifi dropout) keeps the last known address for up to 10 min, then the name is dropped. These names share the `.lan` namespace with the container names, so pick no host whose name matches a container. This works on any network the host's avahi listens on; Pi-hole no longer forwards to the FritzBox, whose `fritz.box` names and single-label lookups failed whenever it was not the router.
+
+Pi-hole answers `.local` itself (`local=/local/`), so those queries never leave the host. This also matters for the host: nss-mdns asks unicast DNS for the `local.` SOA before every mDNS lookup, and a slow answer there delays every `.local` name.
+
+Check: `cat /opt/stacks/pi-hole/mdns-hosts/mdns.hosts`, `systemctl list-timers pihole-mdns-hosts.timer`, `journalctl -u pihole-mdns-hosts.service` (logs only changes and failures).
 
 ## Wifi
 

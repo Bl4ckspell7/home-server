@@ -1,0 +1,20 @@
+# Managed by Ansible (roles/services/pi-hole).
+[Unit]
+Description=Mirror mDNS hosts into Pi-hole as .lan names
+After=docker.service avahi-daemon.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/pihole-mdns-hosts
+# Oneshot has no start timeout by default; a hung getent or docker exec would
+# block the timer for good.
+TimeoutStartSec=2min
+StateDirectory=pihole-mdns-hosts
+# Runs every 30 s: keep only the script's own notices (changes, failures).
+LogLevelMax=notice
+# No PrivateNetwork/ProtectHome: nss-mdns and the docker CLI need the host's
+# sockets and config.
+ProtectSystem=strict
+ReadWritePaths=/opt/stacks/pi-hole/mdns-hosts
+PrivateTmp=true
+NoNewPrivileges=true
