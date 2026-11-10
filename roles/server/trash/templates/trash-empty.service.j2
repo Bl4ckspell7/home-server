@@ -1,0 +1,25 @@
+# Managed by Ansible (roles/server/trash).
+[Unit]
+Description=Delete trash items older than {{ trash_max_age_days }} days
+# Ordering only, so the boot catch-up waits for the disk. Requires= would
+# remount a disk unmounted on purpose (e.g. for fsck). Unit name as
+# `systemd-escape -p` gives it for a plain path.
+After={{ trash_mount | regex_replace('^/', '') | replace('/', '-') }}.mount
+ConditionPathIsDirectory={{ trash_dir }}
+
+[Service]
+Type=oneshot
+# -v: log each removed path, the only record of what was deleted.
+ExecStart=/usr/bin/trash-empty -f -v --trash-dir={{ trash_dir }} {{ trash_max_age_days }}
+Nice=19
+IOSchedulingClass=idle
+# Root deleting recursively: confine writes to the trash dir.
+ProtectSystem=strict
+ReadWritePaths={{ trash_dir }}
+ProtectHome=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+PrivateTmp=true
+PrivateNetwork=true
+NoNewPrivileges=true

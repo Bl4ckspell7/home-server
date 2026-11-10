@@ -90,6 +90,7 @@
       - strace
       - systemd-resolved
       - tcpdump
+      - trash-cli
       - tree
       - ufw
       - util-linux

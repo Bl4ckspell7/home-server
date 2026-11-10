@@ -1,0 +1,12 @@
+# Managed by Ansible (roles/server/trash).
+[Unit]
+Description=Daily purge of old trash items
+
+[Timer]
+OnCalendar={{ trash_oncalendar }}
+RandomizedDelaySec=30m
+# svr1 is powered off overnight: run once after boot if a day was missed.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

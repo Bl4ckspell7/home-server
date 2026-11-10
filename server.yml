@@ -80,3 +80,6 @@
 
     - role: docker
       tags: docker
+
+    - role: trash
+      tags: trash

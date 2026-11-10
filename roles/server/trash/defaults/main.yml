@@ -1,0 +1,8 @@
+---
+trash_mount: "/mnt/wd_red_pro_20tb"
+# sshfs clients log in as root, so GIO names the trash dir after the client's
+# uid, not a svr1 user.
+trash_dir: "{{ trash_mount }}/.Trash-1000"
+# Compared with each item's DeletionDate, not file mtimes.
+trash_max_age_days: 30
+trash_oncalendar: "daily"
