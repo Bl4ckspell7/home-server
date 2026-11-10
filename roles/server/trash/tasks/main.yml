@@ -1,0 +1,30 @@
+---
+# trash-cli itself comes from the apt role's package list.
+- name: Purge old items from the disk trash
+  become: true
+  block:
+    - name: Install the trash purge unit
+      ansible.builtin.template:
+        src: trash-empty.service.j2
+        dest: /etc/systemd/system/trash-empty.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install the trash purge timer
+      ansible.builtin.template:
+        src: trash-empty.timer.j2
+        dest: /etc/systemd/system/trash-empty.timer
+        owner: root
+        group: root
+        mode: "0644"
+
+    # Skipped in check mode: the unit file has not been written there, so
+    # systemd would report it as missing.
+    - name: Enable the trash purge timer
+      when: not ansible_check_mode
+      ansible.builtin.systemd_service:
+        name: trash-empty.timer
+        state: started
+        enabled: true
+        daemon_reload: true
