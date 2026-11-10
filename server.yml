@@ -78,6 +78,9 @@
     - role: wireguard
       tags: wireguard
 
+    - role: protonvpn
+      tags: protonvpn
+
     - role: docker
       tags: docker
 

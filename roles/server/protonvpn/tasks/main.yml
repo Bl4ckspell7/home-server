@@ -1,0 +1,83 @@
+---
+- name: Decrypt ProtonVPN secrets
+  ansible.builtin.command:
+    cmd: "sops decrypt {{ role_path }}/vars/secrets.yml"
+  delegate_to: localhost
+  become: false
+  changed_when: false
+  check_mode: false
+  no_log: true
+  register: protonvpn_secrets_raw
+
+- name: Load ProtonVPN secrets
+  ansible.builtin.set_fact:
+    "{{ item.key }}": "{{ item.value }}"
+  loop: "{{ protonvpn_secrets_raw.stdout | from_yaml | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  no_log: true
+
+- name: Ensure the unit drop-in directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/system/wg-quick@proton0.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Start the tunnel before Docker
+  # Otherwise containers come up on the bare uplink at boot.
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/wg-quick@proton0.service.d/order.conf
+    content: |
+      [Unit]
+      Before=docker.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd
+
+- name: Stop and disable ProtonVPN
+  ansible.builtin.systemd_service:
+    name: wg-quick@proton0
+    state: stopped
+    enabled: false
+  when: not (protonvpn_enabled | bool)
+
+- name: Render ProtonVPN configuration
+  ansible.builtin.template:
+    src: proton0.conf.j2
+    dest: /etc/wireguard/proton0.conf
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+  notify: Flag ProtonVPN for a restart
+  when: protonvpn_enabled | bool
+
+- name: Flag a changed configuration now
+  ansible.builtin.meta: flush_handlers
+
+- name: Bring ProtonVPN up
+  when: protonvpn_enabled | bool
+  block:
+    - name: Check whether the tunnel is up
+      ansible.builtin.command:
+        cmd: ip link show proton0
+      register: protonvpn_link
+      changed_when: false
+      failed_when: false
+      check_mode: false
+
+    - name: Restart a changed or stopped tunnel
+      # The verification steps have nothing to read in check mode.
+      ansible.builtin.include_tasks: restart.yml
+      when:
+        - protonvpn_restart | default(false) or protonvpn_link.rc != 0
+        - not ansible_check_mode
+
+    - name: Start ProtonVPN at boot
+      # Only reached once a start was verified; a failed one leaves it disabled.
+      ansible.builtin.systemd_service:
+        name: wg-quick@proton0
+        enabled: true
