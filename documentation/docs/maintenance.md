@@ -79,6 +79,28 @@ The Ansible role runs the dry-run and the needrestart parse check itself, so a
 config that fails to parse fails the play rather than silently skipping the next
 upgrade run.
 
+## Disk trash (svr1)
+
+Files trashed in Nautilus on an sshfs mount of the data disk land in
+`/mnt/wd_red_pro_20tb/.Trash-1000`. sshfs logs in as root, so the dir is named
+after the client's uid (1000), not a svr1 user. Nobody logs into GNOME on svr1,
+so its own trash purge never runs.
+
+`roles/server/trash` installs `trash-cli` and a daily `trash-empty.timer`
+(`Persistent=true`, catches up after boot) that deletes items whose
+`.trashinfo` `DeletionDate` is older than 30 days (`trash_max_age_days`).
+Files in `files/` without a `.trashinfo` are deleted on the next run. The
+client's GNOME auto-purge also covers this trash while the disk is mounted, so
+a shorter setting there wins.
+
+### Checking
+
+```bash
+systemctl list-timers trash-empty.timer
+journalctl -u trash-empty.service --since -7d
+sudo trash-empty -f --dry-run --trash-dir=/mnt/wd_red_pro_20tb/.Trash-1000 30   # what the next run deletes
+```
+
 ## Updates (Renovate)
 
 Renovate opens PRs for Docker image updates daily (04:00 UTC).
