@@ -62,8 +62,10 @@ services:
         172.21.255.234 radicale.lan
         172.21.255.233 docs.lan
         172.21.255.232 vaultwarden.lan
-      # LAN hostnames (<host>.fritz.box) from the FritzBox, which tracks DHCP leases
-      FTLCONF_dns_revServers: "true,192.168.178.0/24,192.168.178.1,fritz.box"
+      # No FritzBox forwarding: off its network every single-label query timed out.
+      # LAN hosts come from mDNS instead (mdns-hosts below). Explicitly empty, since
+      # pihole.toml keeps the last env value once the variable is gone.
+      FTLCONF_dns_revServers: ""
       FTLCONF_dhcp_active: "false"
       # load custom dnsmasq snippets from /etc/dnsmasq.d
       FTLCONF_misc_etc_dnsmasq_d: "true"
