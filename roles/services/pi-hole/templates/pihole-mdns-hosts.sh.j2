@@ -1,0 +1,41 @@
+#!/bin/sh
+# Managed by Ansible (roles/services/pi-hole).
+# A failed lookup (host off, wifi dropout) keeps the last known addresses for up
+# to 10 min: a blip does not churn Pi-hole, and a reassigned IP does not keep
+# getting the host's traffic.
+set -eu
+
+out=/opt/stacks/pi-hole/mdns-hosts/mdns.hosts
+seen_dir=/var/lib/pihole-mdns-hosts
+tmp=$(mktemp "$out.XXXXXX")
+trap 'rm -f "$tmp"' EXIT
+# dash skips the EXIT trap when killed; exiting runs it.
+trap 'exit 143' TERM INT
+
+for host in {{ pihole_mdns_hosts | map('quote') | join(' ') }}; do
+    # All addresses, sorted: a host on ethernet and wifi would otherwise flip
+    # between them and reload Pi-hole on every run.
+    ips=$(getent ahostsv4 "$host.local" | awk '{ print $1 }' | sort -u)
+    if [ -n "$ips" ]; then
+        touch "$seen_dir/$host"
+    elif [ -n "$(find "$seen_dir/$host" -mmin -10 2>/dev/null)" ]; then
+        ips=$(awk -v name="$host.lan" '$2 == name { print $1 }' "$out" 2>/dev/null || true)
+    fi
+    for ip in $ips; do
+        printf '%s %s.lan\n' "$ip" "$host" >> "$tmp"
+    done
+done
+
+cmp -s "$tmp" "$out" && exit 0
+prev=$(cat "$out" 2>/dev/null || true)
+chmod 0644 "$tmp"
+mv "$tmp" "$out"
+# SIGHUP: flushes the cache and re-reads addn-hosts.
+if ! docker exec pihole pihole reloaddns >/dev/null 2>&1; then
+    # Put the old content back so the next run sees the change and retries.
+    printf '%s\n' "$prev" > "$out"
+    echo "<3>pihole reloaddns failed, retrying on the next run" >&2
+    exit 1
+fi
+entries=$(tr '\n' ' ' < "$out")
+echo "<5>mdns.hosts changed: ${entries:-no entries}"

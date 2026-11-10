@@ -1,0 +1,12 @@
+# Managed by Ansible (roles/services/pi-hole).
+[Unit]
+Description=Mirror mDNS hosts into Pi-hole every 30 s
+
+[Timer]
+OnBootSec=1min
+# Bounds how long a .lan name points at an old address after a network change.
+OnUnitActiveSec=30s
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target

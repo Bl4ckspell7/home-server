@@ -55,6 +55,7 @@
       - iputils-ping
       - iw
       - libayatana-appindicator3-1
+      - libnss-mdns
       - libssl-dev
       - linux-headers-amd64
       - locales

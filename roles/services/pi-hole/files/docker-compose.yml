@@ -72,6 +72,9 @@ services:
       - "pihole_data:/etc/pihole"
       # custom dnsmasq snippets (e.g. no-negcache to prevent NXDOMAIN poisoning at boot)
       - "./dnsmasq.d:/etc/dnsmasq.d:ro"
+      # mDNS hosts as <host>.lan, rewritten by pihole-mdns-hosts on the host. A dir
+      # mount: a file mount would keep the old inode after the updater's rename.
+      - "./mdns-hosts:/etc/pihole-mdns:ro"
     healthcheck:
       disable: false
 

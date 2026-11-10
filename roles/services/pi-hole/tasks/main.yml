@@ -17,6 +17,25 @@
     directory_mode: "0755"
   register: pihole_dnsmasq
 
+- name: Ensure the mDNS hosts directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/pi-hole/mdns-hosts
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+# dnsmasq warns at start if an addn-hosts file is missing; force: false leaves
+# the updater's file alone.
+- name: Seed an empty mDNS hosts file
+  ansible.builtin.copy:
+    content: ""
+    dest: /opt/stacks/pi-hole/mdns-hosts/mdns.hosts
+    force: false
+    owner: root
+    group: root
+    mode: "0644"
+
 - name: Deploy Pi-hole
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
@@ -26,3 +45,7 @@
     # FTL reads /etc/dnsmasq.d only at start, and compose does not notice a
     # change to a bind-mounted file.
     compose_recreate: "{{ 'always' if pihole_dnsmasq.changed else 'auto' }}"
+
+# After deploy_stack: the host list comes from the secrets it loads.
+- name: Include mDNS hosts updater setup
+  ansible.builtin.import_tasks: mdns-hosts.yml

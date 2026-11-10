@@ -1,0 +1,41 @@
+---
+# A scalar would render as one host per character.
+- name: Check the mDNS host list
+  ansible.builtin.assert:
+    that:
+      - pihole_mdns_hosts is defined
+      - pihole_mdns_hosts is sequence
+      - pihole_mdns_hosts is not string
+    fail_msg: pihole_mdns_hosts in vars/secrets.yml must be a list of host names
+    quiet: true
+
+# The host list is from sops: root-only file, no --diff output.
+- name: Deploy the mDNS hosts updater script
+  ansible.builtin.template:
+    src: pihole-mdns-hosts.sh.j2
+    dest: /usr/local/sbin/pihole-mdns-hosts
+    owner: root
+    group: root
+    mode: "0700"
+  diff: false
+
+- name: Deploy the mDNS hosts updater units
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - pihole-mdns-hosts.service
+    - pihole-mdns-hosts.timer
+
+# Skipped in check mode: the unit files have not been written there, so
+# systemd would report them as missing.
+- name: Enable the mDNS hosts updater timer
+  when: not ansible_check_mode
+  ansible.builtin.systemd_service:
+    name: pihole-mdns-hosts.timer
+    state: started
+    enabled: true
+    daemon_reload: true
