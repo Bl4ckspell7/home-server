@@ -9,4 +9,5 @@ Ports: `53:53`, `7080:80`, `7443:443`
 
 ```yaml
 pihole_web_password: ""
+pihole_mdns_hosts: [] # <host> names served as <host>.lan, see Network → mDNS names for containers
 ```

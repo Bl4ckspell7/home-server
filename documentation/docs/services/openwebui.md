@@ -11,15 +11,17 @@ lands as pending.
 ## Models
 
 - **llama.cpp on the desktop** (`linux-docker-config` `roles/llamacpp`, GPU) by its
-  `fritz.box` name, which Pi-hole resolves via the FritzBox. Listed only while the
-  desktop is on. Both repos hold the same `llamacpp_api_key` in sops.
+  `.lan` name, which Pi-hole mirrors from mDNS (see
+  [Network](../network.md#mdns-names-for-containers)), so it works on any router.
+  Listed only while the desktop is on. Both repos hold the same `llamacpp_api_key`
+  in sops.
 - **llama.cpp** here (CPU, always on), see [llama.cpp](llamacpp.md).
 
 `secrets.yml`:
 
 ```yaml
 llamacpp_api_key: "" # same value as the desktop's roles/llamacpp/vars/secrets.yml
-llamacpp_base_url: "" # http://<desktop>.fritz.box:<port>/v1
+llamacpp_base_url: "" # http://<desktop>.lan:<port>/v1
 openwebui_secret_key: "" # 64 alphanumeric characters
 ```
 
@@ -28,8 +30,9 @@ OIDC credentials: shared `vars/oidc_secrets.yml` ([Authentik](authentik.md#oidc-
 ## Config
 
 Env vars only seed a fresh database (persistent config). After the first start,
-change settings in Admin Settings — including a rotated `llamacpp_api_key` or a
-new connection (Connections), or the desktop models answer 401.
+change settings in Admin Settings — including a rotated `llamacpp_api_key`, a
+changed `llamacpp_base_url` or a new connection (Connections). Otherwise the
+desktop models answer 401 or stay unreachable.
 
 Web search uses DuckDuckGo for now. Once SearXNG runs here behind a VPN, switch it
 in Admin Settings → Web Search. The Web Search toggle must also be on in the chat.
