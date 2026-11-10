@@ -1,0 +1,80 @@
+---
+# (Re)start with a dead-man: if this play can't confirm the host is still
+# reachable and the tunnel works, the tunnel is turned off again. Off means
+# disabled too: a config that failed here must not come up at the next boot.
+- name: Restart ProtonVPN with a rollback timer
+  block:
+    - name: Clear a leftover rollback timer
+      ansible.builtin.systemd_service:
+        name: protonvpn-rollback.timer
+        state: stopped
+      failed_when: false
+
+    - name: Arm the rollback timer
+      ansible.builtin.command:
+        argv:
+          - systemd-run
+          # Without it a failed run of the unit stays loaded and blocks re-arming.
+          - --collect
+          - "--on-active={{ protonvpn_rollback_seconds }}"
+          - --unit=protonvpn-rollback
+          - systemctl
+          - disable
+          - --now
+          - wg-quick@proton0
+      changed_when: true
+
+    - name: Restart the tunnel
+      ansible.builtin.systemd_service:
+        name: wg-quick@proton0
+        state: restarted
+        daemon_reload: true
+
+    - name: Reconnect over a fresh SSH session
+      ansible.builtin.meta: reset_connection
+
+    - name: Wait until the host answers again
+      ansible.builtin.wait_for_connection:
+        timeout: 60
+
+    - name: Wait for a handshake with the Proton server
+      # The keepalive triggers one right away; 0 means none yet (wrong key,
+      # endpoint unreachable).
+      ansible.builtin.command:
+        cmd: wg show proton0 latest-handshakes
+      register: protonvpn_handshake
+      changed_when: false
+      until: (protonvpn_handshake.stdout.split() | last | default(0) | int) > 0
+      retries: 10
+      delay: 3
+
+    - name: Check the default route uses the tunnel
+      ansible.builtin.command:
+        cmd: ip -4 route get 1.1.1.1
+      register: protonvpn_route
+      changed_when: false
+      failed_when: "'dev proton0' not in protonvpn_route.stdout"
+
+    - name: Disarm the rollback timer
+      ansible.builtin.systemd_service:
+        name: protonvpn-rollback.timer
+        state: stopped
+
+  rescue:
+    - name: Turn the tunnel off
+      ansible.builtin.systemd_service:
+        name: wg-quick@proton0
+        state: stopped
+        enabled: false
+
+    - name: Disarm the rollback timer
+      ansible.builtin.systemd_service:
+        name: protonvpn-rollback.timer
+        state: stopped
+      failed_when: false
+
+    - name: Fail with the reason
+      ansible.builtin.fail:
+        msg: >-
+          ProtonVPN did not come up and was turned off again; outbound traffic
+          uses the normal uplink. Check `journalctl -u wg-quick@proton0`.

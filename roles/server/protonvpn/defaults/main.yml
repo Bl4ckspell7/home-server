@@ -1,0 +1,10 @@
+---
+# false: tunnel stopped and disabled, config left in place (break-glass).
+protonvpn_enabled: true
+# IPv6 minimum: fits through any uplink, including the phone hotspot.
+protonvpn_mtu: 1280
+# Also the routing table wg-quick uses. wg0 carries the same mark so the VPS
+# tunnel bypasses Proton: keep roles/server/wireguard's wg0.conf.j2 in sync.
+protonvpn_fwmark: 51820
+# Dead-man: the tunnel turns itself off unless a (re)start is verified in time.
+protonvpn_rollback_seconds: 300

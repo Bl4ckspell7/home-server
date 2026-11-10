@@ -4,6 +4,9 @@ Address = 10.10.0.2/24
 # Below the auto 1420: mobile-tether uplinks cap the path near 1470 B and WG adds
 # 60 B, so full-size packets get black-holed. Keep in sync with the VPS side.
 MTU = 1380
+# Same mark as proton0 (protonvpn_fwmark): packets carrying it skip the Proton
+# routing table, so this tunnel reaches the VPS directly, not through the VPN.
+FwMark = 51820
 PrivateKey = {{ wg_home_private_key }}
 
 [Peer]

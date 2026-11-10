@@ -1,0 +1,10 @@
+---
+- name: Reload systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+# Only a flag: a rescue section is not run for handler tasks, so the restart
+# itself happens as a normal task in tasks/main.yml.
+- name: Flag ProtonVPN for a restart
+  ansible.builtin.set_fact:
+    protonvpn_restart: true
