@@ -61,5 +61,8 @@
     - role: radicale
       tags: radicale
 
+    - role: searxng
+      tags: searxng
+
     - role: vaultwarden
       tags: vaultwarden

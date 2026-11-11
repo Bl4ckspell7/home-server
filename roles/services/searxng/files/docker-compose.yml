@@ -1,0 +1,33 @@
+name: searxng
+services:
+  searxng:
+    container_name: searxng
+    image: docker.io/searxng/searxng:2026.11.9-57ff753ad@sha256:287af61f1a13e86d02974fcde91a3413a9945788de38b61ffbc491d81a19bcc2
+    restart: unless-stopped
+    # Leak guard, not a sizing target: ~30M idle.
+    mem_limit: 512m
+    expose:
+      - "8080"
+    networks:
+      svr1-network:
+        ipv4_address: 172.21.255.242
+    dns:
+      - 172.21.255.254
+    dns_search:
+      - "."
+    env_file: .env
+    environment:
+      TZ: Europe/Berlin
+      # OpenSearch and result links point at the public name, not searxng.lan.
+      SEARXNG_BASE_URL: https://searxng.${BASE_DOMAIN:?base domain required}/
+    volumes:
+      - ./settings.yml:/etc/searxng/settings.yml:ro
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  svr1-network:
+    external: true
