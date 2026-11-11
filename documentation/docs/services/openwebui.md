@@ -34,5 +34,5 @@ change settings in Admin Settings — including a rotated `llamacpp_api_key`, a
 changed `llamacpp_base_url` or a new connection (Connections). Otherwise the
 desktop models answer 401 or stay unreachable.
 
-Web search uses DuckDuckGo for now. Once SearXNG runs here behind a VPN, switch it
-in Admin Settings → Web Search. The Web Search toggle must also be on in the chat.
+Web search uses the internal [SearXNG](searxng.md) (`searxng.lan:8080`, JSON API).
+The Web Search toggle must also be on in the chat; new chats start with it on.

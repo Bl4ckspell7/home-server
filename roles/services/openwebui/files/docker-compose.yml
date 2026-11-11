@@ -39,10 +39,10 @@ services:
       # follow-up suggestions would cost one more slow call per answer.
       TASK_MODEL_EXTERNAL: qwen3.5-2b-q6k
       ENABLE_FOLLOW_UP_GENERATION: "False"
-      # Interim until SearXNG moves here behind a VPN. Default backend "auto" mixes other engines.
+      # Own SearXNG, internal (no Authentik); it searches via ProtonVPN like all svr1 egress.
       ENABLE_WEB_SEARCH: "True"
-      WEB_SEARCH_ENGINE: duckduckgo
-      DDGS_BACKEND: duckduckgo
+      WEB_SEARCH_ENGINE: searxng
+      SEARXNG_QUERY_URL: http://searxng.lan:8080/search?q=<query>
       # New chats start with web search and code interpreter on (Admin > Models > Model Defaults).
       DEFAULT_MODEL_METADATA: '{"defaultFeatureIds": ["web_search", "code_interpreter"]}'
       ANONYMIZED_TELEMETRY: "False"

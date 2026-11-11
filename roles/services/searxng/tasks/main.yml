@@ -1,0 +1,26 @@
+---
+- name: Ensure SearXNG stack directory exists
+  ansible.builtin.file:
+    path: /opt/stacks/searxng
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy SearXNG settings
+  ansible.builtin.copy:
+    src: settings.yml
+    dest: /opt/stacks/searxng/settings.yml
+    owner: root
+    group: root
+    mode: "0644"
+  register: searxng_settings
+
+- name: Deploy SearXNG
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
+  vars:
+    service_name: searxng
+    service_secrets: true
+    env_template: searxng.env.j2
+    # A single-file bind mount keeps the old inode, so settings changes need a recreate.
+    compose_recreate: "{{ 'always' if searxng_settings.changed else 'auto' }}"

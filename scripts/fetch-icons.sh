@@ -69,6 +69,7 @@ homepage_icons=(
     pi-hole.svg
     proton-mail.svg
     radicale.svg
+    searxng.svg
     steam.svg
     vaultwarden.svg
     youtube.svg
@@ -88,6 +89,7 @@ authentik_icons=(
     open-webui.svg
     paperless-ngx.svg
     pi-hole.svg
+    searxng.svg
     vaultwarden.svg
 )
 

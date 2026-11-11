@@ -47,6 +47,7 @@ Services behind Caddy use `expose` (no host port binding). Only services requiri
 | **Authentik**     | -             | 9443               |
 | **llama.cpp**     | -             | 8080               |
 | **Open WebUI**    | -             | 3000               |
+| **SearXNG**       | -             | 8080               |
 
 ## Service Users and Groups
 

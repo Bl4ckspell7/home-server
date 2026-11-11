@@ -125,6 +125,9 @@ http://paperless.{$BASE_DOMAIN}:8080 {
 http://radicale.{$BASE_DOMAIN}:8080 {
 	import proxy radicale.lan:5232
 }
+http://searxng.{$BASE_DOMAIN}:8080 {
+	import proxy_auth searxng.lan:8080
+}
 
 http://authentik.{$BASE_DOMAIN}:8080 {
 	import proxy_tls authentik.lan:9443

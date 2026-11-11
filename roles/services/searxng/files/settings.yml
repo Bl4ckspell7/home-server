@@ -1,0 +1,14 @@
+# Image defaults apply; secret_key and base_url come from the environment (compose).
+use_default_settings: true
+
+server:
+  # Anubis and Authentik already guard it; the limiter would need Valkey.
+  limiter: false
+  # Browsers load result images through SearXNG (and so via ProtonVPN), not from third parties.
+  image_proxy: true
+
+search:
+  # Open WebUI queries the JSON API.
+  formats:
+    - html
+    - json

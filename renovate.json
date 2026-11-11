@@ -99,6 +99,13 @@
       "matchPackageNames": ["ghcr.io/ggml-org/llama.cpp"],
       "versioning": "regex:^server-b(?<major>\\d+)$",
       "schedule": ["* * * * 1"]
+    },
+    {
+      "description": "SearXNG date tags (YYYY.M.D-<commit>): ignore the commit suffix, publishes daily",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["docker.io/searxng/searxng"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-[0-9a-f]+$",
+      "schedule": ["* * * * 1"]
     }
   ]
 }
