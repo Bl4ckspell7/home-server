@@ -133,6 +133,10 @@ authentik_proxy_apps:
     name: Backrest
     description: Restic backup UI
 
+  - slug: searxng
+    name: SearXNG
+    description: Private metasearch
+
   - slug: vaultwarden
     name: Vaultwarden
     description: Password manager
