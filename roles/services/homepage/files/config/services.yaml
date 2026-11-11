@@ -132,6 +132,13 @@
             ping: paperless.lan
             statusStyle: "basic"
 
+        - SearXNG:
+            icon: /icons/searxng.svg
+            href: https://searxng.bl4ckspell.de/
+            description: Private metasearch
+            ping: searxng.lan
+            statusStyle: "basic"
+
         - Vaultwarden:
             icon: /icons/vaultwarden.svg
             href: https://vaultwarden.bl4ckspell.de/
