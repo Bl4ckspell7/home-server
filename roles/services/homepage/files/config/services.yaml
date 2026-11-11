@@ -47,17 +47,17 @@
             statusStyle: "basic"
 
     - AI & Data:
-        - llama.cpp:
-            icon: /icons/llama-cpp.svg
-            description: Local LLM server (CPU)
-            ping: llamacpp.lan
-            statusStyle: "basic"
-
         - Open WebUI:
             icon: /icons/open-webui.svg
             href: https://openwebui.bl4ckspell.de/
             description: Chat UI for local LLMs
             ping: openwebui.lan
+            statusStyle: "basic"
+
+        - llama.cpp:
+            icon: /icons/llama-cpp.svg
+            description: Local LLM server (CPU)
+            ping: llamacpp.lan
             statusStyle: "basic"
 
         - Photon:
