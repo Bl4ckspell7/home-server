@@ -37,16 +37,12 @@
       ansible.builtin.wait_for_connection:
         timeout: 60
 
-    - name: Wait for a handshake with the Proton server
-      # The keepalive triggers one right away; 0 means none yet (wrong key,
-      # endpoint unreachable).
+    - name: Wait for a handshake with a Proton server
+      # The start picked one at random; a dead one is swapped for the next,
+      # and only none answering fails (wrong key, uplink down).
       ansible.builtin.command:
-        cmd: wg show proton0 latest-handshakes
-      register: protonvpn_handshake
+        cmd: /usr/local/sbin/protonvpn-peer await
       changed_when: false
-      until: (protonvpn_handshake.stdout.split() | last | default(0) | int) > 0
-      retries: 10
-      delay: 3
 
     - name: Check the default route uses the tunnel
       ansible.builtin.command:

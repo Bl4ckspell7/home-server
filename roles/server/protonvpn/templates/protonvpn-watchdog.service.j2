@@ -1,0 +1,23 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=Heal a stalled ProtonVPN tunnel
+After=wg-quick@proton0.service
+
+[Service]
+Type=oneshot
+Environment=STALE={{ protonvpn_watchdog_stale_seconds }} RETRY={{ protonvpn_watchdog_retry_seconds }}
+ExecStart=/usr/local/sbin/protonvpn-watchdog
+# Oneshot has no start timeout by default; a hung wg or systemctl call would
+# block the timer for good.
+TimeoutStartSec=30s
+RuntimeDirectory=protonvpn-watchdog
+# Escalation state must outlive each run; /run still clears it at boot.
+RuntimeDirectoryPreserve=yes
+# Runs every minute: keep only the script's own notices. Unprefixed output is
+# from failing commands, so it is logged as an error and passes the filter.
+LogLevelMax=notice
+SyslogLevel=err
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+NoNewPrivileges=true

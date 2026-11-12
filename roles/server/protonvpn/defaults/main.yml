@@ -8,3 +8,9 @@ protonvpn_mtu: 1280
 protonvpn_fwmark: 51820
 # Dead-man: the tunnel turns itself off unless a (re)start is verified in time.
 protonvpn_rollback_seconds: 300
+# WireGuard rekeys every 120 s (measured 120-127 s here) and drops keys at
+# 180 s: an older handshake means the tunnel carries nothing.
+protonvpn_watchdog_stale_seconds: 180
+# Time a new source port or server gets to handshake before the next step.
+# The timer runs every minute, so less acts like 60.
+protonvpn_watchdog_retry_seconds: 60
