@@ -122,7 +122,11 @@ MTU is 1280 so the tunnel fits through any uplink; forwarded container TCP gets 
 
 There is no killswitch. While `proton0` is up, a dead Proton server blocks outbound traffic rather than leaking; with the unit stopped the server uses the normal uplink.
 
-Check: `curl -4 ifconfig.io` on the host and `docker exec caddy wget -qO- ifconfig.io` both show a Proton IP; `wg show proton0` shows a recent handshake.
+Five German servers rank equal (`protonvpn_peers`, all sharing one key). Each tunnel start picks one at random (`PostUp` → `/usr/local/sbin/protonvpn-peer pick`); `protonvpn-peer switch` hops to another by hand. The `[Peer]` in `proton0.conf` is only a placeholder for wg-quick's routing: a bare `wg syncconf` from that file removes the server and stops all egress, so use `systemctl reload wg-quick@proton0`, which puts a server back.
+
+Watchdog: `protonvpn-watchdog.timer` checks the handshake every minute. When it is older than 180 s (rekey is every 120 s), the watchdog first changes the source port, then switches to a random untried server each minute until one answers. It uses only `wg set`, because a unit restart would briefly leak egress via the uplink. It idles while the unit is stopped or a role run is verifying a restart.
+
+Check: `curl -4 ifconfig.io` on the host and `docker exec caddy wget -qO- ifconfig.io` both show a Proton IP; `wg show proton0` shows a recent handshake; `journalctl -t protonvpn-peer -t protonvpn-watchdog` shows the server in use and any healing.
 
 ### Break-glass
 
@@ -137,7 +141,7 @@ Back on: `systemctl enable --now wg-quick@proton0`, or run the role. A role run 
 
 ufw limits SSH to 6 new connections per 30 s and refuses the rest, so don't retry in quick succession.
 
-New Proton server: download its WireGuard config, put key, peer key, endpoint and address into `roles/server/protonvpn/vars/secrets.yml` (`sops edit`), run the role.
+Change servers: edit `protonvpn_peers` in `roles/server/protonvpn/vars/secrets.yml` (`sops edit`), run the role; it moves off a server that left the list. Name, public key and entry IP (endpoint `<ip>:51820`) come from the Proton CLI's cache on svr1, `/var/cache/Proton/VPN/serverlist.json` (after `protonvpn signin`, `protonvpn cities list DE` refreshes it). Take the entry whose `EntryCountry` is `DE`: the same node also appears behind Secure Core with a foreign entry IP. Private key and address stay; only a new key needs a dashboard WireGuard config.
 
 ## Caddy
 
