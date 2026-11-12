@@ -1,0 +1,81 @@
+#!/bin/sh
+# Managed by Ansible (roles/server/protonvpn).
+# Heals a stalled proton0 at runtime only: a unit restart drops the routing
+# rules for a moment, and egress would leak via the LAN uplink. While the
+# handshake stays stale: a new source port first (a server once ignored one
+# port for 80 min), then a random untried server on each later run.
+set -euf
+
+iface=proton0
+unit=wg-quick@proton0.service
+peers=/etc/wireguard/proton0.peers
+state=/run/protonvpn-watchdog
+stale=${STALE:-180}
+retry=${RETRY:-60}
+
+log() {
+    logger -t protonvpn-watchdog -p "daemon.$1" "$2"
+}
+
+# Break-glass, or the role is verifying a restart: leave the tunnel alone.
+systemctl -q is-active "$unit" || exit 0
+if systemctl -q is-active protonvpn-rollback.timer; then
+    exit 0
+fi
+
+now=$(date +%s)
+uptime=$(cut -d . -f 1 /proc/uptime)
+# The unit's start, from µs since boot to epoch seconds.
+started=$((now - uptime + $(systemctl show -P ActiveEnterTimestampMonotonic "$unit") / 1000000))
+# A fresh tunnel has not had its first handshake yet.
+[ $((now - started)) -gt "$stale" ] || exit 0
+
+mkdir -p "$state"
+# An escalation from before a restart is over: the start picked anew.
+if [ -e "$state/since" ] && [ "$(cat "$state/since")" -lt "$started" ]; then
+    rm -f "$state/since" "$state/at" "$state/tried"
+fi
+
+read -r key handshake <<EOF
+$(wg show "$iface" latest-handshakes)
+EOF
+handshake=${handshake:-0}
+name=$(awk -v k="${key:-}" '$2 == k { print $1 }' "$peers")
+name=${name:-unknown}
+
+if [ "$handshake" -gt 0 ] && [ $((now - handshake)) -le "$stale" ]; then
+    if [ -e "$state/since" ]; then
+        log notice "recovered via $name after $((now - $(cat "$state/since")))s"
+        rm -f "$state/since" "$state/at" "$state/tried"
+    fi
+    exit 0
+fi
+
+# The previous step gets time to handshake before the next one. The slack
+# keeps a timer run that lands a second early from waiting a whole minute.
+at=$(cat "$state/at" 2>/dev/null || echo 0)
+[ $((now - at + 5)) -ge "$retry" ] || exit 0
+
+if [ "$handshake" -gt 0 ]; then
+    what="last handshake $((now - handshake))s ago"
+else
+    what="no handshake"
+fi
+
+if [ ! -e "$state/since" ]; then
+    echo "$now" > "$state/since"
+    wg set "$iface" listen-port 0
+    log warning "$what via $name: retrying from source port $(wg show "$iface" listen-port)"
+else
+    tried=$(cat "$state/tried" 2>/dev/null || true)
+    # Once all were tried, protonvpn-peer ignores the list: keep it bounded.
+    case " $tried " in
+        *" ${key:-} "*) ;;
+        *) tried="$tried ${key:-}" ;;
+    esac
+    echo "$tried" > "$state/tried"
+    log warning "$what via $name: switching server"
+    # shellcheck disable=SC2086 # $tried is a list of keys
+    /usr/local/sbin/protonvpn-peer switch $tried > /dev/null
+fi
+echo "$now" > "$state/at"

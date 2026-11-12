@@ -17,6 +17,49 @@
     label: "{{ item.key }}"
   no_log: true
 
+# A bad entry fails only when the random pick lands on it, possibly at a
+# later boot: wg-quick then fails and egress takes the bare uplink.
+- name: Check the ProtonVPN server list
+  ansible.builtin.assert:
+    that:
+      - protonvpn_peers is defined
+      - protonvpn_peers is sequence
+      - protonvpn_peers is not string
+      - protonvpn_peers | length >= 2
+      - >-
+        protonvpn_peers | selectattr('name', 'defined')
+        | selectattr('public_key', 'defined') | selectattr('endpoint', 'defined')
+        | list | length == protonvpn_peers | length
+      - protonvpn_peers | map(attribute='name') | reject('match', '^[A-Za-z0-9._-]+$') | list | length == 0
+      - protonvpn_peers | map(attribute='public_key') | reject('match', '^[A-Za-z0-9+/]{43}=$') | list | length == 0
+      - protonvpn_peers | map(attribute='endpoint') | reject('match', '^[0-9.]+:[0-9]+$') | list | length == 0
+    fail_msg: >-
+      protonvpn_peers in vars/secrets.yml must list at least two servers, each
+      with a name without spaces, a WireGuard public_key and an IP:port endpoint
+    quiet: true
+  when: protonvpn_enabled | bool
+
+# Before the config: its PostUp needs both.
+- name: Deploy the ProtonVPN server list
+  ansible.builtin.template:
+    src: proton0.peers.j2
+    dest: /etc/wireguard/proton0.peers
+    owner: root
+    group: root
+    mode: "0600"
+  diff: false
+  register: protonvpn_peers_file
+  when: protonvpn_enabled | bool
+
+- name: Deploy the server switcher
+  ansible.builtin.copy:
+    src: protonvpn-peer
+    dest: /usr/local/sbin/protonvpn-peer
+    owner: root
+    group: root
+    mode: "0700"
+  when: protonvpn_enabled | bool
+
 - name: Ensure the unit drop-in directory exists
   ansible.builtin.file:
     path: /etc/systemd/system/wg-quick@proton0.service.d
@@ -37,6 +80,21 @@
     mode: "0644"
   notify: Reload systemd
 
+- name: Put a listed server back after a reload
+  # The stock reload syncs the peers from proton0.conf, whose only peer is
+  # the placeholder.
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/wg-quick@proton0.service.d/reload.conf
+    content: |
+      [Service]
+      ExecReload=/usr/local/sbin/protonvpn-peer ensure
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd
+
+# The watchdog stays enabled: it idles while the tunnel is stopped, and keeps
+# working after a manual re-enable.
 - name: Stop and disable ProtonVPN
   ansible.builtin.systemd_service:
     name: wg-quick@proton0
@@ -76,8 +134,23 @@
         - protonvpn_restart | default(false) or protonvpn_link.rc != 0
         - not ansible_check_mode
 
+    - name: Move off a server that left the list
+      # A restart above has picked anew already.
+      ansible.builtin.command:
+        cmd: /usr/local/sbin/protonvpn-peer ensure
+      register: protonvpn_ensure
+      changed_when: protonvpn_ensure.stdout | length > 0
+      when:
+        - protonvpn_peers_file is changed
+        - not (protonvpn_restart | default(false) or protonvpn_link.rc != 0)
+        - not ansible_check_mode
+
     - name: Start ProtonVPN at boot
       # Only reached once a start was verified; a failed one leaves it disabled.
       ansible.builtin.systemd_service:
         name: wg-quick@proton0
         enabled: true
+
+- name: Install the ProtonVPN watchdog
+  ansible.builtin.import_tasks: watchdog.yml
+  when: protonvpn_enabled | bool

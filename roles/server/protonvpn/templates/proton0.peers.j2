@@ -1,0 +1,5 @@
+{{ ansible_managed | comment }}
+# name public-key endpoint, read by /usr/local/sbin/protonvpn-peer.
+{% for peer in protonvpn_peers %}
+{{ peer.name }} {{ peer.public_key }} {{ peer.endpoint }}
+{% endfor %}

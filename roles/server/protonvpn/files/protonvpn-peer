@@ -1,0 +1,112 @@
+#!/bin/sh
+# Managed by Ansible (roles/server/protonvpn).
+# Points proton0 at one server from the peers file. All servers share the
+# interface key and Proton allows one session per key, so exactly one is set.
+#   pick              random server
+#   switch [KEY...]   random server other than the current one and KEY...;
+#                     ignores KEY... once nothing else is left
+#   ensure            keep the current server if it is listed as is, else pick
+#                     (after a list change or a `wg syncconf` from the config)
+#   await             wait for a handshake, trying each server once; fails if
+#                     none answers
+set -euf
+
+iface=proton0
+peers=/etc/wireguard/proton0.peers
+
+usage() {
+    echo "usage: protonvpn-peer pick | switch [public-key...] | ensure | await" >&2
+    exit 2
+}
+
+[ $# -ge 1 ] || usage
+mode=$1
+shift
+
+servers=$(grep -Ev '^[[:space:]]*(#|$)' "$peers")
+
+current() {
+    wg show "$iface" peers | tr '\n' ' '
+}
+
+handshake() {
+    wg show "$iface" latest-handshakes | awk 'NR == 1 { print $2 } END { if (NR == 0) print 0 }'
+}
+
+name_of() {
+    printf '%s\n' "$servers" | awk -v k="$1" '$2 == k { print $1 }'
+}
+
+# Prints the servers whose key is not in $1 (space-separated keys).
+without() {
+    printf '%s\n' "$servers" | while read -r name key endpoint; do
+        case " $1 " in
+            *" $key "*) ;;
+            *) printf '%s %s %s\n' "$name" "$key" "$endpoint" ;;
+        esac
+    done
+}
+
+# Points the tunnel at a random server from $1 ("name key endpoint" lines).
+use() {
+    if [ -z "$1" ]; then
+        logger -t protonvpn-peer -p daemon.err "no server left to use in $peers"
+        exit 1
+    fi
+    read -r name key endpoint <<EOF
+$(printf '%s\n' "$1" | shuf -n 1)
+EOF
+    # One update: the tunnel never has two servers, or none with an endpoint.
+    remove=""
+    for old in $(current); do
+        [ "$old" = "$key" ] || remove="$remove peer $old remove"
+    done
+    # shellcheck disable=SC2086 # $remove is a list of arguments
+    wg set "$iface" $remove peer "$key" endpoint "$endpoint" \
+        allowed-ips 0.0.0.0/0 persistent-keepalive 25
+    logger -t protonvpn-peer -p daemon.notice "using $name ($endpoint)"
+    # Under a unit, stdout is the journal: logger has the line there already.
+    [ -n "${JOURNAL_STREAM:-}" ] || echo "using $name ($endpoint)"
+}
+
+case $mode in
+    pick)
+        use "$servers"
+        ;;
+    switch)
+        pool=$(without "$(current) $*")
+        [ -n "$pool" ] || pool=$(without "$(current)")
+        use "$pool"
+        ;;
+    ensure)
+        # One "key endpoint" pair; the config's placeholder has endpoint "(none)".
+        # shellcheck disable=SC2046 # split into key and endpoint
+        set -- $(wg show "$iface" endpoints)
+        if [ $# -eq 2 ] && printf '%s\n' "$servers" \
+            | awk -v k="$1" -v e="$2" '$2 == k && $3 == e { found = 1 } END { exit !found }'; then
+            exit 0
+        fi
+        use "$servers"
+        ;;
+    await)
+        tried=""
+        left=$(printf '%s\n' "$servers" | wc -l)
+        while :; do
+            # The keepalive starts a handshake at once; it takes under a second.
+            for _ in 1 2 3 4 5 6 7 8 9 10; do
+                [ "$(handshake)" -eq 0 ] || exit 0
+                sleep 1
+            done
+            left=$((left - 1))
+            [ "$left" -gt 0 ] || exit 1
+            key=$(current)
+            tried="$tried $key"
+            logger -t protonvpn-peer -p daemon.warning \
+                "no handshake via $(name_of "${key% }"), trying another server"
+            use "$(without "$tried")"
+        done
+        ;;
+    *)
+        usage
+        ;;
+esac

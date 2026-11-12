@@ -1,0 +1,34 @@
+---
+- name: Deploy the watchdog script
+  ansible.builtin.copy:
+    src: protonvpn-watchdog
+    dest: /usr/local/sbin/protonvpn-watchdog
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Deploy the watchdog service
+  ansible.builtin.template:
+    src: protonvpn-watchdog.service.j2
+    dest: /etc/systemd/system/protonvpn-watchdog.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy the watchdog timer
+  ansible.builtin.copy:
+    src: protonvpn-watchdog.timer
+    dest: /etc/systemd/system/protonvpn-watchdog.timer
+    owner: root
+    group: root
+    mode: "0644"
+
+# Skipped in check mode: the unit files have not been written there, so
+# systemd would report them as missing.
+- name: Enable the watchdog timer
+  when: not ansible_check_mode
+  ansible.builtin.systemd_service:
+    name: protonvpn-watchdog.timer
+    state: started
+    enabled: true
+    daemon_reload: true
