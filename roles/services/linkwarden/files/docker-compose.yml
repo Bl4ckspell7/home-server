@@ -47,11 +47,11 @@ services:
 
   linkwarden-postgres:
     container_name: linkwarden-postgres
-    image: docker.io/library/postgres:16.16-alpine@sha256:0adbf25a9e96d38823bb813f3ac0ed41fadb665c88f1df7fe6dbfb060cbdc106
+    image: docker.io/library/postgres:18.7-alpine@sha256:75dcac3dfb1cd01ca3536910bbc84128759362f8b118bf8c55b38a94f68f3b73
     env_file: .env
     restart: unless-stopped
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - database:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres}"]
       interval: 10s
@@ -75,6 +75,10 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+
+volumes:
+  database:
+    driver: local
 
 networks:
   default:
