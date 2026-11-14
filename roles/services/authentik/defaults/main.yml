@@ -51,8 +51,11 @@ authentik_proxy_grant_types:
 #                Override only where the filename differs from the slug.
 #   scope_mappings  OIDC only: extra claims [{scope_name, description,
 #                expression}]; the app must request scope_name.
-#   access_group OIDC only: the one group allowed to use the app; default everyone.
-#                Removing it leaves the binding in Authentik: delete that in the UI.
+#   access_group OIDC and proxy apps: the one group allowed to use the app;
+#                default everyone. Removing it leaves the binding in Authentik:
+#                delete that in the UI.
+#   hidden       proxy apps only: no dashboard tile (launch URL blank://blank),
+#                for a gate on a host whose OIDC app already has one.
 
 # OIDC consumers. Credentials: oidc_<slug>_client_id / _client_secret (dashes
 # become underscores) in vars/oidc_secrets.yml, shared with the consuming app's
@@ -141,16 +144,40 @@ authentik_proxy_apps:
     name: Vaultwarden
     description: Password manager
 
-# Launcher tiles only: no provider, just a link on the Authentik dashboard.
-authentik_link_apps:
+  # Root on svr1 via the docker socket, so admins only.
   - slug: dockge
     name: Dockge
     description: Compose stack manager
+    access_group: authentik Admins
+
   - slug: pi-hole
     name: Pi-hole
     description: DNS ad blocking
     host: "pihole.{{ authentik_domain }}"
     launch_path: /admin/
+    access_group: authentik Admins
+
+  # Gates in front of apps that also log in via OIDC: they close Dockhand's open
+  # API while its auth is off (bootstrap, disable-auth.sh) and Paperless's
+  # break-glass /admin/. Only the Caddy routes decide which paths they cover.
+  - slug: dockhand-gate
+    name: Dockhand gate
+    description: Forward-auth in front of Dockhand
+    host: "dockhand.{{ authentik_domain }}"
+    icon: application-icons/dockhand.png
+    access_group: authentik Admins
+    hidden: true
+
+  - slug: paperless-admin
+    name: Paperless admin
+    description: Forward-auth in front of the Paperless admin
+    host: "paperless.{{ authentik_domain }}"
+    icon: application-icons/paperless-ngx.svg
+    access_group: authentik Admins
+    hidden: true
+
+# Launcher tiles only: no provider, just a link on the Authentik dashboard.
+authentik_link_apps: []
 
 # Objects the blueprint deletes. Removing a blueprint file deletes NOTHING in
 # Authentik — it only stops managing those objects — so obsolete entries need an
