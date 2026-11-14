@@ -1,0 +1,9 @@
+[Unit]
+Description=Hand media files the Jellyfin watcher missed to jellyfin
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/jellyfin-set-permissions.sh
+Nice=10
+IOSchedulingClass=idle
+SyslogIdentifier=jellyfin-permissions

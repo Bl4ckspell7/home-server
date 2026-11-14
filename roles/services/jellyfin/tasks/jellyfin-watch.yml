@@ -8,6 +8,7 @@
     owner: root
     group: root
     mode: "0755"
+  register: jellyfin_permissions_script
 
 - name: Deploy Jellyfin watcher script
   ansible.builtin.template:
@@ -16,6 +17,7 @@
     owner: root
     group: root
     mode: "0755"
+  register: jellyfin_watch_script
 
 - name: Deploy Jellyfin watcher systemd service
   ansible.builtin.copy:
@@ -24,13 +26,34 @@
     owner: root
     group: root
     mode: "0644"
+  register: jellyfin_watch_unit
+
+- name: Deploy the Jellyfin permission catch-up service and timer
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - jellyfin-permissions.service
+    - jellyfin-permissions.timer
 
 - name: Reload systemd to register Jellyfin watcher
   ansible.builtin.systemd:
     daemon_reload: true
 
+# A running watcher keeps executing the old script, so restart it on any change.
 - name: Enable and start Jellyfin watcher
   ansible.builtin.systemd:
     name: jellyfin-watch.service
+    enabled: true
+    state: >-
+      {{ 'restarted' if (jellyfin_permissions_script.changed or jellyfin_watch_script.changed
+         or jellyfin_watch_unit.changed) else 'started' }}
+
+- name: Enable the Jellyfin permission catch-up timer
+  ansible.builtin.systemd:
+    name: jellyfin-permissions.timer
     enabled: true
     state: started
