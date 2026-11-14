@@ -1,8 +1,9 @@
 # Forgejo Actions runner.
 #
 # Job isolation: the runner does NOT touch the host Docker socket. A dedicated
-# Docker-in-Docker daemon (`dind`) runs the job containers, so a compromised
-# workflow only gets root INSIDE the isolated dind container, never on the host.
+# Docker-in-Docker daemon (`dind`) runs the job containers. dind is privileged,
+# i.e. root-equivalent on svr1, so jobs must never reach its socket:
+# config.yml sets `docker_host: "-"`.
 #
 # The runner polls Forgejo at http://forgejo.lan:3000 (direct via svr1-network,
 # bypasses caddy/anubis). Nothing connects TO the runner — outbound only.
@@ -35,8 +36,8 @@ services:
     image: docker.io/library/docker:29.9.3-dind@sha256:08a98015fce594af7c382883bea080ea206de74402a95da9dc52b6428c8cd121
     container_name: forgejo-runner-dind
     restart: unless-stopped
-    # Required to run a nested Docker daemon; blast radius is this container,
-    # not the host.
+    # Required to run a nested Docker daemon. Privileged = host root, so only
+    # the runner may use the socket (see the header).
     privileged: true
     # API only as unix socket on the shared volume — no network listener.
     # --group=904 grants the non-root runner socket access (numeric gid, no

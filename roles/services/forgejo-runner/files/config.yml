@@ -21,7 +21,8 @@ cache:
   enabled: true
 
 container:
-  # Job containers are created by the isolated dind daemon, never the host
-  # Docker socket.
-  docker_host: unix:///sock/docker.sock
+  # "-": the runner still uses DOCKER_HOST (dind), but the socket is NOT mounted
+  # into job containers. A URL here would mount it into every job, and dind is
+  # privileged, so a job could take over svr1.
+  docker_host: "-"
   privileged: false
