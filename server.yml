@@ -21,6 +21,10 @@
         uu_apt_daily_oncalendar: "*-*-* 03:30"
         uu_apt_daily_upgrade_oncalendar: "*-*-* 04:00"
         uu_apt_daily_upgrade_delay: "20m"
+        # Every apt source, Docker included: live-restore (docker role) keeps the
+        # containers running when docker-ce/containerd upgrade.
+        uu_origins_patterns:
+          - "origin=*"
 
     - role: bash
       tags: bash

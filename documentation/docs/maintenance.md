@@ -42,11 +42,12 @@ Two update tracks, opposite priorities: Renovate patches **containers** with a
 
 ### What installs automatically
 
-Debian security origins only:
+Set per host with `uu_origins_patterns`:
 
-```
-origin=Debian,codename=${distro_codename}-security,label=Debian-Security
-```
+- **svr1:** every apt source (`origin=*`): Debian incl. point releases and
+  stable-updates, Docker, Proton, Mozilla, Steam. Docker's `live-restore`
+  (docker role) keeps containers running when docker-ce or containerd upgrade.
+- **VPS:** Debian security only (the role default).
 
 `needrestart` runs in automatic mode (`$nrconf{restart} = 'a'`), so daemons
 linking against a patched library are restarted in place. Container runtimes are

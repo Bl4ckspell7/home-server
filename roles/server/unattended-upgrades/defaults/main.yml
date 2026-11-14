@@ -1,4 +1,8 @@
 ---
+# Origins unattended-upgrades may install from. Default: Debian security only.
+uu_origins_patterns:
+  - "origin=Debian,codename=${distro_codename}-security,label=Debian-Security"
+
 # Native unattended-upgrades reboot: for a host that is always on with no
 # console user.
 uu_automatic_reboot: false
