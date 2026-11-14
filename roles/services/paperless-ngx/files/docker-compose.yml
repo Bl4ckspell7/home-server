@@ -5,10 +5,14 @@ services:
     image: ghcr.io/paperless-ngx/paperless-ngx:3.4.2@sha256:d704e84f88300eb6ab001ab15720a2330ff99169cf9f94d6b8fcc44b63a84c84
     restart: unless-stopped
     depends_on:
-      - paperless-valkey
-      - paperless-postgres
-      - paperless-gotenberg
-      - paperless-tika
+      paperless-valkey:
+        condition: service_started
+      paperless-postgres:
+        condition: service_healthy
+      paperless-gotenberg:
+        condition: service_started
+      paperless-tika:
+        condition: service_started
     expose:
       - "8000"
     networks:

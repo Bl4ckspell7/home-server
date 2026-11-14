@@ -36,8 +36,10 @@ services:
     volumes:
       - ./data:/data/data
     depends_on:
-      - linkwarden-postgres
-      - linkwarden-meilisearch
+      linkwarden-postgres:
+        condition: service_healthy
+      linkwarden-meilisearch:
+        condition: service_started
     healthcheck:
       test: ["CMD", "curl", "--silent", "--fail", "http://127.0.0.1:3000/"]
       interval: 30s
