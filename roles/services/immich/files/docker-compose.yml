@@ -46,8 +46,10 @@ services:
     dns_search:
       - "."
     depends_on:
-      - immich-valkey
-      - immich-postgres
+      immich-valkey:
+        condition: service_started
+      immich-postgres:
+        condition: service_healthy
     healthcheck:
       disable: false
 
