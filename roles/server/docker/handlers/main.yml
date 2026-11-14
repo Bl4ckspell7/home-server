@@ -1,0 +1,34 @@
+---
+# Run in this order (handlers follow file order). A reload (SIGHUP) turns
+# live-restore on first, so the restart that applies the log settings bounces no
+# container.
+- name: Reload Docker to enable live-restore
+  ansible.builtin.systemd_service:
+    name: docker
+    state: reloaded
+  become: true
+  listen: Apply Docker daemon config
+
+- name: Read whether live-restore is active
+  ansible.builtin.command:
+    argv: [docker, info, --format, "{% raw %}{{ .LiveRestoreEnabled }}{% endraw %}"]
+  become: true
+  register: docker_live_restore
+  changed_when: false
+  # --check skips the reload above, so live-restore would read false there.
+  when: not ansible_check_mode
+  listen: Apply Docker daemon config
+
+- name: Refuse to restart Docker without live-restore
+  ansible.builtin.assert:
+    that: docker_live_restore.stdout | trim == 'true'
+    fail_msg: live-restore is not active, a restart would stop every container
+  when: not ansible_check_mode
+  listen: Apply Docker daemon config
+
+- name: Restart Docker to apply the log settings
+  ansible.builtin.systemd_service:
+    name: docker
+    state: restarted
+  become: true
+  listen: Apply Docker daemon config

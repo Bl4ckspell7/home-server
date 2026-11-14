@@ -1,0 +1,10 @@
+---
+# Rendered to /etc/docker/daemon.json. Log options only apply to containers
+# created after a change: recreate the stacks to pick them up.
+docker_daemon_config:
+  log-driver: local
+  log-opts:
+    max-size: 100m
+    max-file: "40"
+  # Containers keep running while dockerd restarts, e.g. on a docker-ce upgrade.
+  live-restore: true

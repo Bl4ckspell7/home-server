@@ -11,3 +11,13 @@
     ipam_config:
       - subnet: 172.21.0.0/16
   become: true
+
+- name: Configure the Docker daemon
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    content: "{{ docker_daemon_config | to_nice_json }}\n"
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  notify: Apply Docker daemon config
