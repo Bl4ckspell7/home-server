@@ -65,3 +65,6 @@ System users and groups created by Ansible for running services:
 | **Photon**         | photon         | 907     | photon         | 907     |
 | **Linkwarden**     | linkwarden     | 908     | linkwarden     | 908     |
 | **Homepage**       | homepage       | 909     | homepage       | 909     |
+| **Pi-hole**        | pi-hole        | 910     | pi-hole        | 910     |
+| **Dawarich**       | dawarich       | 911     | dawarich       | 911     |
+| **Paperless-ngx**  | paperless-ngx  | 912     | paperless-ngx  | 912     |

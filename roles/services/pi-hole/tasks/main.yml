@@ -1,4 +1,10 @@
 ---
+- name: Configure Pi-hole service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: pi-hole
+    service_uid: 910
+
 - name: Ensure Pi-hole dnsmasq.d directory exists
   ansible.builtin.file:
     path: /opt/stacks/pi-hole/dnsmasq.d

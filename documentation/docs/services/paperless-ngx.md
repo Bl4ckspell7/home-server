@@ -34,3 +34,10 @@ import os
 u = User.objects.get(username="admin"); u.set_password(os.environ["PAPERLESS_ADMIN_PASSWORD"]); u.save()
 PY
 ```
+
+## Service user
+
+Paperless runs as the `paperless-ngx` system user (912:912) via
+`USERMAP_UID`/`USERMAP_GID`: the image remaps its `paperless` user at start. The
+`export` and `consume` dirs belong to that user, so files dropped into `consume`
+must be readable by it.

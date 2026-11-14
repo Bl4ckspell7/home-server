@@ -23,3 +23,9 @@ OIDC credentials: shared `vars/oidc_secrets.yml` ([Authentik](authentik.md#oidc-
 **Reverse Geocoding:**
 
 -> Disable DNS Rate-limiting
+
+## Service user
+
+The app runs as the `dawarich` system user (911:911) via `PUID`/`PGID`: its
+entrypoint starts as root, chowns `public`, `storage`, `tmp`, `db` and `log`, then
+drops to that ID. Postgres and valkey stay on their image defaults.

@@ -30,8 +30,9 @@ services:
       TZ: "Europe/Berlin"
       # Set a password to access the web interface. Not setting one will result in a random password being assigned
       FTLCONF_webserver_api_password: ${PIHOLE_WEB_PASSWORD}
-      PIHOLE_UID: "1000"
-      PIHOLE_GID: "1000"
+      # The pi-hole service user (roles/services/pi-hole), not the login user.
+      PIHOLE_UID: "910"
+      PIHOLE_GID: "910"
       # If using Docker's default `bridge` network setting the dns listening mode should be set to 'ALL'
       FTLCONF_dns_listeningMode: "ALL"
       FTLCONF_dns_dnssec: "false"
