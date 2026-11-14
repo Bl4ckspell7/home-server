@@ -22,7 +22,8 @@
     owner: root
     group: root
     mode: "0644"
-  notify: Restart SSH
+    validate: /usr/sbin/sshd -t -f %s
+  notify: Reload SSH
 
 - name: Remove legacy and cloud-init SSH drop-ins
   ansible.builtin.file:
@@ -31,7 +32,7 @@
   loop:
     - sshd.conf
     - 50-cloud-init.conf
-  notify: Restart SSH
+  notify: Reload SSH
 
 - name: Add specified SSH keys to root
   ansible.posix.authorized_key:

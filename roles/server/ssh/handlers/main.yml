@@ -1,4 +1,6 @@
-- name: Restart SSH
+# Reload, not restart: ExecReload runs `sshd -t` first and keeps the listener
+# if the config is broken, a restart would leave sshd down.
+- name: Reload SSH
   ansible.builtin.systemd_service:
     name: ssh
-    state: restarted
+    state: reloaded
