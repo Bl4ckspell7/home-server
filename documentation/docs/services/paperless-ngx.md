@@ -22,8 +22,10 @@ OIDC credentials: shared `vars/oidc_secrets.yml` ([Authentik](authentik.md#oidc-
 
 Login is Authentik-only. Superuser status follows `authentik Admins` on each login.
 
-**Break-glass:** the local superuser `admin` can log in at `/admin/`. It is only
-created while no superuser exists, so set an existing user's password by hand:
+**Break-glass:** the local superuser `admin` can log in at `/admin/`. From the
+internet `/admin/` sits behind Authentik forward-auth (admins only), so with
+Authentik down use the `manage.py` shell below instead. `admin` is only created
+while no superuser exists, so set an existing user's password by hand:
 
 ```bash
 ssh server 'docker exec -i paperless python3 manage.py shell' <<'PY'

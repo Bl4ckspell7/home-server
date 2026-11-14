@@ -61,6 +61,11 @@
 	import proxy {args[0]}
 }
 
+(proxy_tls_auth) {
+	import authentik
+	import proxy_tls {args[0]}
+}
+
 # Public entrypoint, protected by Anubis. Wildcard: the VPS front-door already
 # restricts which names get a certificate, and unmatched names fall through to the
 # 404 at the bottom of this file -- so adding a service never touches this block.
@@ -99,10 +104,10 @@ http://docs.{$BASE_DOMAIN}:8080 {
 	import proxy docs.lan:8349
 }
 http://dockge.{$BASE_DOMAIN}:8080 {
-	import proxy dockge.lan:5001
+	import proxy_auth dockge.lan:5001
 }
 http://dockhand.{$BASE_DOMAIN}:8080 {
-	import proxy dockhand.lan:3000
+	import proxy_auth dockhand.lan:3000
 }
 http://forgejo.{$BASE_DOMAIN}:8080 {
 	import proxy forgejo.lan:3000
@@ -119,8 +124,15 @@ http://linkwarden.{$BASE_DOMAIN}:8080 {
 http://openwebui.{$BASE_DOMAIN}:8080 {
 	import proxy openwebui.lan:3000
 }
+# Only the break-glass Django admin is gated; /api stays open for app tokens.
 http://paperless.{$BASE_DOMAIN}:8080 {
-	import proxy paperless.lan:8000
+	@admin path /admin /admin/* /outpost.goauthentik.io/*
+	handle @admin {
+		import proxy_auth paperless.lan:8000
+	}
+	handle {
+		import proxy paperless.lan:8000
+	}
 }
 http://radicale.{$BASE_DOMAIN}:8080 {
 	import proxy radicale.lan:5232
@@ -133,7 +145,7 @@ http://authentik.{$BASE_DOMAIN}:8080 {
 	import proxy_tls authentik.lan:9443
 }
 http://pihole.{$BASE_DOMAIN}:8080 {
-	import proxy_tls pihole.lan:443
+	import proxy_tls_auth pihole.lan:443
 }
 
 # Vaultwarden is deliberately not a one-liner: only /admin is gated, the rest of
