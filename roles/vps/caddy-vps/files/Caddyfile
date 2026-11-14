@@ -10,6 +10,11 @@
 	on_demand_tls {
 		ask http://127.0.0.1:9000/check
 	}
+	# HTTP/3 stays on, 0-RTT goes: early-data requests arrive with an empty
+	# remote address, so X-Forwarded-For was dropped and home saw only the tunnel.
+	servers {
+		0rtt off
+	}
 }
 
 # Request-level logging. Caddy logs nothing per-request by default, so without
