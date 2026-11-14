@@ -27,6 +27,9 @@ services:
     env_file:
       - .env
     environment:
+      # The paperless-ngx service user (the image remaps its user at start).
+      USERMAP_UID: "912"
+      USERMAP_GID: "912"
       PAPERLESS_URL: "https://paperless.${BASE_DOMAIN:?base domain required}"
       PAPERLESS_TIME_ZONE: "Europe/Berlin"
       PAPERLESS_OCR_LANGUAGE: "deu"

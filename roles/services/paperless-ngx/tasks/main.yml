@@ -1,4 +1,13 @@
 ---
+- name: Configure Paperless service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: paperless-ngx
+    service_uid: 912
+    service_dirs:
+      - /opt/stacks/paperless-ngx/export
+      - /opt/stacks/paperless-ngx/consume
+
 - name: Deploy Paperless-ngx
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
