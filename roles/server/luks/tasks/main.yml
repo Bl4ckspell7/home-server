@@ -16,24 +16,22 @@
       failed_when: false
       changed_when: false
 
+    # Passphrase on stdin (same bytes as the old here-string: key + newline), so
+    # it never shows in the process list and no shell expands $ or backticks.
     - name: Bind the LUKS device with TPM2 if not already bound
-      ansible.builtin.shell: |
-        clevis luks bind -d {{ luks_disk }} tpm2 '{"pcr_bank":"sha256"}' <<< "{{ luks_key_data.content | b64decode }}"
-      args:
-        executable: /bin/bash
+      ansible.builtin.command:
+        argv: [clevis, luks, bind, -d, "{{ luks_disk }}", tpm2, '{"pcr_bank":"sha256"}']
+        stdin: "{{ luks_key_data.content | b64decode }}"
       when: "'tpm2' not in luks_clevis_binding_check.stdout"
       register: luks_clevis_bind_result
       changed_when: "'Successfully bound' in luks_clevis_bind_result.stdout"
       notify: Update initramfs
+      no_log: true  # the command line carries the LUKS passphrase
 
     - name: List clevis bindings on the LUKS device
       ansible.builtin.command: clevis luks list -d {{ luks_disk }}
       register: luks_clevis_list_output
       changed_when: false
-
-    - name: Show clevis bind result
-      ansible.builtin.debug:
-        var: luks_clevis_bind_result
 
     - name: Show clevis list output
       ansible.builtin.debug:
