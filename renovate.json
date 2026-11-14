@@ -87,11 +87,16 @@
     },
     {
       "matchPackageNames": [
-        "docker.io/jellyfin/jellyfin",
         "docker.io/fnsys/dockhand",
         "docker.io/vaultwarden/server"
       ],
       "versioning": "semver"
+    },
+    {
+      "description": "Jellyfin 12 releases are X.Y (12.4), which semver rejects; patch stays optional in case X.Y.Z returns. The anchors and short patch drop unstable date tags (2026110913) and build tags (12.4.20261026-211555)",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["docker.io/jellyfin/jellyfin"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d{1,3}))?$"
     },
     {
       "description": "llama.cpp CPU build tags (server-bNNNNN): every build is a 'major', several a day",
