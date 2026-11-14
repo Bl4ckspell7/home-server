@@ -1,4 +1,10 @@
 ---
+- name: Configure Dawarich service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: dawarich
+    service_uid: 911
+
 - name: Deploy Dawarich
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:

@@ -9,11 +9,12 @@ x-variables:
   database_name: &database_name dawarich_development
   database_port: &database_port 5432
   database_username: &database_username postgres
-  pgid: &pgid 1000
+  # The dawarich service user; the entrypoint chowns its writable paths to it.
+  pgid: &pgid 911
   photon_api_host: &photon_api_host photon.lan:2322
   photon_api_use_https: &photon_api_use_https false
   prometheus_enabled: &prometheus_enabled "false"
-  puid: &puid 1000
+  puid: &puid 911
   rails_env: &rails_env production
   rails_log_to_stdout: &rails_log_to_stdout true
   redis_url: &redis_url redis://dawarich-valkey:6379
