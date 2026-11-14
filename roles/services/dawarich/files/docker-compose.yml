@@ -126,11 +126,6 @@ services:
       STORE_GEODATA: *store_geodata
       TIME_ZONE: Europe/Berlin
       WEB_CONCURRENCY: "0" # must be 0: each extra web process starts its own job threads
-    logging:
-      driver: "json-file"
-      options:
-        max-size: ${LOG_MAX_SIZE:-100m}
-        max-file: ${LOG_MAX_FILE:-5}
     healthcheck:
       test:
         [
