@@ -6,7 +6,8 @@ services:
     restart: unless-stopped
     user: "905:905"
     group_add:
-      - "990" # Docker group GID for socket access
+      # Host docker group, for socket access; .env is rendered by the role.
+      - "${DOCKER_GID:?docker group id required}"
     expose:
       - "3000"
     networks:

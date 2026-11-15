@@ -7,11 +7,20 @@
     service_dirs:
       - /opt/stacks/dockhand/data
 
+# Debian assigns the docker group's GID at install time, so a rebuild can differ.
+- name: Read the docker group for Dockhand's socket access
+  ansible.builtin.getent:
+    database: group
+    key: docker
+
 - name: Deploy Dockhand
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
     service_name: dockhand
     service_oidc_secrets: true
+    env_template: dockhand.env.j2
+    # No secret in it, and Dockhand (905) must read it to run compose on itself.
+    env_mode: "0644"
 
 # No config option for OIDC, only the API, which is open while auth is off: a
 # fresh install (or one reset with disable-auth.sh) is configured through it.

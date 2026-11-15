@@ -7,6 +7,9 @@ Port: `:3000` (exposed, no host binding)
 
 OIDC credentials: shared `vars/oidc_secrets.yml` ([Authentik](authentik.md#oidc-client-credentials)).
 
+Socket access: the deploy reads the host's `docker` group ID (`getent`) into
+`.env` as `DOCKER_GID` for `group_add`, since Debian assigns it at install time.
+
 ## Login
 
 Authentik only, and only for `authentik Admins`: every Dockhand user is admin
