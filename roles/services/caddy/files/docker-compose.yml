@@ -14,6 +14,8 @@ services:
       # environment, so unlike the other services this one needs the value inside
       # the container, not just at compose-parse time.
       BASE_DOMAIN: ${BASE_DOMAIN:?base domain required}
+      # Anubis's ipv4_address (roles/services/anubis): the only client :8080 accepts.
+      ANUBIS_IP: 172.21.255.236
     networks:
       svr1-network:
         ipv4_address: 172.21.255.238

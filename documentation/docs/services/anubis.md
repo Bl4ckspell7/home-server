@@ -7,4 +7,4 @@ Port: `:3000`
 
 Anubis sits between Caddy and your backend services to filter out AI scrapers and other malicious traffic using a proof-of-work challenge.
 
-Set `TARGET` in the docker-compose environment to the backend service you want to protect, then point the corresponding Caddyfile entry to Anubis instead of directly to the backend.
+Every public request takes the same path: Caddy `:443` → Anubis → Caddy `:8080` (`TARGET`), which routes by host to the backend. `:8080` accepts only Anubis's IP, so nothing on `svr1-network` can skip the challenge, and Caddy trusts `X-Forwarded-*` only from Anubis, so backends and Authentik see the real client.

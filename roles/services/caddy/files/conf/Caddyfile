@@ -22,6 +22,7 @@
 	route {
 		reverse_proxy /outpost.goauthentik.io/* https://authentik.lan:9443 {
 			header_up Host {upstream_hostport}
+			trusted_proxies {$ANUBIS_IP}/32
 			transport http {
 				tls_insecure_skip_verify
 			}
@@ -29,7 +30,9 @@
 		forward_auth https://authentik.lan:9443 {
 			uri /outpost.goauthentik.io/auth/caddy
 			copy_headers X-Authentik-Username X-Authentik-Groups X-Authentik-Entitlements X-Authentik-Email X-Authentik-Name X-Authentik-Uid X-Authentik-Jwt X-Authentik-Meta-Jwks X-Authentik-Meta-Outpost X-Authentik-Meta-Provider X-Authentik-Meta-App X-Authentik-Meta-Version
-			trusted_proxies private_ranges
+			# Anubis only: any other private source could forge X-Forwarded-Host
+			# (which app's policy applies) or X-Forwarded-For.
+			trusted_proxies {$ANUBIS_IP}/32
 			transport http {
 				tls_insecure_skip_verify
 			}
@@ -37,18 +40,34 @@
 	}
 }
 
+# Only Anubis may reach :8080: anything else on svr1-network would skip the
+# challenge and could forge X-Real-Ip/X-Forwarded-*. A handle, not a bare abort:
+# handle sorts before route and reverse_proxy. Every :8080 site gets it through
+# proxy/proxy_tls, so a site with its own reverse_proxy must import it too.
+(from_anubis) {
+	@not_anubis not remote_ip {$ANUBIS_IP}
+	handle @not_anubis {
+		abort
+	}
+}
+
 # Backend snippets. {args[0]} is the upstream host:port -- Caddy substitutes import
-# arguments textually, so one line per service is enough below.
+# arguments textually, so one line per service is enough below. Trusting Anubis
+# keeps the client it puts in X-Forwarded-For instead of replacing it with its IP.
 (proxy) {
+	import from_anubis
 	reverse_proxy http://{args[0]} {
 		header_up X-Forwarded-Proto https
+		trusted_proxies {$ANUBIS_IP}/32
 	}
 }
 
 # Backends serving their own self-signed cert.
 (proxy_tls) {
+	import from_anubis
 	reverse_proxy https://{args[0]} {
 		header_up X-Forwarded-Proto https
+		trusted_proxies {$ANUBIS_IP}/32
 		transport http {
 			tls_insecure_skip_verify
 		}
