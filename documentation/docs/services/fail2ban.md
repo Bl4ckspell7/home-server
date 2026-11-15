@@ -44,7 +44,7 @@ nft list table inet f2b-table   # must say: hook prerouting priority raw
 
 `type=multiport` (not `allports`) is a safety property: an HTTP jail bans only
 80/443, so a false positive can never cut SSH and lock you out of the unban
-command.
+command. The caddy jails set `protocol = tcp,udp`, so a ban also drops HTTP/3.
 
 ## Operating
 

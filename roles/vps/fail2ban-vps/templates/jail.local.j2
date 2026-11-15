@@ -40,6 +40,8 @@ findtime = 10m
 [caddy-probe]
 enabled = true
 port = http,https
+# udp too: Caddy serves HTTP/3, so a TCP-only ban lets a scanner carry on over QUIC.
+protocol = tcp,udp
 filter = caddy-probe
 logpath = /var/log/caddy/access.log
 # Nothing legitimate ever requests /.git/config or /.env, so two strikes is
@@ -69,6 +71,7 @@ findtime = 1h
 #   jq -r '.request.remote_ip' /var/log/caddy/access.log | sort | uniq -c | sort -rn | head
 enabled = true
 port = http,https
+protocol = tcp,udp
 filter = caddy-rate
 logpath = /var/log/caddy/access.log
 maxretry = 1200
