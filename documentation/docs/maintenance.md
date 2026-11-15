@@ -105,13 +105,13 @@ sudo trash-empty -f --dry-run --trash-dir=/mnt/wd_red_pro_20tb/.Trash-1000 30   
 ## Updates (Renovate)
 
 Renovate opens PRs for Docker image updates daily (04:00 UTC).
-Every update sits 2 days before a PR appears (`minimumReleaseAge`).
+Every update sits 5 days before a PR appears (`minimumReleaseAge`).
 
 - **Digest / patch**: review CI, merge.
 - **Minor**: review CI + skim upstream release notes, merge.
-- **Major**: queued on the [Dependency Dashboard](https://github.com/Bl4ckspell7/home-server/issues?q=is%3Aissue+%22Dependency+Dashboard%22).
-  Click approve → PR opens → use checklist below.
-- **DB majors** (postgres, mariadb, mysql): disabled. Bump manually with a real upgrade plan.
+- **Major**: the PR opens directly, no dashboard approval
+  (`dependencyDashboardApproval: false`). Use the checklist below.
+- **DB majors** (postgres, postgis): disabled. Bump manually with a real upgrade plan.
 - **Private registry** (`forgejo.bl4ckspell.de`): disabled. Bump tag manually after pushing a new image.
 
 ## Major PR checklist
@@ -128,11 +128,11 @@ Before merging a major version PR:
 
 ## Update intervals
 
-| Type          | Cooldown | Auto-PR            | Merge              |
-| ------------- | -------- | ------------------ | ------------------ |
-| Digest re-tag | 2 days   | yes                | manual             |
-| Patch         | 2 days   | yes                | manual             |
-| Minor         | 2 days   | yes                | manual             |
-| Major         | 2 days   | dashboard approval | manual + checklist |
-| DB major      | —        | disabled           | manual             |
-| CVE fix       | none     | yes                | manual (priority)  |
+| Type          | Cooldown | Auto-PR  | Merge              |
+| ------------- | -------- | -------- | ------------------ |
+| Digest re-tag | 5 days   | yes      | manual             |
+| Patch         | 5 days   | yes      | manual             |
+| Minor         | 5 days   | yes      | manual             |
+| Major         | 5 days   | yes      | manual + checklist |
+| DB major      | —        | disabled | manual             |
+| CVE fix       | none     | yes      | manual (priority)  |

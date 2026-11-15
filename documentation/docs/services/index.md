@@ -37,10 +37,9 @@ Services behind Caddy use `expose` (no host port binding). Only services requiri
 | **Dockhand**      | -             | 3000               |
 | **Linkwarden**    | -             | 3000               |
 | **Dockge**        | 5001          | 5001               |
-| **Radicale**      | 5232          | 5232               |
-| **Forgejo**       | 3000          | 3000               |
+| **Radicale**      | -             | 5232               |
+| **Forgejo**       | -             | 3000               |
 | **Vaultwarden**   | -             | 80                 |
-| **Pi-hole**       | 7080          | 80                 |
 | **Pi-hole**       | 7443          | 443                |
 | **Paperless-ngx** | -             | 8000               |
 | **Jellyfin**      | -             | 8096               |
@@ -68,3 +67,4 @@ System users and groups created by Ansible for running services:
 | **Pi-hole**        | pi-hole        | 910     | pi-hole        | 910     |
 | **Dawarich**       | dawarich       | 911     | dawarich       | 911     |
 | **Paperless-ngx**  | paperless-ngx  | 912     | paperless-ngx  | 912     |
+| **Open WebUI**     | openwebui      | 913     | openwebui      | 913     |

@@ -1,6 +1,6 @@
 # Pi-hole
 
-Ports: `53:53`, `7080:80`, `7443:443`
+Ports: `127.0.0.54:53` (DNS for the host only), `7443:443` (admin UI on the LAN)
 
 - https://pi-hole.net/
 - https://github.com/pi-hole/docker-pi-hole

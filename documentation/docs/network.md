@@ -53,7 +53,7 @@ Binding `172.21.0.1` before docker brings the bridge up is enabled by `net.ipv4.
 
 systemd-resolved is stopped, disabled and masked. `/etc/resolv.conf` is a static file pointing at **`127.0.0.54`** (pi-hole), so the host itself goes through the same filtering + encrypted-upstream chain as containers.
 
-UFW must allow `53/udp` and `53/tcp` from `172.21.0.0/16` to the host (see `roles/server/ufw/tasks/main.yml`).
+UFW must allow `5354/udp` and `5354/tcp` from `172.21.0.0/16` to the host, so Pi-hole reaches dnscrypt-proxy (see `roles/server/ufw/tasks/main.yml`).
 
 ## Pi-hole
 

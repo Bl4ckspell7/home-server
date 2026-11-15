@@ -1,11 +1,11 @@
 # Radicale
 
-Ports: `5232:5232`
+Port: `:5232` (exposed, no host binding)
 
 - https://radicale.org/master.html
 - https://github.com/Kozea/Radicale
 
-CalDAV/CardDAV server for self-hosted calendar and contact sync. Exposed directly via Caddy (not through Anubis, as CalDAV clients can't handle PoW challenges). Uses htpasswd authentication with argon2 hashing.
+CalDAV/CardDAV server for self-hosted calendar and contact sync. Reached through Anubis like every service; its default policy only challenges browser user agents, so CalDAV apps pass, but a client sending a browser-like user agent would get the challenge. Uses htpasswd authentication with argon2 hashing.
 
 `secrets.yml`:
 
