@@ -4,6 +4,9 @@ services:
     container_name: openwebui
     image: ghcr.io/open-webui/open-webui:v0.13.3@sha256:46b59158e6558eeb980bc828e0f1b30238ad24d82ed84d5e5eda1dab2a082f14
     restart: unless-stopped
+    # The openwebui service user (roles/services/openwebui). The image is built for
+    # root, so everything it writes at startup is redirected into the volume below.
+    user: "913:913"
     expose:
       - "3000"
     networks:
@@ -17,6 +20,9 @@ services:
     environment:
       TZ: Europe/Berlin
       PORT: "3000"
+      # /root and the static dir are root-owned in the image.
+      HOME: /app/backend/data
+      STATIC_DIR: /app/backend/data/static
       # Env only seeds a fresh DB (persistent config); later changes go through Admin Settings.
       WEBUI_URL: https://openwebui.${BASE_DOMAIN:?base domain required}
       CORS_ALLOW_ORIGIN: https://openwebui.${BASE_DOMAIN:?base domain required}

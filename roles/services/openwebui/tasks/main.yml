@@ -1,4 +1,10 @@
 ---
+- name: Configure Open WebUI service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: openwebui
+    service_uid: 913
+
 - name: Deploy Open WebUI
   ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
   vars:
@@ -6,3 +12,29 @@
     service_secrets: true
     service_oidc_secrets: true
     env_template: openwebui.env.j2
+
+# The image is built for root, and Docker copies that ownership into a new volume,
+# so a fresh install starts unwritable for 913. Compose names it <project>_<key>.
+- name: Read the Open WebUI data volume
+  community.docker.docker_volume_info:
+    name: openwebui_openwebui_data
+  register: openwebui_volume
+
+- name: Hand root-owned files in the Open WebUI volume to openwebui
+  ansible.builtin.command:
+    argv:
+      - find
+      - "{{ openwebui_volume.volume.Mountpoint }}"
+      - "!"
+      - -user
+      - openwebui
+      - -print
+      - -exec
+      - chown
+      - -h
+      - openwebui:openwebui
+      - "{}"
+      - +
+  register: openwebui_chown
+  changed_when: openwebui_chown.stdout | length > 0
+  notify: Restart Open WebUI

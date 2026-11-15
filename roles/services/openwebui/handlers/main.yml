@@ -1,0 +1,5 @@
+---
+- name: Restart Open WebUI
+  ansible.builtin.command:
+    cmd: docker restart openwebui
+  changed_when: true

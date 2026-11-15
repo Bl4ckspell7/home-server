@@ -36,3 +36,11 @@ desktop models answer 401 or stay unreachable.
 
 Web search uses the internal [SearXNG](searxng.md) (`searxng.lan:8080`, JSON API).
 The Web Search toggle must also be on in the chat; new chats start with it on.
+
+## Service user
+
+Open WebUI runs as the `openwebui` system user (913:913) via `user:`. The image
+is built for root, so `HOME` and `STATIC_DIR` point into the data volume, and
+the deploy hands any root-owned file in the volume to 913 (a fresh volume
+starts root-owned).
+Functions or tools that declare pip `requirements` can't install as non-root.
