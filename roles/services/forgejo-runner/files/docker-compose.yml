@@ -33,7 +33,7 @@ services:
         condition: service_healthy
 
   dind:
-    image: docker.io/library/docker:29.9.3-dind@sha256:08a98015fce594af7c382883bea080ea206de74402a95da9dc52b6428c8cd121
+    image: docker.io/library/docker:29.9.3-dind@sha256:7bf70dcb85c822e3fa6f2d332143e474b99147b9d7b39102b0cfe8b04a7dd61b
     container_name: forgejo-runner-dind
     restart: unless-stopped
     # Required to run a nested Docker daemon. Privileged = host root, so only
