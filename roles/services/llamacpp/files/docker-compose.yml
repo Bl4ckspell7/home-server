@@ -2,7 +2,7 @@ name: llamacpp
 services:
   llamacpp:
     container_name: llamacpp
-    image: ghcr.io/ggml-org/llama.cpp:server-b12211@sha256:30300ecfcb7ef05dc9413867dd7d03c9ce66eef00fec3576a6a15e9bf2b0bae7
+    image: ghcr.io/ggml-org/llama.cpp:server-b12429@sha256:7751a6c0dc3d019c231d42678abbb0fac1a13a24c17c956109ed27533139f280
     restart: unless-stopped
     # Leak guard, not a sizing target: observed peak ~16.3G with Gemma4 IQ2_M loaded,
     # ~18.5G with the 2B model next to it.
