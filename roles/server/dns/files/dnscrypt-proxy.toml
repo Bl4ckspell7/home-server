@@ -1,8 +1,8 @@
 # dnscrypt-proxy config — managed by Ansible
 # Pure encrypted DNS transport. Pi-hole sits in front of this and handles caching + filtering.
 
-# bind to svr1-network bridge gateway on non-privileged port (no socket activation needed)
-listen_addresses = ['172.21.0.1:5354']
+# bind to the svr1-edge bridge gateway on non-privileged port (no socket activation needed)
+listen_addresses = ['172.28.1.1:5354']
 
 # pin to a known-good no-log resolver
 server_names = ['quad9-dnscrypt-ip4-filter-pri']

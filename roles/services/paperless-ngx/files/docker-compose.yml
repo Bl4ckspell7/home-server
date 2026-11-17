@@ -17,10 +17,10 @@ services:
       - "8000"
     networks:
       default:
-      svr1-network:
-        ipv4_address: 172.21.255.252
+      svr1-apps:
+        aliases: [paperless.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.2.254
     dns_search:
       - "."
     volumes:
@@ -124,5 +124,5 @@ volumes:
 networks:
   default:
     driver: bridge
-  svr1-network:
+  svr1-apps:
     external: true

@@ -81,10 +81,10 @@ services:
       - dawarich_db_data:/dawarich_db_data
     networks:
       default:
-      svr1-network:
-        ipv4_address: 172.21.255.244
+      svr1-apps:
+        aliases: [dawarich.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.2.254
     dns_search: # don't append any search domain
       - "."
     expose:
@@ -162,5 +162,5 @@ volumes:
 networks:
   default:
     driver: bridge
-  svr1-network:
+  svr1-apps:
     external: true

@@ -5,7 +5,7 @@
 # i.e. root-equivalent on svr1, so jobs must never reach its socket:
 # config.yml sets `docker_host: "-"`.
 #
-# The runner polls Forgejo at http://forgejo.lan:3000 (direct via svr1-network,
+# The runner polls Forgejo at http://forgejo.lan:3000 (direct via svr1-ci,
 # bypasses caddy/anubis). Nothing connects TO the runner — outbound only.
 name: forgejo-runner
 services:
@@ -23,9 +23,9 @@ services:
       - dind_sock:/sock
     networks:
       forgejo-runner:
-      svr1-network:
+      svr1-ci:
     dns:
-      - 172.21.255.254
+      - 172.28.5.254
     dns_search:
       - "."
     depends_on:
@@ -48,11 +48,13 @@ services:
       - dind_sock:/sock
     networks:
       forgejo-runner:
-      # Job containers NAT out through dind, so dind needs svr1-network +
-      # Pi-hole DNS for checkouts from forgejo.lan.
-      svr1-network:
+      # Job containers NAT out through dind, so dind needs svr1-ci for checkouts
+      # from forgejo.lan. Jobs resolve it through dind's Docker DNS, which only
+      # works on the per-job network the runner creates (default bridge falls
+      # back to 8.8.8.8), so keep container.network empty in config.yml.
+      svr1-ci:
     dns:
-      - 172.21.255.254
+      - 172.28.5.254
     dns_search:
       - "."
     healthcheck:
@@ -71,5 +73,5 @@ volumes:
 networks:
   forgejo-runner:
     external: false
-  svr1-network:
+  svr1-ci:
     external: true

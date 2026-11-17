@@ -10,10 +10,10 @@ services:
     expose:
       - "3000"
     networks:
-      svr1-network:
-        ipv4_address: 172.21.255.239
+      svr1-llm:
+        aliases: [openwebui.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.4.254
     dns_search:
       - "."
     env_file: .env
@@ -61,5 +61,5 @@ volumes:
   openwebui_data:
 
 networks:
-  svr1-network:
+  svr1-llm:
     external: true

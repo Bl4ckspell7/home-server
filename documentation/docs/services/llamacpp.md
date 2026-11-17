@@ -5,7 +5,7 @@ Port: `:8080` (exposed, no host binding)
 - https://github.com/ggml-org/llama.cpp
 
 CPU-only LLM server in router mode, used by Linkwarden (AI tagging) and Open WebUI.
-No API key: it is only reachable on `svr1-network`.
+No API key: only containers in `svr1-llm` can reach it.
 
 ## Models
 

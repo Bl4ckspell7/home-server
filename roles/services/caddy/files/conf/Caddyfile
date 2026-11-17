@@ -40,7 +40,7 @@
 	}
 }
 
-# Only Anubis may reach :8080: anything else on svr1-network would skip the
+# Only Anubis may reach :8080: anything else in a zone with Caddy would skip the
 # challenge and could forge X-Real-Ip/X-Forwarded-*. A handle, not a bare abort:
 # handle sorts before route and reverse_proxy. Every :8080 site gets it through
 # proxy/proxy_tls, so a site with its own reverse_proxy must import it too.
@@ -83,6 +83,38 @@
 (proxy_tls_auth) {
 	import authentik
 	import proxy_tls {args[0]}
+}
+
+# Status check for one Homepage tile: {args[0]} name, {args[1]} upstream, {args[2]}
+# health path. Only the backend's status code goes back, never its body or headers.
+(status) {
+	handle /status/{args[0]} {
+		rewrite * {args[2]}
+		reverse_proxy {args[1]} {
+			# a hung backend shows as down (504) instead of an endless spinner
+			transport http {
+				response_header_timeout 10s
+			}
+			handle_response {
+				respond "" {rp.status_code}
+			}
+		}
+	}
+}
+
+(status_tls) {
+	handle /status/{args[0]} {
+		rewrite * {args[2]}
+		reverse_proxy {args[1]} {
+			transport http {
+				response_header_timeout 10s
+				tls_insecure_skip_verify
+			}
+			handle_response {
+				respond "" {rp.status_code}
+			}
+		}
+	}
 }
 
 # Public entrypoint, protected by Anubis. Wildcard: the VPS front-door already
@@ -214,5 +246,43 @@ http://:8080 {
 			</main></body>
 			</html>
 			HTML 404
+	}
+}
+
+# ── Status listener: Homepage's tiles ask here ──────────────────────────────────
+# Caddy is in every zone, so it checks the backends Homepage can't reach. Only
+# Homepage may ask. The status routes sit inside the
+# Homepage-only handle: as siblings, their path matchers would sort ahead of it.
+http://:8081 {
+	@homepage remote_ip {$HOMEPAGE_IP}
+	handle @homepage {
+		handle /status/caddy {
+			respond 200
+		}
+		import status anubis http://anubis.lan:9090 /healthz
+		import status_tls authentik https://authentik.lan:9443 /-/health/live/
+		import status backrest http://backrest.lan:9898 /
+		import status dawarich http://dawarich.lan:3000 /api/v1/health
+		import status docs http://docs.lan:8349 /
+		import status dockge http://dockge.lan:5001 /
+		import status dockhand http://dockhand.lan:3000 /
+		import status forgejo http://forgejo.lan:3000 /api/healthz
+		import status immich http://immich.lan:2283 /api/server/ping
+		import status jellyfin http://jellyfin.lan:8096 /health
+		import status linkwarden http://linkwarden.lan:3000 /
+		import status llamacpp http://llamacpp.lan:8080 /health
+		import status openwebui http://openwebui.lan:3000 /health
+		import status paperless http://paperless.lan:8000 /
+		import status photon http://photon.lan:2322 /status
+		import status_tls pihole https://pihole.lan:443 /admin/
+		import status radicale http://radicale.lan:5232 /
+		import status searxng http://searxng.lan:8080 /healthz
+		import status vaultwarden http://vaultwarden.lan:80 /alive
+		handle {
+			respond 404
+		}
+	}
+	handle {
+		abort
 	}
 }

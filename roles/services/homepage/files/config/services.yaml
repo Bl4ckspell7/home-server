@@ -7,20 +7,20 @@
         - Anubis:
             icon: /icons/anubis.png
             description: AI-powered bot protection
-            ping: anubis.lan
+            siteMonitor: http://caddy.lan:8081/status/anubis
             statusStyle: "basic"
 
         - Caddy:
             icon: /icons/caddy.svg
             description: Reverse-Proxy
-            ping: caddy.lan
+            siteMonitor: http://caddy.lan:8081/status/caddy
             statusStyle: "basic"
 
         - Pi-hole:
             icon: /icons/pi-hole.svg
             href: https://pihole.bl4ckspell.de/admin/
             description: DNS Server & Filter
-            ping: pihole.lan
+            siteMonitor: http://caddy.lan:8081/status/pihole
             statusStyle: "basic"
 
     - Documentation:
@@ -28,7 +28,7 @@
             icon: /icons/docusaurus.svg
             href: https://docs.bl4ckspell.de/docs
             description: Home Server Documentation
-            ping: docs.lan
+            siteMonitor: http://caddy.lan:8081/status/docs
             statusStyle: "basic"
 
     - Management & Monitoring:
@@ -36,14 +36,14 @@
             icon: /icons/dockge.svg
             href: https://dockge.bl4ckspell.de/
             description: Docker Stacks Management
-            ping: dockge.lan
+            siteMonitor: http://caddy.lan:8081/status/dockge
             statusStyle: "basic"
 
         - Dockhand:
             icon: /icons/dockhand.png
             href: https://dockhand.bl4ckspell.de/
             description: Docker Container Management
-            ping: dockhand.lan
+            siteMonitor: http://caddy.lan:8081/status/dockhand
             statusStyle: "basic"
 
     - AI & Data:
@@ -51,19 +51,19 @@
             icon: /icons/open-webui.svg
             href: https://openwebui.bl4ckspell.de/
             description: Chat UI for local LLMs
-            ping: openwebui.lan
+            siteMonitor: http://caddy.lan:8081/status/openwebui
             statusStyle: "basic"
 
         - llama.cpp:
             icon: /icons/llama-cpp.svg
             description: Local LLM server (CPU)
-            ping: llamacpp.lan
+            siteMonitor: http://caddy.lan:8081/status/llamacpp
             statusStyle: "basic"
 
         - Photon:
             icon: /icons/photon.png
             description: Geocoder
-            ping: photon.lan
+            siteMonitor: http://caddy.lan:8081/status/photon
             statusStyle: "basic"
 
 - Services:
@@ -72,7 +72,7 @@
             icon: /icons/authentik.svg
             href: https://authentik.bl4ckspell.de/
             description: Login
-            ping: authentik.lan
+            siteMonitor: http://caddy.lan:8081/status/authentik
             statusStyle: "basic"
 
     - Tools:
@@ -80,68 +80,68 @@
             icon: /icons/backrest.svg
             href: https://backrest.bl4ckspell.de/
             description: Backup management (restic)
-            ping: backrest.lan
+            siteMonitor: http://caddy.lan:8081/status/backrest
             statusStyle: "basic"
 
         - Dawarich:
             icon: /icons/dawarich.svg
             href: https://dawarich.bl4ckspell.de/
             description: Location History Tracker
-            ping: dawarich.lan
+            siteMonitor: http://caddy.lan:8081/status/dawarich
             statusStyle: "basic"
 
         - Radicale:
             icon: /icons/radicale.svg
             href: https://radicale.bl4ckspell.de/
             description: CalDAV/CardDAV server
-            ping: radicale.lan
+            siteMonitor: http://caddy.lan:8081/status/radicale
             statusStyle: "basic"
 
         - Forgejo:
             icon: /icons/forgejo.svg
             href: https://forgejo.bl4ckspell.de/
             description: Self-hosted Git forge
-            ping: forgejo.lan
+            siteMonitor: http://caddy.lan:8081/status/forgejo
             statusStyle: "basic"
 
         - Immich:
             icon: /icons/immich.svg
             href: https://immich.bl4ckspell.de/
             description: High performance self-hosted photo and video management solution.
-            ping: immich.lan
+            siteMonitor: http://caddy.lan:8081/status/immich
             statusStyle: "basic"
 
         - Jellyfin:
             icon: /icons/jellyfin.svg
             href: https://jellyfin.bl4ckspell.de/
             description: The Free Software Media System
-            ping: jellyfin.lan
+            siteMonitor: http://caddy.lan:8081/status/jellyfin
             statusStyle: "basic"
 
         - Linkwarden:
             icon: /icons/linkwarden.svg
             href: https://linkwarden.bl4ckspell.de/
             description: Collect, read, annotate, and preserve your webpages.
-            ping: linkwarden.lan
+            siteMonitor: http://caddy.lan:8081/status/linkwarden
             statusStyle: "basic"
 
         - Paperless:
             icon: /icons/paperless-ngx.svg
             href: https://paperless.bl4ckspell.de/
             description: Document management
-            ping: paperless.lan
+            siteMonitor: http://caddy.lan:8081/status/paperless
             statusStyle: "basic"
 
         - SearXNG:
             icon: /icons/searxng.svg
             href: https://searxng.bl4ckspell.de/
             description: Private metasearch
-            ping: searxng.lan
+            siteMonitor: http://caddy.lan:8081/status/searxng
             statusStyle: "basic"
 
         - Vaultwarden:
             icon: /icons/vaultwarden.svg
             href: https://vaultwarden.bl4ckspell.de/
             description: Password manager
-            ping: vaultwarden.lan
+            siteMonitor: http://caddy.lan:8081/status/vaultwarden
             statusStyle: "basic"

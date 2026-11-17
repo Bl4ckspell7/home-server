@@ -21,10 +21,10 @@ services:
       - "9443"
     networks:
       default:
-      svr1-network:
-        ipv4_address: 172.21.255.253
+      svr1-edge:
+        aliases: [authentik.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.1.254
     dns_search: # don't append any search domain
       - "."
     environment:
@@ -84,5 +84,5 @@ volumes:
 networks:
   default:
     driver: bridge
-  svr1-network:
+  svr1-edge:
     external: true

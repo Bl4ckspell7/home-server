@@ -41,13 +41,14 @@
     proto: tcp
     comment: "Allow LocalSend traffic"
 
-- name: Allow DNS from svr1-network to host dnscrypt-proxy
+# Only Pi-hole needs an upstream; every other container asks Pi-hole.
+- name: Allow DNS from Pi-hole to host dnscrypt-proxy
   community.general.ufw:
     rule: allow
-    src: 172.21.0.0/16
+    src: 172.28.1.254
     port: 5354
     proto: "{{ item }}"
-    comment: "Docker containers (pi-hole) -> dnscrypt-proxy on bridge gateway"
+    comment: "Pi-hole (svr1-edge) -> dnscrypt-proxy on bridge gateway"
   loop:
     - udp
     - tcp

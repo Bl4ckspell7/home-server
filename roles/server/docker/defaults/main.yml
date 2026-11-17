@@ -8,3 +8,29 @@ docker_daemon_config:
     max-file: "40"
   # Containers keep running while dockerd restarts, e.g. on a docker-ce upgrade.
   live-restore: true
+
+# Containers only reach each other inside a shared zone; Caddy and Pi-hole join
+# all of them. Docker assigns from the lower half (iprange), so the fixed IPs in
+# the upper half (Pi-hole .254, Anubis, Homepage) can't be taken. Gateways are
+# pinned: the svr1-edge one is dnscrypt-proxy's listen address.
+docker_zones:
+  - name: svr1-edge # caddy, anubis, authentik
+    subnet: 172.28.1.0/24
+    gateway: 172.28.1.1
+    iprange: 172.28.1.0/25
+  - name: svr1-apps # user-facing apps, homepage
+    subnet: 172.28.2.0/24
+    gateway: 172.28.2.1
+    iprange: 172.28.2.0/25
+  - name: svr1-admin # dockge, dockhand, backrest (root-equivalent)
+    subnet: 172.28.3.0/24
+    gateway: 172.28.3.1
+    iprange: 172.28.3.0/25
+  - name: svr1-llm # llamacpp and its clients
+    subnet: 172.28.4.0/24
+    gateway: 172.28.4.1
+    iprange: 172.28.4.0/25
+  - name: svr1-ci # forgejo, runner, dind
+    subnet: 172.28.5.0/24
+    gateway: 172.28.5.1
+    iprange: 172.28.5.0/25
