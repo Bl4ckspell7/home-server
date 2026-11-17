@@ -14,6 +14,9 @@ services:
       svr1-admin:
         ipv4_address: 172.28.3.254
         aliases: [pihole.lan]
+        # Published ports (:7443, 127.0.0.54:53) follow the gateway network, and
+        # the web server only binds this IP.
+        gw_priority: 1
       svr1-llm:
         ipv4_address: 172.28.4.254
       svr1-ci:
@@ -44,6 +47,9 @@ services:
       TZ: "Europe/Berlin"
       # Set a password to access the web interface. Not setting one will result in a random password being assigned
       FTLCONF_webserver_api_password: ${PIHOLE_WEB_PASSWORD}
+      # Web UI and API on the svr1-admin IP only: DNS serves every zone, the API
+      # would let any of them rewrite it. "o": a failed bind leaves DNS running.
+      FTLCONF_webserver_port: "172.28.3.254:443os"
       # The pi-hole service user (roles/services/pi-hole), not the login user.
       PIHOLE_UID: "910"
       PIHOLE_GID: "910"

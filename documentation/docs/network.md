@@ -62,6 +62,8 @@ Provides ad-blocking, caching, and `.lan` names for LAN hosts. Upstream points t
 - `127.0.0.54:53` — the host itself (via `/etc/resolv.conf`)
 - `172.28.<zone>.254:53` — Docker containers; Pi-hole joins every zone, and each container's `dns:` is the `.254` of its zone
 
+The web UI and API listen on `172.28.3.254:443` (`svr1-admin`) only, reached through Caddy (`pihole.lan`) and `:7443`, so no other zone can reach the API that rewrites everyone's DNS.
+
 Pi-hole serves as the DNS server for:
 
 - **Docker containers** (via [Docker's embedded DNS](https://docs.docker.com/engine/network/#dns-services))
@@ -90,7 +92,7 @@ Containers only reach each other inside a shared zone network; Docker isolates t
 | `svr1-llm` | 172.28.4.0/24 | llamacpp, openwebui, searxng, linkwarden |
 | `svr1-ci` | 172.28.5.0/24 | forgejo, forgejo-runner, its dind |
 
-- **Caddy and Pi-hole join every zone:** Caddy proxies to all services, Pi-hole answers DNS at `.254` in each.
+- **Caddy and Pi-hole join every zone:** Caddy proxies to all services, Pi-hole answers DNS at `.254` in each (its web UI only in `svr1-admin`).
 - **Names:** each service sets the alias `<name>.lan` on its zone network; Caddy has `caddy.lan` in every zone, Pi-hole `pihole.lan` in `svr1-admin`.
 - **Fixed IPs**, only where something checks the address: Pi-hole `.254` (`dns:`), Anubis `172.28.1.236` and Homepage `172.28.2.246` (Caddy's listener guards).
 - **Stack-internal networks** (databases, caches, workers) stay per stack.
