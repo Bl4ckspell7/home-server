@@ -7,9 +7,9 @@ Internal DNS and reverse proxy setup for the homeserver. The public zone for
 
 ```
 host (resolv.conf)  → 127.0.0.54:53        ─┐
-Docker containers   → 172.21.255.254:53    ─┴─→ Pi-hole (caching, filtering, .lan)
+Docker containers   → 172.28.<zone>.254:53 ─┴─→ Pi-hole (caching, filtering, mDNS .lan)
                                                   ↓
-                                            172.21.0.1:5354 → dnscrypt-proxy
+                                            172.28.1.1:5354 → dnscrypt-proxy
                                                   ↓
                                             DNSCrypt / DoH → quad9 via anonymized relays
                                                             (anon-cs-de, -dus, -berlin)
@@ -21,10 +21,10 @@ Docker containers   → 172.21.255.254:53    ─┴─→ Pi-hole (caching, filt
 
 Native (apt) install — no official Docker image for the client. Replaces systemd-resolved as the host's encrypted DNS layer.
 
-Binds to the svr1-network bridge gateway on a **non-privileged port** (`172.21.0.1:5354`) so the daemon (which runs as `_dnscrypt-proxy`, non-root) can `bind()` directly — no systemd socket activation needed. Anonymized DNSCrypt routes hide the client IP from the upstream resolver.
+Binds to the `svr1-edge` bridge gateway on a **non-privileged port** (`172.28.1.1:5354`) so the daemon (which runs as `_dnscrypt-proxy`, non-root) can `bind()` directly — no systemd socket activation needed. Anonymized DNSCrypt routes hide the client IP from the upstream resolver.
 
 ```toml
-listen_addresses = ['172.21.0.1:5354']
+listen_addresses = ['172.28.1.1:5354']
 server_names = ['quad9-dnscrypt-ip4-filter-pri']
 dnscrypt_servers = true
 require_nolog = true
@@ -49,18 +49,18 @@ routes = [
 
 Debian trixie ships dnscrypt-proxy `2.1.8`. HTTP/3 and the `[monitoring_ui]` block require ≥ 2.1.10 / 2.1.13 respectively, so they're omitted here. Available again if the package is updated (e.g. via backports / forky pin).
 
-Binding `172.21.0.1` before docker brings the bridge up is enabled by `net.ipv4.ip_nonlocal_bind = 1` (see `roles/server/sysctl/tasks/main.yml`). Resolver + relay lists auto-refreshed from `DNSCrypt/dnscrypt-resolvers`.
+Binding `172.28.1.1` before docker brings the bridge up is enabled by `net.ipv4.ip_nonlocal_bind = 1` (see `roles/server/sysctl/tasks/main.yml`). Resolver + relay lists auto-refreshed from `DNSCrypt/dnscrypt-resolvers`.
 
 systemd-resolved is stopped, disabled and masked. `/etc/resolv.conf` is a static file pointing at **`127.0.0.54`** (pi-hole), so the host itself goes through the same filtering + encrypted-upstream chain as containers.
 
-UFW must allow `5354/udp` and `5354/tcp` from `172.21.0.0/16` to the host, so Pi-hole reaches dnscrypt-proxy (see `roles/server/ufw/tasks/main.yml`).
+UFW allows `5354/udp` and `5354/tcp` to the host from Pi-hole (`172.28.1.254`) only; every other container asks Pi-hole (see `roles/server/ufw/tasks/main.yml`).
 
 ## Pi-hole
 
-Provides ad-blocking, caching, and local `.lan` domain resolution. Upstream points to dnscrypt-proxy at `172.21.0.1#5354`. Two listen surfaces:
+Provides ad-blocking, caching, and `.lan` names for LAN hosts. Upstream points to dnscrypt-proxy at `172.28.1.1#5354`. Two listen surfaces:
 
 - `127.0.0.54:53` — the host itself (via `/etc/resolv.conf`)
-- `172.21.255.254:53` — Docker containers on `svr1-network`
+- `172.28.<zone>.254:53` — Docker containers; Pi-hole joins every zone, and each container's `dns:` is the `.254` of its zone
 
 Pi-hole serves as the DNS server for:
 
@@ -71,14 +71,30 @@ Pi-hole serves as the DNS server for:
 
 ```yaml
 FTLCONF_dns_upstreams: |
-  172.21.0.1
-FTLCONF_dns_hosts: |
-  172.21.255.254 pihole.lan
-  172.21.255.253 authentik.lan
-  # ... other services
+  172.28.1.1#5354
+# explicit: pihole.toml keeps an old list once the variable is gone
+FTLCONF_dns_hosts: ""
 ```
 
-**Note:** `.lan` domains resolve to container IPs (172.21.255.x), which only work for container-to-container communication, plus the LAN hosts mirrored from mDNS (see [mDNS names for containers](#mdns-names-for-containers)). For external access from phones/laptops, use Caddy with public domains.
+**Note:** container `.lan` names are Docker network aliases, not Pi-hole entries (see [Docker networks](#docker-networks-zones)). Docker's embedded DNS answers them only inside the zone, so they don't resolve on the host or the LAN: test with `docker exec <container> nslookup immich.lan`. Pi-hole only serves the LAN hosts mirrored from mDNS as `.lan` (see [mDNS names for containers](#mdns-names-for-containers)). For access from phones/laptops, use Caddy with public domains.
+
+## Docker networks (zones)
+
+Containers only reach each other inside a shared zone network; Docker isolates the zones from each other. Created by `roles/server/docker/` (`docker_zones`), each a /24 whose lower half Docker assigns dynamically, so fixed IPs go in the upper half.
+
+| Network | Subnet | Members |
+| --- | --- | --- |
+| `svr1-edge` | 172.28.1.0/24 | caddy, anubis, authentik |
+| `svr1-apps` | 172.28.2.0/24 | homepage, immich, jellyfin, paperless, vaultwarden, radicale, docs, dawarich, photon |
+| `svr1-admin` | 172.28.3.0/24 | dockge, dockhand, backrest (root-equivalent) |
+| `svr1-llm` | 172.28.4.0/24 | llamacpp, openwebui, searxng, linkwarden |
+| `svr1-ci` | 172.28.5.0/24 | forgejo, forgejo-runner, its dind |
+
+- **Caddy and Pi-hole join every zone:** Caddy proxies to all services, Pi-hole answers DNS at `.254` in each.
+- **Names:** each service sets the alias `<name>.lan` on its zone network; Caddy has `caddy.lan` in every zone, Pi-hole `pihole.lan` in `svr1-admin`.
+- **Fixed IPs**, only where something checks the address: Pi-hole `.254` (`dns:`), Anubis `172.28.1.236` and Homepage `172.28.2.246` (Caddy's listener guards).
+- **Stack-internal networks** (databases, caches, workers) stay per stack.
+- **New service:** pick the zone by who must reach it, then join that network with an alias, `dns: [172.28.<zone>.254]` and `dns_search: ["."]`.
 
 ## mDNS (svr1.local)
 
@@ -145,8 +161,10 @@ Change servers: edit `protonvpn_peers` in `roles/server/protonvpn/vars/secrets.y
 
 ## Caddy
 
-**Container IP:** `172.21.255.238`  
-**Ports:** `443/tcp`, `443/udp` (host-bound), `8080` (exposed internally for Anubis backend routing)
+**Networks:** every zone, as `caddy.lan`  
+**Ports:** `443/tcp`, `443/udp` (host-bound), `8080` (internal, Anubis only, routes to the backends), `8081` (internal, Homepage only, status checks)
+
+Homepage's tiles ask `http://caddy.lan:8081/status/<name>`, since Homepage itself only sits in `svr1-apps`. Caddy requests the service's health path and answers with its status code only, never its body.
 
 Reverse proxy for all services. Home Caddy no longer faces the internet directly — it sits behind the [VPS front-door](./services/vps.md) and is reached only over the WireGuard tunnel. It terminates TLS with a **self-signed internal cert** (`tls internal`); public Let's Encrypt certs are issued on the VPS instead, since home accepts no inbound WAN traffic and can't answer ACME challenges.
 

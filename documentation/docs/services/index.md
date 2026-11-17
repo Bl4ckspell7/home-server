@@ -9,16 +9,16 @@
 
 ### Network
 
-- Pihole new IP entry (`xxx.xxx.xxx.xxx service.lan`) in the shared docker subnet
+- Join a zone network with the alias `service.lan`, and set `dns` to Pi-hole in that zone (see [Network → Docker networks](../network.md#docker-networks-zones))
+- Homepage tile: add `import status service http://service.lan:PORT /health-path` (`status_tls` for an HTTPS backend) to Caddy's `:8081` site and `siteMonitor: http://caddy.lan:8081/status/service` to the tile
 
-- Caddy:
-  - Add reverse proxy entry in Caddyfile:
-    ```
-    service.DDNS.ORG {
-        reverse_proxy http://service.lan:DOCKER_CONTAINER_PORT
-    }
-    ```
-  - SSL certificates are automatically managed
+- Caddy: add a site on the internal `:8080` listener, so the request has passed Anubis (`proxy_auth` to gate it behind Authentik):
+  ```
+  http://service.{$BASE_DOMAIN}:8080 {
+      import proxy service.lan:DOCKER_CONTAINER_PORT
+  }
+  ```
+  The VPS front-door issues the certificate; home Caddy needs no change for TLS.
 
 ## Ports
 
