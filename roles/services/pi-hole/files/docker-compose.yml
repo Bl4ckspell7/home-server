@@ -40,7 +40,7 @@ services:
       # host dnscrypt-proxy on svr1-network bridge gateway -> encrypted DNSCrypt/DoH
       FTLCONF_dns_upstreams: |
         172.21.0.1#5354
-      FTLCONF_dns_domain: "lan"
+      FTLCONF_dns_domain_name: "lan"
       FTLCONF_dns_hosts: |
         172.21.255.254 pihole.lan
         172.21.255.253 authentik.lan
