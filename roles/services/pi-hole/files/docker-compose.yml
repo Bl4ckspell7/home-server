@@ -5,9 +5,23 @@ services:
     container_name: pihole
     image: docker.io/pihole/pihole:2026.11.0@sha256:66c798d79a95c2691f280329c3611dba1746117c61c9f331907ca35a06a52778
     restart: always
+    # DNS for every zone: each container's `dns:` is the .254 of its own zone.
     networks:
-      svr1-network:
-        ipv4_address: 172.21.255.254
+      svr1-edge:
+        ipv4_address: 172.28.1.254
+      svr1-apps:
+        ipv4_address: 172.28.2.254
+      svr1-admin:
+        ipv4_address: 172.28.3.254
+        aliases: [pihole.lan]
+      svr1-llm:
+        ipv4_address: 172.28.4.254
+      svr1-ci:
+        ipv4_address: 172.28.5.254
+    # The netns inherits the host's ip_forward=1; in every zone, that would route
+    # packets between zones past Docker's isolation.
+    sysctls:
+      net.ipv4.ip_forward: 0
     # commented out to use DNS settings of the host and make Docker start it's embedded DNS server
     # dns:
     #   - 172.17.0.1 # docker bridge gateway
@@ -37,33 +51,14 @@ services:
       FTLCONF_dns_listeningMode: "ALL"
       FTLCONF_dns_dnssec: "false"
       FTLCONF_dns_port: "53"
-      # host dnscrypt-proxy on svr1-network bridge gateway -> encrypted DNSCrypt/DoH
+      # host dnscrypt-proxy on the svr1-edge bridge gateway -> encrypted DNSCrypt/DoH
       FTLCONF_dns_upstreams: |
-        172.21.0.1#5354
+        172.28.1.1#5354
       FTLCONF_dns_domain_name: "lan"
-      FTLCONF_dns_hosts: |
-        172.21.255.254 pihole.lan
-        172.21.255.253 authentik.lan
-        172.21.255.252 paperless.lan
-        172.21.255.251 dockge.lan
-        172.21.255.250 linkwarden.lan
-        172.21.255.249 backrest.lan
-        172.21.255.247 ddns-updater.lan
-        172.21.255.246 homepage.lan
-        172.21.255.245 photon.lan
-        172.21.255.244 dawarich.lan
-        172.21.255.243 immich.lan
-        172.21.255.242 searxng.lan
-        172.21.255.241 llamacpp.lan
-        172.21.255.240 jellyfin.lan
-        172.21.255.239 openwebui.lan
-        172.21.255.238 caddy.lan
-        172.21.255.237 dockhand.lan
-        172.21.255.236 anubis.lan
-        172.21.255.235 forgejo.lan
-        172.21.255.234 radicale.lan
-        172.21.255.233 docs.lan
-        172.21.255.232 vaultwarden.lan
+      # Container .lan names are Docker aliases on the zone networks, so they only
+      # resolve inside their zone. Explicitly empty: pihole.toml keeps the old list
+      # once the variable is gone.
+      FTLCONF_dns_hosts: ""
       # No FritzBox forwarding: off its network every single-label query timed out.
       # LAN hosts come from mDNS instead (mdns-hosts below). Explicitly empty, since
       # pihole.toml keeps the last env value once the variable is gone.
@@ -87,5 +82,13 @@ volumes:
     name: pihole_data
 
 networks:
-  svr1-network:
+  svr1-edge:
+    external: true
+  svr1-apps:
+    external: true
+  svr1-admin:
+    external: true
+  svr1-llm:
+    external: true
+  svr1-ci:
     external: true
