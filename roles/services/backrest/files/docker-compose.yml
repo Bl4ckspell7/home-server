@@ -8,10 +8,10 @@ services:
       - "9898"
     networks:
       default:
-      svr1-network:
-        ipv4_address: 172.21.255.249
+      svr1-admin:
+        aliases: [backrest.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.3.254
     dns_search:
       - "."
     environment:
@@ -35,5 +35,5 @@ services:
 networks:
   default:
     driver: bridge
-  svr1-network:
+  svr1-admin:
     external: true

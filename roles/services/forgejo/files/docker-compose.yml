@@ -38,10 +38,10 @@ services:
     restart: unless-stopped
     networks:
       forgejo:
-      svr1-network:
-        ipv4_address: 172.21.255.235
+      svr1-ci:
+        aliases: [forgejo.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.5.254
     dns_search:
       - "."
     volumes:
@@ -87,5 +87,5 @@ volumes:
 networks:
   forgejo:
     external: false
-  svr1-network:
+  svr1-ci:
     external: true

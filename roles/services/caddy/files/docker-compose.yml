@@ -9,18 +9,34 @@ services:
       - "443:443/udp"
     expose:
       - "8080"
+      - "8081"
     environment:
       # Caddy expands {$BASE_DOMAIN} in the Caddyfile from its own process
       # environment, so unlike the other services this one needs the value inside
       # the container, not just at compose-parse time.
       BASE_DOMAIN: ${BASE_DOMAIN:?base domain required}
       # Anubis's ipv4_address (roles/services/anubis): the only client :8080 accepts.
-      ANUBIS_IP: 172.21.255.236
+      ANUBIS_IP: 172.28.1.236
+      # Homepage's ipv4_address (roles/services/homepage): the only client :8081 accepts.
+      HOMEPAGE_IP: 172.28.2.246
+    # In every zone (like Pi-hole): it proxies to all of them.
     networks:
-      svr1-network:
-        ipv4_address: 172.21.255.238
+      svr1-edge:
+        aliases: [caddy.lan]
+      svr1-apps:
+        aliases: [caddy.lan]
+      svr1-admin:
+        aliases: [caddy.lan]
+      svr1-llm:
+        aliases: [caddy.lan]
+      svr1-ci:
+        aliases: [caddy.lan]
+    # The netns inherits the host's ip_forward=1; in every zone, that would route
+    # packets between zones past Docker's isolation.
+    sysctls:
+      net.ipv4.ip_forward: 0
     dns:
-      - 172.21.255.254
+      - 172.28.1.254
     dns_search: # don't append any search domain
       - "."
     volumes:
@@ -39,5 +55,13 @@ volumes:
   caddy_config:
 
 networks:
-  svr1-network:
+  svr1-edge:
+    external: true
+  svr1-apps:
+    external: true
+  svr1-admin:
+    external: true
+  svr1-llm:
+    external: true
+  svr1-ci:
     external: true

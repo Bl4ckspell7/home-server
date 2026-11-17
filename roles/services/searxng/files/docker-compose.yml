@@ -9,10 +9,10 @@ services:
     expose:
       - "8080"
     networks:
-      svr1-network:
-        ipv4_address: 172.21.255.242
+      svr1-llm:
+        aliases: [searxng.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.4.254
     dns_search:
       - "."
     env_file: .env
@@ -29,5 +29,5 @@ services:
       retries: 3
 
 networks:
-  svr1-network:
+  svr1-llm:
     external: true

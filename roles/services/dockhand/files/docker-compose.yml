@@ -11,13 +11,13 @@ services:
     expose:
       - "3000"
     networks:
-      svr1-network:
-        ipv4_address: 172.21.255.237
+      svr1-admin:
+        aliases: [dockhand.lan]
     environment:
       DISABLE_LOCAL_LOGIN: "true"
       OIDC_AUTOLOGIN: "true"
     dns:
-      - 172.21.255.254
+      - 172.28.3.254
     dns_search: # don't append any search domain
       - "."
     volumes:
@@ -28,5 +28,5 @@ services:
       disable: false
 
 networks:
-  svr1-network:
+  svr1-admin:
     external: true

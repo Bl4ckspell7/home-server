@@ -10,10 +10,10 @@ services:
     expose:
       - "8080"
     networks:
-      svr1-network:
-        ipv4_address: 172.21.255.241
+      svr1-llm:
+        aliases: [llamacpp.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.4.254
     dns_search:
       - "."
     environment:
@@ -39,5 +39,5 @@ services:
     # The image's own HEALTHCHECK curls /health.
 
 networks:
-  svr1-network:
+  svr1-llm:
     external: true

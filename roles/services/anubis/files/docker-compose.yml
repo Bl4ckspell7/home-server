@@ -7,10 +7,12 @@ services:
     expose:
       - "3000"
     networks:
-      svr1-network:
-        ipv4_address: 172.21.255.236
+      svr1-edge:
+        # fixed: Caddy's :8080 accepts only this IP (ANUBIS_IP)
+        ipv4_address: 172.28.1.236
+        aliases: [anubis.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.1.254
     dns_search:
       - "."
     environment:
@@ -24,5 +26,5 @@ services:
       retries: 3
 
 networks:
-  svr1-network:
+  svr1-edge:
     external: true

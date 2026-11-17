@@ -27,10 +27,10 @@ services:
     volumes:
       - photon_data:/photon/data
     networks:
-      svr1-network:
-        ipv4_address: 172.21.255.245
+      svr1-apps:
+        aliases: [photon.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.2.254
     dns_search:
       - "."
     expose:
@@ -42,5 +42,5 @@ volumes:
   photon_data:
 
 networks:
-  svr1-network:
+  svr1-apps:
     external: true

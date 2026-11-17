@@ -8,10 +8,10 @@ services:
       # Host Port : Container Port
       - 5001:5001
     networks:
-      svr1-network:
-        ipv4_address: 172.21.255.251
+      svr1-admin:
+        aliases: [dockge.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.3.254
     dns_search:
       - "."
     volumes:
@@ -34,5 +34,5 @@ services:
       disable: false
 
 networks:
-  svr1-network:
+  svr1-admin:
     external: true

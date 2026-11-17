@@ -7,10 +7,12 @@ services:
     expose:
       - "3000"
     networks:
-      svr1-network:
-        ipv4_address: 172.21.255.246
+      svr1-apps:
+        # fixed: Caddy's :8081 status route accepts only this IP (HOMEPAGE_IP)
+        ipv4_address: 172.28.2.246
+        aliases: [homepage.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.2.254
     dns_search:
       - "."
     volumes:
@@ -25,5 +27,5 @@ services:
       disable: false
 
 networks:
-  svr1-network:
+  svr1-apps:
     external: true

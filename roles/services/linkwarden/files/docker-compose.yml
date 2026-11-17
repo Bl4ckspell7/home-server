@@ -9,10 +9,10 @@ services:
       - "3000"
     networks:
       default:
-      svr1-network:
-        ipv4_address: 172.21.255.250
+      svr1-llm:
+        aliases: [linkwarden.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.4.254
     dns_search:
       - "."
     env_file: .env
@@ -85,5 +85,5 @@ volumes:
 networks:
   default:
     driver: bridge
-  svr1-network:
+  svr1-llm:
     external: true

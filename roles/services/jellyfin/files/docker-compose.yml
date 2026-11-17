@@ -6,10 +6,10 @@ services:
     restart: "unless-stopped"
     user: 900:900
     networks:
-      svr1-network:
-        ipv4_address: 172.21.255.240
+      svr1-apps:
+        aliases: [jellyfin.lan]
     dns:
-      - 172.21.255.254
+      - 172.28.2.254
     dns_search:
       - "."
     expose:
@@ -37,5 +37,5 @@ volumes:
   cache:
 
 networks:
-  svr1-network:
+  svr1-apps:
     external: true
