@@ -1,6 +1,6 @@
-- name: Create shared Docker network 'svr1-network'
+- name: Create the zone networks
   community.docker.docker_network:
-    name: svr1-network
+    name: "{{ item.name }}"
     driver: bridge
     state: present
     internal: false
@@ -9,7 +9,12 @@
     attachable: true
     scope: local
     ipam_config:
-      - subnet: 172.21.0.0/16
+      - subnet: "{{ item.subnet }}"
+        gateway: "{{ item.gateway }}"
+        iprange: "{{ item.iprange }}"
+  loop: "{{ docker_zones }}"
+  loop_control:
+    label: "{{ item.name }}"
   become: true
 
 - name: Configure the Docker daemon
