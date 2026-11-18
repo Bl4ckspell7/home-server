@@ -1,0 +1,55 @@
+{{ ansible_managed | comment }}
+# Minecraft: forward the public port to svr1's 25565 over wg0. Loaded by
+# minecraft-forward.service; the table/delete pair makes every load replace the
+# table in one transaction.
+define wan = "{{ ansible_facts['default_ipv4']['interface'] }}"
+define public_port = {{ minecraft_public_port }}
+
+table ip minecraft
+delete table ip minecraft
+
+table ip minecraft {
+	# Runtime bans, gone when the unit restarts (VPS reboot, rule change):
+	#   nft add element ip minecraft ban '{ 192.0.2.1 timeout 7d }'
+	set ban {
+		type ipv4_addr
+		flags timeout
+	}
+
+	# Per-source new-connection budget. Only this hop still sees real addresses, so
+	# throttling has to happen here.
+	set flood {
+		type ipv4_addr
+		flags dynamic, timeout
+		timeout 1m
+	}
+
+	# After conntrack (-200), before DNAT (-100).
+	chain guard {
+		type filter hook prerouting priority -150; policy accept;
+		iifname $wan tcp dport $public_port ip saddr @ban drop
+		iifname $wan tcp dport $public_port ct state new add @flood { ip saddr limit rate over 20/minute burst 20 packets } drop
+		# The game sees every player as 10.10.0.1 (masquerade below): this records who it really is.
+		iifname $wan tcp dport $public_port ct state new log prefix "minecraft: " level info
+	}
+
+	chain pre_nat {
+		type nat hook prerouting priority dstnat; policy accept;
+		iifname $wan tcp dport $public_port dnat to 10.10.0.2:25565
+	}
+
+	# svr1 sends everything outside 10.10.0.0/24 through ProtonVPN, so replies only
+	# find their way back when the connection comes from the tunnel address.
+	chain post_nat {
+		type nat hook postrouting priority srcnat; policy accept;
+		oifname "wg0" ip daddr 10.10.0.2 tcp dport 25565 masquerade
+	}
+
+	# wg0 MTU 1380 - 40; keep in sync with roles/vps/wireguard-vps/templates/wg0.conf.j2.
+	# SYN and SYN-ACK, so neither side sends segments too big for the tunnel.
+	chain clamp_mss {
+		type filter hook forward priority mangle; policy accept;
+		oifname "wg0" ip daddr 10.10.0.2 tcp dport 25565 tcp flags & (syn | rst) == syn tcp option maxseg size set 1340
+		iifname "wg0" ip saddr 10.10.0.2 tcp sport 25565 tcp flags & (syn | rst) == syn tcp option maxseg size set 1340
+	}
+}

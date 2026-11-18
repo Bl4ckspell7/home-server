@@ -29,6 +29,9 @@
     - role: wireguard-vps
       tags: wireguard
 
+    - role: minecraft-vps
+      tags: minecraft
+
     - role: landing
       tags: landing
 

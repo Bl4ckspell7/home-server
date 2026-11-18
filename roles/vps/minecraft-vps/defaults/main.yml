@@ -1,0 +1,5 @@
+---
+# Public port on the VPS: bots sweep 25565, few scan this. Players don't see it,
+# the SRV record (terraform/dns, minecraft_port) hands it to the client. Keep both
+# in sync. svr1 and the container stay on 25565.
+minecraft_public_port: 30299

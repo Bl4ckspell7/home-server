@@ -1,0 +1,15 @@
+# Its own unit, not wg0's PostUp (a rule change would restart the front-door
+# tunnel) nor nftables.service (its `flush ruleset` wipes podman, fail2ban, wg).
+[Unit]
+Description=Forward Minecraft to svr1 over WireGuard
+Wants=network-online.target
+After=network-online.target wg-quick@wg0.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/nft -f /etc/minecraft-forward.nft
+ExecStop=/usr/sbin/nft delete table ip minecraft
+
+[Install]
+WantedBy=multi-user.target
