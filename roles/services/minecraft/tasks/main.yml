@@ -1,0 +1,17 @@
+---
+- name: Configure Minecraft service user
+  ansible.builtin.include_tasks: ../../../../tasks/service_user.yml
+  vars:
+    service_name: minecraft
+    service_uid: 914
+    service_dirs:
+      - /opt/stacks/minecraft/data
+    # itzg keeps the RCON password in /data/.rcon-cli.env.
+    service_dirs_mode: "0750"
+
+- name: Deploy Minecraft
+  ansible.builtin.include_tasks: ../../../../tasks/deploy_stack.yml
+  vars:
+    service_name: minecraft
+    service_secrets: true
+    env_template: minecraft.env.j2

@@ -46,6 +46,9 @@
     - role: llamacpp
       tags: llamacpp
 
+    - role: minecraft
+      tags: minecraft
+
     - role: openwebui
       tags: openwebui
 
