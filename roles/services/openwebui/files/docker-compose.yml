@@ -2,7 +2,7 @@ name: openwebui
 services:
   openwebui:
     container_name: openwebui
-    image: ghcr.io/open-webui/open-webui:v0.13.3@sha256:46b59158e6558eeb980bc828e0f1b30238ad24d82ed84d5e5eda1dab2a082f14
+    image: ghcr.io/open-webui/open-webui:v0.13.4@sha256:d5168bfbc28609eff5bea1b438dd864cf64d185cf6582c02244865e18385b901
     restart: unless-stopped
     # The openwebui service user (roles/services/openwebui). The image is built for
     # root, so everything it writes at startup is redirected into the volume below.
