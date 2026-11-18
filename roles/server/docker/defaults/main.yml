@@ -34,3 +34,7 @@ docker_zones:
     subnet: 172.28.5.0/24
     gateway: 172.28.5.1
     iprange: 172.28.5.0/25
+  - name: svr1-game # minecraft (internet-facing via the VPS; no Caddy)
+    subnet: 172.28.6.0/24
+    gateway: 172.28.6.1
+    iprange: 172.28.6.0/25

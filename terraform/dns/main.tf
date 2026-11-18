@@ -36,6 +36,26 @@ resource "hcloud_zone_rrset" "wildcard_a" {
   records = [{ value = local.front_door_ip, comment = "all services -> front-door" }]
 }
 
+# Minecraft clients look this up before connecting, so mc.<domain> works without a
+# port while the VPS listens off 25565. The target resolves via the wildcard A.
+resource "hcloud_zone_rrset" "minecraft_srv" {
+  zone    = hcloud_zone.main.name
+  name    = "_minecraft._tcp.mc"
+  type    = "SRV"
+  ttl     = var.record_ttl
+  records = [{ value = "0 5 ${var.minecraft_port} mc.${var.domain}.", comment = "Minecraft on the front-door" }]
+}
+
+# The SRV record makes mc.<domain> an empty non-terminal, which the "*" wildcard
+# no longer covers (RFC 4592), so the SRV target needs its own A record.
+resource "hcloud_zone_rrset" "minecraft_a" {
+  zone    = hcloud_zone.main.name
+  name    = "mc"
+  type    = "A"
+  ttl     = var.record_ttl
+  records = [{ value = local.front_door_ip, comment = "Minecraft SRV target -> front-door" }]
+}
+
 # Anti-spoofing trio. The domain neither sends nor receives mail, so say so
 # explicitly rather than leaving the gap Hetzner's stock "?all" SPF left open.
 resource "hcloud_zone_rrset" "null_mx" {

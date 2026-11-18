@@ -17,6 +17,12 @@ variable "dmarc_policy" {
   default     = "v=DMARC1; p=reject; adkim=s; aspf=s"
 }
 
+variable "minecraft_port" {
+  description = "Public Minecraft port on the VPS, published via the SRV record so players type only mc.<domain>. Keep in sync with minecraft_public_port in roles/vps/minecraft-vps/defaults/main.yml."
+  type        = number
+  default     = 30299
+}
+
 variable "record_ttl" {
   description = "TTL applied to every rrset in the zone."
   type        = number

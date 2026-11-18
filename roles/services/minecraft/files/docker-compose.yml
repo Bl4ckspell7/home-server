@@ -1,0 +1,58 @@
+name: minecraft
+services:
+  minecraft:
+    container_name: minecraft
+    image: docker.io/itzg/minecraft-server:2026.11.0-java25@sha256:8d5080d8dcd0a2629c2e4f248678373a337a40537ad6ef2857c7dbcda6e3eadd
+    restart: unless-stopped
+    # 8G heap plus ~25% for the JVM outside it.
+    mem_limit: 10g
+    # Longer than itzg's STOP_DURATION (60s), so the world is saved before the kill.
+    stop_grace_period: 90s
+    ports:
+      # Tunnel address only: players come in through the VPS forward, not the LAN.
+      # ip_nonlocal_bind lets Docker bind it while wg0 is still down.
+      - "10.10.0.2:25565:25565"
+    # Alone in its zone with Pi-hole (DNS); Caddy stays out.
+    networks:
+      svr1-game:
+        aliases: [minecraft.lan]
+    dns:
+      - 172.28.6.254
+    dns_search:
+      - "."
+    env_file: .env
+    environment:
+      TZ: Europe/Berlin
+      EULA: "TRUE"
+      TYPE: VANILLA
+      # Renovate bumps the image only; the game version is raised by hand.
+      VERSION: "26.3"
+      # The minecraft service user (roles/services/minecraft).
+      UID: "914"
+      GID: "914"
+      # Grows to 8G on demand: Xms=Xmx plus Aikar's pre-touch would hold all 8G while idle.
+      INIT_MEMORY: 2G
+      MAX_MEMORY: 8G
+      USE_AIKAR_FLAGS: "true"
+      DIFFICULTY: normal
+      # Vanilla's maximum. simulation-distance stays 10: farther chunks are sent and
+      # kept loaded, but nothing ticks there.
+      VIEW_DISTANCE: "32"
+      ONLINE_MODE: "true"
+      # Bots sweep 25565: status pings show the count, not the names.
+      HIDE_ONLINE_PLAYERS: "true"
+      # Fails closed: an empty WHITELIST would otherwise leave white-list=false on a
+      # fresh /data. Also turns on enforce-whitelist.
+      ENABLE_WHITELIST: "true"
+      # WHITELIST/OPS from sops are the whole list: a name removed there loses access.
+      EXISTING_WHITELIST_FILE: SYNCHRONIZE
+      EXISTING_OPS_FILE: SYNCHRONIZE
+      # Look names up at Mojang, not the third-party PlayerDB.
+      USER_API_PROVIDER: mojang
+    volumes:
+      - ./data:/data
+    # Healthcheck: the image's own (mc-health).
+
+networks:
+  svr1-game:
+    external: true

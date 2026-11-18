@@ -7,6 +7,7 @@ Managed by the `vps` inventory group via `vps.yml` (roles under `roles/vps/`):
 - `apt-vps` — podman, wireguard, nftables (Debian repos, no docker repo)
 - `wireguard-vps` — native `wg0` (`10.10.0.1/24`) + `ip_forward` + NAT masquerade
 - `caddy-vps` — podman Quadlet front-door, on-demand TLS, landing fallback
+- `minecraft-vps` — forwards `30299/tcp` to home's `25565` over `wg0` (nftables), see [Minecraft](./minecraft.md)
 - `landing` — static "be right back" page → `/srv/landing`
 - [`fail2ban-vps`](./fail2ban.md) — bans SSH brute-force and HTTP scanners at the edge
 - reuses [`ssh`](../ssh.md) from `roles/server`
@@ -50,5 +51,5 @@ The home peer's `roles/server/wireguard/vars/secrets.yml` holds the mirror set (
 ## Notes
 
 - Container runtime: podman; Quadlet unit lives in `/etc/containers/systemd/`.
-- No `ufw` — filtered at the IONOS firewall (`22`, `80`, `443`, `51820/udp`).
+- No `ufw` — filtered at the IONOS firewall (`22`, `80`, `443`, `30299`, `51820/udp`).
 - On-demand TLS issues certs per host once DNS points at the VPS; until then Caddy serves `landing`.

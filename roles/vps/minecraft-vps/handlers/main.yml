@@ -1,0 +1,6 @@
+---
+- name: Restart Minecraft forward
+  ansible.builtin.systemd_service:
+    name: minecraft-forward.service
+    state: restarted
+    daemon_reload: true

@@ -1,0 +1,26 @@
+---
+- name: Render Minecraft forward rules
+  ansible.builtin.template:
+    src: minecraft-forward.nft.j2
+    dest: /etc/minecraft-forward.nft
+    owner: root
+    group: root
+    mode: "0644"
+    validate: nft -c -f %s
+  notify: Restart Minecraft forward
+
+- name: Copy Minecraft forward unit
+  ansible.builtin.copy:
+    src: minecraft-forward.service
+    dest: /etc/systemd/system/minecraft-forward.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart Minecraft forward
+
+- name: Enable and start Minecraft forward
+  ansible.builtin.systemd_service:
+    name: minecraft-forward.service
+    state: started
+    enabled: true
+    daemon_reload: true

@@ -24,29 +24,30 @@
 
 Services behind Caddy use `expose` (no host port binding). Only services requiring direct LAN access retain host port mappings.
 
-| **Service**       | **Host Port** | **Container Port** |
-| ----------------- | ------------- | ------------------ |
-| **Pi-hole**       | 127.0.0.54:53 | 53                 |
-| **Anubis**        | -             | 3000               |
-| **Backrest**      | -             | 9898               |
-| **Immich**        | -             | 2283               |
-| **Photon**        | -             | 2322               |
-| **Homepage**      | -             | 3000               |
-| **Dawarich**      | -             | 3000               |
-| **Docusaurus**    | -             | 8349               |
-| **Dockhand**      | -             | 3000               |
-| **Linkwarden**    | -             | 3000               |
-| **Dockge**        | 5001          | 5001               |
-| **Radicale**      | -             | 5232               |
-| **Forgejo**       | -             | 3000               |
-| **Vaultwarden**   | -             | 80                 |
-| **Pi-hole**       | 7443          | 443                |
-| **Paperless-ngx** | -             | 8000               |
-| **Jellyfin**      | -             | 8096               |
-| **Authentik**     | -             | 9443               |
-| **llama.cpp**     | -             | 8080               |
-| **Open WebUI**    | -             | 3000               |
-| **SearXNG**       | -             | 8080               |
+| **Service**       | **Host Port**   | **Container Port** |
+| ----------------- | --------------- | ------------------ |
+| **Pi-hole**       | 127.0.0.54:53   | 53                 |
+| **Anubis**        | -               | 3000               |
+| **Backrest**      | -               | 9898               |
+| **Immich**        | -               | 2283               |
+| **Photon**        | -               | 2322               |
+| **Homepage**      | -               | 3000               |
+| **Dawarich**      | -               | 3000               |
+| **Docusaurus**    | -               | 8349               |
+| **Dockhand**      | -               | 3000               |
+| **Linkwarden**    | -               | 3000               |
+| **Dockge**        | 5001            | 5001               |
+| **Radicale**      | -               | 5232               |
+| **Forgejo**       | -               | 3000               |
+| **Vaultwarden**   | -               | 80                 |
+| **Pi-hole**       | 7443            | 443                |
+| **Paperless-ngx** | -               | 8000               |
+| **Jellyfin**      | -               | 8096               |
+| **Authentik**     | -               | 9443               |
+| **llama.cpp**     | -               | 8080               |
+| **Open WebUI**    | -               | 3000               |
+| **SearXNG**       | -               | 8080               |
+| **Minecraft**     | 10.10.0.2:25565 | 25565              |
 
 ## Service Users and Groups
 
@@ -68,3 +69,4 @@ System users and groups created by Ansible for running services:
 | **Dawarich**       | dawarich       | 911     | dawarich       | 911     |
 | **Paperless-ngx**  | paperless-ngx  | 912     | paperless-ngx  | 912     |
 | **Open WebUI**     | openwebui      | 913     | openwebui      | 913     |
+| **Minecraft**      | minecraft      | 914     | minecraft      | 914     |
