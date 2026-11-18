@@ -91,8 +91,10 @@ Containers only reach each other inside a shared zone network; Docker isolates t
 | `svr1-admin` | 172.28.3.0/24 | dockge, dockhand, backrest (root-equivalent) |
 | `svr1-llm` | 172.28.4.0/24 | llamacpp, openwebui, searxng, linkwarden |
 | `svr1-ci` | 172.28.5.0/24 | forgejo, forgejo-runner, its dind |
+| `svr1-game` | 172.28.6.0/24 | minecraft (internet-facing via the VPS) |
 
-- **Caddy and Pi-hole join every zone:** Caddy proxies to all services, Pi-hole answers DNS at `.254` in each (its web UI only in `svr1-admin`).
+- **Caddy and Pi-hole join every zone:** Caddy proxies to all services, Pi-hole answers DNS at `.254` in each (its web UI only in `svr1-admin`). Exception: Caddy stays out of `svr1-game`, which has nothing to proxy.
+- **`svr1-game` reaches the internet only:** the internet-facing game server is the likeliest container to be taken over. `roles/server/ufw` adds a `DOCKER-USER` block to `/etc/ufw/after.rules` that drops its traffic to private ranges (LAN, other zones, the VPS over `wg0`) except DNS to Pi-hole, plus a ufw `deny` from the subnet to the host. Check: `iptables -S DOCKER-USER`.
 - **Names:** each service sets the alias `<name>.lan` on its zone network; Caddy has `caddy.lan` in every zone, Pi-hole `pihole.lan` in `svr1-admin`.
 - **Fixed IPs**, only where something checks the address: Pi-hole `.254` (`dns:`), Anubis `172.28.1.236` and Homepage `172.28.2.246` (Caddy's listener guards).
 - **Stack-internal networks** (databases, caches, workers) stay per stack.

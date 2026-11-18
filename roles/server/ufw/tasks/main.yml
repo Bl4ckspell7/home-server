@@ -27,6 +27,13 @@
     direction: outgoing
     default: allow
 
+# First rule: ufw stops at the first match, so it must precede the SSH limit.
+- name: Deny svr1-game to the host
+  community.general.ufw:
+    rule: deny
+    src: 172.28.6.0/24
+    comment: "svr1-game (internet-facing Minecraft): no host services"
+
 - name: Limit SSH to prevent brute force attacks
   community.general.ufw:
     rule: limit
@@ -63,6 +70,31 @@
     to_port: "5353"
     proto: udp
     comment: "mDNS (avahi, svr1.local)"
+
+# svr1-game holds the internet-facing Minecraft server: internet and Pi-hole's DNS
+# only, none of the LAN, the other zones or the VPS over wg0. DOCKER-USER runs before
+# Docker's FORWARD rules; declaring it here refills it on every ufw (re)load.
+- name: Restrict svr1-game egress to the internet
+  ansible.builtin.blockinfile:
+    path: /etc/ufw/after.rules
+    marker: "# {mark} ANSIBLE MANAGED BLOCK svr1-game egress"
+    insertafter: EOF
+    owner: root
+    group: root
+    mode: "0640"
+    block: |
+      *filter
+      :DOCKER-USER - [0:0]
+      -A DOCKER-USER -s 172.28.6.0/24 -m conntrack --ctstate ESTABLISHED,RELATED -j RETURN
+      -A DOCKER-USER -s 172.28.6.0/24 -d 172.28.6.254 -p udp --dport 53 -j RETURN
+      -A DOCKER-USER -s 172.28.6.0/24 -d 172.28.6.254 -p tcp --dport 53 -j RETURN
+      -A DOCKER-USER -s 172.28.6.0/24 -d 10.0.0.0/8 -j DROP
+      -A DOCKER-USER -s 172.28.6.0/24 -d 172.16.0.0/12 -j DROP
+      -A DOCKER-USER -s 172.28.6.0/24 -d 192.168.0.0/16 -j DROP
+      -A DOCKER-USER -s 172.28.6.0/24 -d 100.64.0.0/10 -j DROP
+      -A DOCKER-USER -s 172.28.6.0/24 -d 169.254.0.0/16 -j DROP
+      COMMIT
+  notify: Reload UFW
 
 - name: Ensure UFW is enabled
   community.general.ufw:

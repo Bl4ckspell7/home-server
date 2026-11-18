@@ -21,6 +21,8 @@ services:
         ipv4_address: 172.28.4.254
       svr1-ci:
         ipv4_address: 172.28.5.254
+      svr1-game:
+        ipv4_address: 172.28.6.254
     # The netns inherits the host's ip_forward=1; in every zone, that would route
     # packets between zones past Docker's isolation.
     sysctls:
@@ -97,4 +99,6 @@ networks:
   svr1-llm:
     external: true
   svr1-ci:
+    external: true
+  svr1-game:
     external: true
