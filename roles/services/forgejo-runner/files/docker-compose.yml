@@ -59,10 +59,11 @@ services:
       - "."
     healthcheck:
       test: ["CMD-SHELL", "DOCKER_HOST=unix:///sock/docker.sock docker info >/dev/null"]
-      interval: 30s
+      interval: 10m
       timeout: 10s
       retries: 5
-      start_period: 30s
+      start_period: 60s
+      start_interval: 2s
 
 volumes:
   dind_data:
