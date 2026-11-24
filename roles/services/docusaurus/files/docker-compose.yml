@@ -2,7 +2,7 @@ name: docusaurus
 
 services:
   docusaurus:
-    image: forgejo.bl4ckspell.de/bl4ckspell/home-server-docs:1.1.7@sha256:91fdad0f5d6faf48f9fd4e813cba3096de081e10f0d905a3d48ca2b890cb060f
+    image: forgejo.bl4ckspell.de/bl4ckspell/home-server-docs:1.1.8@sha256:f885ff9ea0954676442daa2c670e9b4416faa95612ee15913e4d289724c9226c
     container_name: docusaurus
     restart: unless-stopped
     networks:
