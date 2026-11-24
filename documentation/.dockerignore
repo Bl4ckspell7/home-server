@@ -1,0 +1,9 @@
+# Built inside the image; host copies would overwrite the in-image `bun install`.
+node_modules
+build
+.docusaurus
+.cache-loader
+
+.DS_Store
+.env*
+*.log
