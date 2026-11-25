@@ -7,6 +7,7 @@ docker_daemon_config:
     max-size: 100m
     max-file: "40"
   # Containers keep running while dockerd restarts, e.g. on a docker-ce upgrade.
+  # At shutdown docker-shutdown-stop.service stops them instead of dockerd.
   live-restore: true
 
 # Containers only reach each other inside a shared zone; Caddy and Pi-hole join

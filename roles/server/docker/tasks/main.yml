@@ -26,3 +26,34 @@
     mode: "0644"
   become: true
   notify: Apply Docker daemon config
+
+# The script's jq comes from the apt role's package list.
+- name: Stop the containers at shutdown
+  become: true
+  block:
+    - name: Deploy the container stop script
+      ansible.builtin.copy:
+        src: docker-shutdown-stop
+        dest: /usr/local/sbin/docker-shutdown-stop
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: Deploy the container stop unit
+      ansible.builtin.copy:
+        src: docker-shutdown-stop.service
+        dest: /etc/systemd/system/docker-shutdown-stop.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    # Skipped in check mode: the unit file has not been written there, so
+    # systemd would report it as missing. Started, not restarted: its stop is
+    # what runs the script.
+    - name: Enable the container stop unit
+      when: not ansible_check_mode
+      ansible.builtin.systemd_service:
+        name: docker-shutdown-stop.service
+        state: started
+        enabled: true
+        daemon_reload: true
