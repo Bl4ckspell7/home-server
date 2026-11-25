@@ -47,6 +47,8 @@ Set per host with `uu_origins_patterns`:
 - **svr1:** every apt source (`origin=*`): Debian incl. point releases and
   stable-updates, Docker, Proton, Mozilla, Steam. Docker's `live-restore`
   (docker role) keeps containers running when docker-ce or containerd upgrade.
+  At shutdown `docker-shutdown-stop.service` stops them instead, each with its
+  own stop signal and grace period.
 - **VPS:** Debian security only (the role default).
 
 `needrestart` runs in automatic mode (`$nrconf{restart} = 'a'`), so daemons
