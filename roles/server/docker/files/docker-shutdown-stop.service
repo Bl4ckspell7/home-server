@@ -1,0 +1,19 @@
+# Managed by Ansible (roles/server/docker).
+[Unit]
+Description=Stop the containers live-restore leaves running at shutdown
+# Stop order is the reverse of start order: dockerd exits first, so it neither
+# restarts a container nor marks it as stopped (unless-stopped ones would stay
+# down after boot). Docker's own dependencies go down only after the containers.
+Before=docker.service
+After=containerd.service network-online.target nss-lookup.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=/usr/local/sbin/docker-shutdown-stop
+# Above the longest stop_grace_period in the stacks.
+TimeoutStopSec=2min
+
+[Install]
+WantedBy=multi-user.target

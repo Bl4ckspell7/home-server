@@ -1,0 +1,104 @@
+#!/bin/sh
+# Managed by Ansible (roles/server/docker).
+# With live-restore, dockerd exits at shutdown and leaves every container
+# running. Left alone, they only get systemd-shutdown's blanket SIGTERM after
+# the journal has stopped, and one straggler holds the power-off for 90 s.
+# Stop them here the way `docker stop` would: each container's own stop signal
+# and timeout, then SIGKILL. dockerd is gone by now, so it marks no container
+# as stopped and the restart policies bring them back at boot.
+set -eu
+
+containers=/var/lib/docker/containers
+cgroup_root=/sys/fs/cgroup
+cgroups=$cgroup_root/system.slice
+# Below the unit's TimeoutStopSec, so the SIGKILL fallback still gets to run.
+max_timeout=110
+
+# A restart of this unit must not pull the containers out from under a running
+# dockerd. After a plain stop, start it again, or the next shutdown skips it.
+if systemctl -q is-active docker.service; then
+    echo "dockerd is running, leaving the containers to it"
+    exit 0
+fi
+
+running() {
+    grep -qx 'populated 1' "$1/cgroup.events" 2>/dev/null
+}
+
+kill_cgroup() {
+    # Fails harmlessly if the last process exited in the meantime.
+    echo 1 2>/dev/null >"$1/cgroup.kill" || true
+    # SIGKILL lands asynchronously: give processes stuck in disk I/O a moment.
+    grace=0
+    while running "$1" && [ "$grace" -lt 5 ]; do
+        sleep 1
+        grace=$((grace + 1))
+    done
+}
+
+# Every process in the container's cgroup tree. Only current members are
+# listed, so no pid can have been recycled.
+cgroup_pids() {
+    find "$1" -name cgroup.procs -exec cat {} +
+}
+
+# No docker CLI: it would socket-activate dockerd again. Signal the init process
+# directly, as `docker stop` does, and watch the container's cgroup instead.
+# Without a usable init pid, every process in the cgroup gets the signal.
+stop_one() {
+    cg=$1 name=$2 pid=$3 sig=$4 timeout=$5
+    if [ -z "$pid" ]; then
+        # shellcheck disable=SC2046 # one pid per word
+        /usr/bin/kill -s "$sig" $(cgroup_pids "$cg") 2>/dev/null || true
+    elif ! /usr/bin/kill -s "$sig" "$pid" 2>/dev/null; then
+        sig=SIGTERM
+        /usr/bin/kill -s "$sig" "$pid" 2>/dev/null || true
+    fi
+    waited=0
+    while running "$cg"; do
+        if [ "$waited" -ge "$timeout" ]; then
+            kill_cgroup "$cg"
+            echo "$name: no exit within ${timeout}s of $sig, killed"
+            return 0
+        fi
+        sleep 1
+        waited=$((waited + 1))
+    done
+    echo "$name: stopped after ${waited}s ($sig)"
+}
+
+start=$(date +%s)
+count=0
+for cg in "$cgroups"/docker-*.scope; do
+    running "$cg" || continue
+    id=${cg##*/docker-}
+    id=${id%.scope}
+    # 10 s is the `docker stop` default.
+    fields=$(jq -r '[
+        (.Name | ltrimstr("/")),
+        .State.Pid,
+        (if (.Config.StopSignal // "") == "" then "SIGTERM" else .Config.StopSignal end),
+        (.Config.StopTimeout // 10)
+    ] | @tsv' "$containers/$id/config.v2.json" 2>/dev/null) || fields=""
+    read -r name pid sig timeout <<EOF
+$fields
+EOF
+    # Missing or stale state: signal the whole cgroup rather than a pid that may
+    # have been recycled. Docker-in-docker moves its init into a child cgroup.
+    scope=${cg#"$cgroup_root"}
+    case $(sed -n 's/^0:://p' "/proc/${pid:-0}/cgroup" 2>/dev/null) in
+        "$scope" | "$scope"/*) ;;
+        *)
+            echo "${name:-$id}: no usable state, signalling all its processes"
+            name=${name:-$id} pid="" sig=${sig:-SIGTERM} timeout=${timeout:-10}
+            ;;
+    esac
+    # Negative means wait forever in Docker.
+    if [ "$timeout" -lt 0 ] || [ "$timeout" -gt "$max_timeout" ]; then
+        timeout=$max_timeout
+    fi
+    stop_one "$cg" "$name" "$pid" "$sig" "$timeout" &
+    count=$((count + 1))
+done
+wait
+echo "stopped $count containers in $(($(date +%s) - start))s"
