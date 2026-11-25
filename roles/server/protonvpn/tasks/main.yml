@@ -69,12 +69,13 @@
     mode: "0755"
 
 - name: Start the tunnel before Docker
-  # Otherwise containers come up on the bare uplink at boot.
+  # Otherwise containers come up on the bare uplink at boot. At shutdown the
+  # tunnel stays up until docker-shutdown-stop has stopped the containers.
   ansible.builtin.copy:
     dest: /etc/systemd/system/wg-quick@proton0.service.d/order.conf
     content: |
       [Unit]
-      Before=docker.service
+      Before=docker.service docker-shutdown-stop.service
     owner: root
     group: root
     mode: "0644"
