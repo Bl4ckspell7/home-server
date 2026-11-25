@@ -54,6 +54,7 @@
       - inotify-tools
       - iputils-ping
       - iw
+      - jq
       - libayatana-appindicator3-1
       - libnss-mdns
       - libssl-dev
